@@ -1,0 +1,152 @@
+﻿% Ne pas Toucherr
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fullpage}
+
+\newcounter{task}
+\newcommand{\task}[6]{%
+  \refstepcounter{task}%
+  \noindent{\bf Tâche \thetask~:} #1\\%
+  \underline{Durée estimée~:} #2 \hfill \underline{Date de début~:} #3\\%
+  \underline{Responsable~:} #4 \hfill \underline{Autres participants~:} #5\\%
+  \underline{Résumé~:} #6%
+  \vspace{1cm}
+}
+% Fin ne pas toucher
+
+% Ajouter seulement les informations demandées
+\title{%
+  Organisation d'un job Meeting % Remplacer par le titre de votre projet
+  \\ \Large Cahier des charges, planning, répartition des tâches%
+}
+\author{Abdelaziz Mathis \and Lassalle Clement \and Rialet Yohann \and Zaremba Maxime \and Cougnaud Julien} % Remplacer par vos noms
+\date{%
+  Projet S3/S4, année 2016--2017 \\
+  Encadré par~:
+  Nassim Hadj-Rabia % Remplacer par le nom de votre encadrant
+}
+% Fin ajouter seulement les informations demandées
+
+\begin{document}
+
+\maketitle
+
+\section{Cahier des charges}
+% Donnez dans cette section le cahier des charges complet de votre projet,
+% c'est le document qui servira de base pour évaluer l'avancement de votre
+% travail (la version soumise sur Madoc fera foi), il doit impérativement
+% être validé par votre encadrant.
+
+\subsection{Présentation générale du problème}
+
+\subsubsection{Projet}
+
+\subsubsubsection{Finalités}
+
+Organisation d'un système d'inscription sur un site internet permettant de gérer les rencontres Alternances de l'IUT de Nantes. Les créneaux des entretients se feront selon un algorithme précis qui prendra en compte les disponibilités des entreprises ainsi que la mobilité des étudiants. Ce site devra répondre à un certaine touche d'esthétisme.
+% Espérance de retour sur investissement.
+
+\subsubsubsection{Espérance de retour sur investissement}
+Le site ayant déjà été créé, ce projet a pour objectif d'améliorer ce site en facilitant l'accessibilité aux fonctionnalités existantes aux utilisateurs (sur différents supports...) et à l'administrateur afin d'accéder directement depuis l'application web aux fonctionnalités qui nécessitent à l'heure actuelle une intervention...
+
+\subsubsection{Contexte}
+
+% Situation du projet par rapport aux autres projets de l’entreprise.
+% Études déjà effectuées.
+% Études menées sur des sujets voisins.
+% Suites prévues.
+% Nature des prestations demandées.
+% Parties concernées par le déroulement du projet et ses résultats.
+%    demandeurs, utilisateurs
+% Caractère confidentiel s'il y a lieu
+
+\subsubsection{Énoncé du besoin}
+% finalités du produit pour le futur utilisateur tel que prévu par le demandeur
+
+\subsubsection{Environnement du produit recherché}
+
+% Listes exhaustives des éléments (personnes, équipements, matières…) et contraintes (environnement).
+% Caractéristiques pour chaque élément de l’environnement.
+
+\subsection{Expression fonctionnelle du besoin}
+
+% Diagramme de cas d’utilisation, à priori chaque cas d’utilisation correspond à une fonction.
+% Le diagramme de cas d’utilisation inclus la description détaillée de chaque cas d’utilisation.
+% Chaque fonction doit être classée selon différents critères :
+% - coefficient de pondération (de 1 à 5) : selon la valeur, l’importance de la fonction
+% - critère d’appréciation : comment sera apprécié le succès de la réalisation d’une fonction
+%   (« doit rendre le résultat correct en moins de x sec. »)
+% - niveau d’un critère d’appréciation (« x de 1 à 3 sec. Acceptables »)
+% - niveau de flexibilité (« 90% dans l’intervalle, 10% à 1 sec. au delà »)
+% On peut regrouper les fonctions dans une table hiérarchisée selon ces critères puis détailler
+% chacune des fonctions.
+
+\subsubsection{Fonctions de service et de contrainte}
+
+% Fonctions de service principales.
+%    qui sont la raison d'être du produit
+% Fonctions de service complémentaires.
+%    qui améliorent, facilitent ou complètent le service rendu
+% Contraintes.
+%    limitations à la liberté du concepteur-réalisateur
+
+\subsubsection{Critères d’appréciation}
+% en soulignant ceux qui sont déterminants pour l’évaluation des réponses
+
+\subsubsection{Niveaux des critères d’appréciation et ce qui les caractérise}
+
+% Niveaux dont l’obtention est imposée.
+% Niveaux souhaités mais révisables.
+
+\subsection{Cadre de réponse}
+
+% Diagramme de classes métiers : à base de classes métiers (des concepts indépendants de la
+% programmation, avec des attributs mais sans méthodes, ainsi que des relations entre les
+% concepts sur les agissements des classes métiers les unes sur les autres)
+% Synthèse des jalons : tables synthétiques des jalons du projet.
+
+% Pour chaque fonction
+\subsubsection{Fonction xxx}
+
+% Solution proposée.
+%    Tâches à réaliser pour la solution -> WBS
+%    Diagramme de séquence basée sur le diagramme de classe métier et sur les scénarios des cas
+%    d’utilisation
+%    Jalon : date à laquelle la fonction doit être livrée.
+% Niveau atteint pour chaque critère d’appréciation de cette fonction et modalités de contrôle.
+% Part du prix attribué à chaque fonction.
+
+% Pour l'ensemble du produit
+\subsubsection{Ensemble du produit}
+
+% Prix de la réalisation de la version de base.
+% Options et variantes proposées non retenues au cahier des charges.
+% Mesures prises pour respecter les contraintes et leurs conséquences économiques.
+% Outils d’installation, de maintenance… à prévoir.
+% Décomposition en modules, sous-ensembles.
+% Prévisions de fiabilité.
+% Perspectives d’évolution technologique.
+
+\section{Planning et répartition des tâches}
+% Indiquez ici la façon dont vous prévoyez de découper le cahier des charges
+% de la section précédente en différentes tâches ``atomiques'', et comment vous
+% prévoyez de répartir la réalisation de ces tâches dans le temps. Pour chaque
+% tâche indiquez aussi la personne de votre groupe qui en sera responsable et
+% éventuellement les autres personnes qui participeront à sa réalisation
+
+% Ce qui suit est un exemple, vous ne devez bien sûr pas le conserver dans votre
+% document final
+\task{test}{2 jours}{15/09/2016}{Loïg Jezequel}{-}{Rédaction du cahier des charges}
+
+\task{test}{3 semaines}{11/10/2016}{Jean Sérien}{Ilan Sépaplusse}{Tâche très très importante}
+
+\task{test}{1 mois}{05/11/2016}{Jean Sérien}{Loïg Jezequel, Ilan Sépaplusse}{Autre tâche très très importante}
+
+\newpage{}
+
+\task{test}{5 jours}{03/04/2017}{Ilan Sépaplusse}{-}{Rédaction du rapport final}
+% Fin de l'exemple
+
+\end{document}
