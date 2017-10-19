@@ -9,11 +9,13 @@ Upload d'un fichier + gérer le fichier dans la BDD : https://openclassrooms.com
 
 ---------- FONCTIONS A AMELIORER ----------
 Dépot d'un CV : 
-	1. Ne pas valider si pas upload
-	2. Ne pas valider si mauvais format
-	3. Ne pas valider si taille > 1Mo
+	1. Ne pas valider si pas upload [X]
+	2. Recharger la page si mauvais format (sans perte dans le formulaire)
+	3. Recharger si mauvaise taille (sans perte dans le formulaire)
 	4. Intégrer le code proprement (dans le routeur.php)
-	5. Utiliser un tracker torrent (etuId) pour le nom du fichier
+	5. Ajout dans la BDD la relation cv(id, idCv, nomfichier)
+		-> idCv est clé étrangère et référence idEtu
+		-> nomfichier = prenom.nom.pdf
 
 ---------- QUESTIONS A POSER ----------
 Comment l'entreprise doit-elle récupérer les CVs ? 
