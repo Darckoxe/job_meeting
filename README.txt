@@ -16,13 +16,13 @@ jobdating
 
 ----- TACHES A REALISER -----
 
-Tâche ​ ​ 1 ​ ​ : ​ ​ Rédaction​ ​ du​ ​ cahier​ ​ des​ ​ charges
+[X] Tâche ​ ​ 1 ​ ​ : ​ ​ Rédaction​ ​ du​ ​ cahier​ ​ des​ ​ charges
 Durée​ ​ estimée​ ​ : ​ ​ 5 ​ ​ jours
 Responsable​ ​ : ​ ​ Alexandre​ ​ TACONNET
 Résumé​ ​ : ​ ​ Élaborer​ ​ les​ ​ diagrammes​ ​ et​ ​ les​ ​ partiesDate​ ​ de​ ​ début​ ​ : ​ ​ 02/10/2017
 Autres​ ​ participants​ ​ : ​ ​ Julien​ ​ BOURDOISEAU​ ​ - ​ ​ Eliot​ ​ LEVRARD​ ​ - ​ ​ Dorian​ ​ BENEDETTI
 
-Tâche ​ ​ 2 ​ ​ : ​ ​ Créer​ ​ la​ ​ fonction​ ​ de​ ​ dépôt​ ​ du​ ​ CV​ ​ pour​ ​ un​ ​ étudiant
+[X] Tâche ​ ​ 2 ​ ​ : ​ ​ Créer​ ​ la​ ​ fonction​ ​ de​ ​ dépôt​ ​ du​ ​ CV​ ​ pour​ ​ un​ ​ étudiant
 Durée​ ​ estimée​ ​ : ​ ​ 7 ​ ​ jours
 Responsable​ ​ : ​ ​ Alexandre​ ​ TACONNET
 Résumé​ ​ : ​ ​ Mettre​ ​ en​ ​ place​ ​ une​ ​ fonction​ ​ de​ ​ dépôt​ ​ obligatoire​ ​ harmonieusement​ ​ imbriqué​ ​ sur
@@ -70,7 +70,7 @@ entreprises​ ​ ayant​ ​ participé​ ​ à ​ ​ Job​ ​ Meeting
 Date​ ​ de​ ​ début​ ​ : ​ ​ 30/10/2017
 Autres​ ​ participants​ ​ : ​ ​ -
 
-Tâche ​ ​ 8 ​ ​ : ​ ​ Régler​ ​ les​ ​ problèmes​ ​ d’images​ ​ dans​ ​ les​ ​ mails
+[X] Tâche ​ ​ 8 ​ ​ : ​ ​ Régler​ ​ les​ ​ problèmes​ ​ d’images​ ​ dans​ ​ les​ ​ mails
 Durée​ ​ estimée​ ​ : ​ ​ 2 ​ ​ jours
 Responsable​ ​ : ​ ​ Dorian​ ​ BENEDETTI
 Résumé​ ​ : ​ ​ Lors​ ​ de​ ​ l’envoi​ ​ d’un​ ​ e-mail​ ​ les​ ​ images​ ​ ne​ ​ sont​ ​ pas​ ​ visibles.​ ​ Voir​ ​ du​ ​ côté​ ​ du​ ​ format
@@ -100,3 +100,10 @@ Résumé​ ​ : ​ ​ Le​ ​ but​ ​ est​ ​ d’afficher​ ​ un
 fonction​ ​ de​ ​ la​ ​ couleur,​ ​ l’étudiant​ ​ peut​ ​ se​ ​ préparer.
 Date​ ​ de​ ​ début​ ​ : ​ ​ 01/12/2017
 Autres​ ​ participants​ ​ : ​ ​ Julien​ ​ BOURDOISEAU​ ​ - ​ ​ Eliot​ ​ LEVRARD​ ​ - ​ ​ Dorian​ ​ BENEDETTI
+
+[X] Tâche ​ ​ 12 ​ ​ : ​ ​ Afficher le planning après un jour j pour les étudiants et les entreprises
+Durée​ ​ estimée​ ​ : ​ ​ 7 ​ jours
+Responsable​ ​ : ​ ​ Julien BOURDOISEAU
+Résumé​ ​ : ​ ​ Le​ ​ but​ ​ est​ ​ d’afficher​ le planing pour les étudiants et les entreprises afin que ces derniers connaissent leurs horaires.
+Date​ ​ de​ ​ début​ ​ : ​ ​ 11/15/2017
+Autres​ ​ participants​ ​ : ​ ​ Alexandre TACONNET
