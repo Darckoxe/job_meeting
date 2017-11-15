@@ -22,7 +22,8 @@ class VueInscriptionEtu{
 
 		$util = new UtilitairePageHtml();
 		echo $util->genereBandeauAvantConnexion();
-	?>
+		?>
+
 
 	<div id="corps">
 		<div>
@@ -141,7 +142,7 @@ class VueInscriptionEtu{
 					}
 				</script>
 
-				<form action="index.php" method="post" onSubmit="return VerifSubmit();" class ="form_inscription">
+				<form action="index.php" method="post" onSubmit="return VerifSubmit();" enctype="multipart/form-data" class ="form_inscription">
 					<!-- Prenom-->
 					<label for="prenom"> Prénom <span name="obligatoire">*</span></label>
 					<br/>
@@ -177,6 +178,13 @@ class VueInscriptionEtu{
 							?>
 					</select>
 					<br/>
+
+					<!-- Dépôt du CV -->
+					<br/>
+					<label for="nom"> Dépôt de votre CV (format .pdf) <span name="obligatoire">*</span></label>
+					<br/>
+					<input type="hidden" name="MAX_SIZE" value=1048576>
+		      <input type="file" name="cv" required />
 
 					<h2>Vos coordonnées</h2>
 					<!--  Adresse email-->

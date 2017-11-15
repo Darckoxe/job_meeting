@@ -21,4 +21,3 @@ Penser à trier le DAO (plusieurs fichiers de DAO comme daoEtudiant, daoEntrepri
 
 Reprendre les méthodes pour les modifs de l'admin sur les entreprises
 */
-?>

@@ -525,6 +525,60 @@ class Routeur {
 
       if (($_POST['inscription'] == "etudiant") && ($dateNow >= $dateDebutEtu && $dateNow <= $dateLimitEtu)) {
         if ($this->dao->ajoutEtudiant()) {
+          $extensions_valides = array("pdf");
+
+          // on vérifie que le fichier est bien upload
+          if (isset($_FILES['cv']['error'])){
+            if ($_FILES['cv']['error'] > 0) {
+              echo "Une erreur lors du transfert de fichier est survenue.";
+              echo $_FILES['cv']['error'];
+              exit();}
+          }else {
+            //echo "Pas de fichier";
+          }
+          // on vérifie la taille du fichier
+          if (isset($_FILES['cv']['size'])){ // taille en octet
+            if ($_FILES['cv']['size'] > 1048576) {
+              echo "La taille du fichier est trop grande (1Mo max).";
+              exit();
+            }
+          }
+          else {
+            //echo "Pas de fichier";
+          }
+          // on vérifie que le format est en pdf
+          if (isset($_FILES['cv']['name'])) {
+            $extension_upload = strtolower( substr( strrchr($_FILES['cv']['name'],'.') ,1) );
+            if (!in_array($extension_upload, $extensions_valides)) {
+              //header("Location:./formulaire_cv_erreur_format");
+              echo "Mauvais format du fichier (pdf nécessaire)";
+              exit();
+            }
+            else {
+              if (isset($_POST['prenom']) AND isset($_POST['nom'])) {
+                $nomFichier = $_POST['prenom'].'.'.$_POST['nom'];
+                $chemin = "cv/{$nomFichier}.{$extension_upload}";
+                if (isset($_FILES['cv']['tmp_name'])) {
+                  $resultat = move_uploaded_file($_FILES['cv']['tmp_name'], $chemin);
+                  if ($resultat) {
+                    echo "Transfert réussi";
+                  }
+                  else {
+                    echo "Echec de transfert";
+                  }
+                }
+                else{
+                  $resultat = null;
+                }
+              }
+              else{
+                $nomFichier = null;
+              }
+            }
+          }
+          else {
+            //echo "Pas de fichier";
+          }
           $this->ctrlConfirmationInscription->genereVueConfirmationInscription("<br>Après cette étape,  vous pourrez choisir les entreprises");
           return;
         }

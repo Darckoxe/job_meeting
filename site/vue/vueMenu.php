@@ -58,16 +58,156 @@ public function afficherPlanningEtu(){
 		$dao = new Dao();
 		$tableauConfig = $dao->getConfiguration();
 		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
 		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp)); //$datefin
+		$date = new DateTime();
+		$dateDebutVuePlanning2 = DateTime::createFromFormat('d/m/Y', $dateDebutVuePlanning);
 
 		$util = new UtilitairePageHtml();
 		echo $util->genereBandeauApresConnexion();
 	?>
-	<div id="main">
-		<p id="bonjour">
-			Bonjour, <br/> Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.
+		<?php if ($dateDebutVuePlanning2 < $date) { ?>
+
+		<div id="main">
+		<p id="bonjourAdmin">
+			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+			<br/>Les emplois du temps relatifs à cet événement sont créés. Vous pouvez trouver votre/vos heure(s) de passage en utilisant la barre de recherche située ci-dessous.
 		</p>
+		</div>
+			<?php
+	    //////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
+	    //On génére l'emploi du temps
+	    $dao = new Dao();
+	    $tabConfig = $dao -> getConfiguration();
+	    $tabEnt = $dao -> getAllEntreprises();
+
+			$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+
+			$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+			$numCreneauPauseAprem = -1;
+			$dureeCreneau = $tabConfig["dureeCreneau"];
+
+	    //Planning du point de vue des entreprises
+	    ?>
+			<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+			<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+			<script src="vue/js/selectionTab.js"></script>
+			<script type="text/javascript">
+			$(document).ready(function() {
+				var table = $('#tabPlanningEnt').dataTable({
+					"paging":         false,
+					"bSort": false,
+					"info": false
+				});
+			});
+			</script>
+
+	  	<div id="main">
+	  	<br/>
+			<h1>Planning</h1>
+	    <div class="resptab" >
+			<table id="tabPlanningEnt">
+
+
+			<thead>
+			<tr>
+				<td colspan= 1> Entreprise </td>
+				<td colspan= 1> Formation </td>
+				<?php
+				echo'<td colspan= '.$tabConfig["nbCreneauxMatin"].'> Matin </td>';
+				echo'<td colspan= 1> Pause midi </td>';
+				echo'<td colspan= '.$tabConfig["nbCreneauxAprem"].'> Après-midi </td>';
+				?>
+			</tr>
+
+			<?php
+			echo'<tr>';
+			echo'<td> </td>';
+			echo'<td> </td>';
+			$listeCreneaux = $dao->getListeCreneaux();
+
+
+			// Affichage des heures du matin
+			if($tabConfig["nbCreneauxMatin"] == 0){
+				echo '<td> </td>';
+			}else{
+				for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+					echo '<td>'.$listeCreneaux[$i].'</td>';
+				}
+			}
+
+			// Pause du midi
+			echo '<td> </td>';
+			$heureCreneauApresPause = $heureCreneauPause;
+			$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+			if($tabConfig["nbCreneauxAprem"] == 0){
+				echo '<td> </td>';
+			}else{
+				// Affichage des créneaux de l'après midi
+				for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+					// On récupère le numéro de la pause de l'après-midi
+					if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+						$numCreneauPauseAprem = $i;
+					}
+					echo '<td>'.$listeCreneaux[$i].'</td>';
+				}
+			}
+
+			echo'</tr>
+			</thead>
+			<tbody id="planning">';
+			foreach ($tabEnt as $ent) {
+				$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+			foreach ($tabForm as $form) {
+				echo '<tr id="entreprise">
+				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+				</td>
+				<td>'
+				.$form['typeFormation'].
+				'</td>';
+				;
+				if ($tabConfig["nbCreneauxMatin"]==0) {
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				}
+				for($i = 0; $i < $nbCreneaux; $i++) {
+					if ($i == $pauseMidi) {
+						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+					}
+					echo '<td class=colorMe>';
+
+					if ($numCreneauPauseAprem != -1 && $i >= $numCreneauPauseAprem) {
+						echo $dao -> getNomEtudiant($dao -> getCreneau($i+1, $form['IDformation']));
+					} else {
+						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+					}
+				}
+				if ($tabConfig["nbCreneauxAprem"]==0){
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				}
+				echo '</td> ';
+			}
+				echo '</tr>';
+		}
+			 }
+			  else {
+			  	echo gettype($date);
+			  	echo gettype($tableauConfig['dateDebutVuePlanning']);
+			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
+			  }
+
+		?>
+
+		</tbody>
+		</table>
+		</diV>
+			<p>
+			<br/>
+			</p>
+
 	<br/><br/>
 	</div>
 		<?php
