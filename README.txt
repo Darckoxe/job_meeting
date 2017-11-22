@@ -16,7 +16,7 @@ jobdating
 
 ----- TACHES A REALISER -----
 
-[X] Tâche ​ ​ 1 ​ ​ : ​ ​ Rédaction​ ​ du​ ​ cahier​ ​ des​ ​ charges
+[X] Tâche 1 ​ ​ : ​ ​ Rédaction​ du​ cahier des charges
 Durée​ ​ estimée​ ​ : ​ ​ 5 ​ ​ jours
 Responsable​ ​ : ​ ​ Alexandre​ ​ TACONNET
 Résumé​ ​ : ​ ​ Élaborer​ ​ les​ ​ diagrammes​ ​ et​ ​ les​ ​ partiesDate​ ​ de​ ​ début​ ​ : ​ ​ 02/10/2017
@@ -30,8 +30,7 @@ le​ ​ site
 Date​ ​ de​ ​ début​ ​ : ​ ​ 23/10/2017
 Autres​ ​ participants​ ​ : ​ ​ -
 
-Tâche ​ ​ 3 ​ ​ : ​ ​ Modification​ ​ du​ ​ planning​ ​ depuis​ ​ la​ ​ page​ ​ root​ ​ (ajout,​ ​ suppression,​ ​ modification​ ​ des
-étudiants)
+Tâche ​ ​ 3 ​ ​ : ​ ​ Modification​ ​ du​ ​ planning​ ​ depuis​ ​ la​ ​ page​ ​ root​ ​ (ajout,​ ​ suppression,​ ​ modification​ ​ des étudiants)
 Durée​ ​ estimée​ ​ : ​ ​ 14​ ​ jours
 Responsable​ ​ : ​ ​ Julien​ ​ BOURDOISEAU
 Résumé​ ​ : ​ ​ Ajout​ ​ de​ ​ 3 ​ ​ boutons​ ​ : ​ ​ Ajouter,​ ​ Supprimer,​ ​ Modifier​ ​ qui​ ​ lorsqu’ils​ ​ seront​ ​ activés
@@ -39,8 +38,7 @@ déclencheront​ ​ une​ ​ modification​ ​ au​ ​ sein​ ​ de​
 Date​ ​ de​ ​ début​ ​ : ​ ​ 23/10/2017
 Autres​ ​ participants​ ​ : ​ ​ Alexandre​ ​ TACONNET​ ​ - ​ ​ Eliot​ ​ LEVRARD
 
-Tâche ​ ​ 4 ​ ​ : ​ ​ Créer ​ ​ la ​ ​ fonction ​ ​ de ​ ​ dépôt ​ ​ d'offre ​ ​ pour ​ ​ une ​ ​ entreprise ​ ​ format ​ ​ pdf ​ ​ et ​ ​ ajout ​ ​ d'une
-description ​ ​ de ​ ​ l'offre ​ ​ sur ​ ​ le ​ ​ site
+[X]Tâche ​ ​ 4 ​ ​ : ​ ​ Créer ​ ​ la ​ ​ fonction ​ ​ de ​ ​ dépôt ​ ​ d'offre ​ ​ pour ​ ​ une ​ ​ entreprise ​ ​ format ​ ​ pdf ​ ​ et ​ ​ ajout d'une description ​ ​ de ​ ​ l'offre ​ ​ sur ​ ​ le ​ ​ site
 Durée​ ​ estimée​ ​ : ​ ​ 7 ​ ​ jours
 Responsable​ ​ : ​ ​ Eliot​ ​ LEVRARD
 Résumé​ ​ : ​ ​ Mettre​ ​ en​ ​ place​ ​ une​ ​ fonction​ ​ de​ ​ dépôt​ ​ obligatoire​ ​ harmonieusement​ ​ imbriqué​ ​ sur
@@ -55,8 +53,7 @@ Résumé​ ​ : ​ ​ Quand​ ​ l’entreprise​ ​ cliquera​ ​ sur
 Date​ ​ de​ ​ début​ ​ : ​ ​ 03/11/2017
 Autres​ ​ participants​ ​ : ​ ​ -
 
-Tâche ​ ​ 6 ​ ​ : ​ ​ Créer ​ ​ une ​ ​ fonctionnalité ​ ​ permettant ​ ​ aux ​ ​ étudiants ​ ​ de ​ ​ consulter ​ ​ les ​ ​ offres
-proposées ​ ​ par ​ ​ les ​ ​ entreprises
+Tâche ​ ​ 6 ​ ​ : ​ ​ Créer ​ ​ une ​ ​ fonctionnalité ​ ​ permettant ​ ​ aux ​ ​ étudiants ​ ​ de ​ ​ consulter ​ ​ les ​ ​ offres proposées par les entreprises
 Durée​ ​ estimée​ ​ : ​ ​ 7 ​ ​ jours
 Responsable​ ​ : ​ ​ Eliot​ ​ LEVRARD
 Résumé​ ​ : ​ ​ Quand​ ​ l’étudiant​ ​ clique​ ​ sur​ ​ l’entreprise,​ ​ il​ ​ peut​ ​ voir​ ​ l’offre​ ​ en​ ​ pdf
