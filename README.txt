@@ -107,6 +107,9 @@ Autres​ participants​ : Alexandre TACONNET
 ----- FONCTIONS DE CONFORT -----
 Tâche 2 : Créer la fonction de dépôt du CV pour un étudiant
 - Mettre en place une fonction permettant d'upload un nouveau CV qui écrase l'ancien dans le compte de l'étudiant et dans l'admin
+	-> Pour cela, lors de l'édition, avant de faire l'édit de la nouvelle @mail de l'étudiant il faut récupérer l'ancienne pour pouvoir retrouver le fichier et le renommer
+avec la nouvelle adresse mail fourni par l'utilisteur. On pourra aussi effectuer la suppression si l'user décide de modifier son CV en en uploadant un nouveau.
+
 
 Tâche 4 : Créer la fonction de dépôt d'offre pour une entreprise format pdf et ajout d'une description de l'offre sur le site
 - Mettre en place une fonction permettant d'upload une nouvelle offre ou de la modifier sur le compte de l'entreprise et dans l'admin
