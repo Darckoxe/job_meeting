@@ -594,61 +594,43 @@ class Routeur {
           return;
         }
       }
-      if (($_POST['inscription'] == "entreprise") && ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt)) {
-        if($this->dao->ajoutEntreprise()) {
-          $extensions_valides = array("pdf");
 
-          // on vérifie que le fichier est bien upload
-          if (isset($_FILES['offre']['error'])){
-            if ($_FILES['offre']['error'] > 0) {
-              echo "Une erreur lors du transfert de fichier est survenue.";
-              echo $_FILES['offre']['error'];
-              exit();}
-          }else {
-            echo "Pas de fichier";
-          }
+      if (($_POST['inscription'] == "entreprise") && ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt)) {
+        if ((isset($_FILES['offre']['error'])) && ($_FILES['offre']['error'] != 4)) {
+              echo "Une erreur lors du transfert de fichier est survenue. ";
+              echo "Code erreur ".$_FILES['offre']['error'];
+              exit();
           // on vérifie la taille du fichier
           if (isset($_FILES['offre']['size'])){ // taille en octet
             if ($_FILES['offre']['size'] > 10485760) {
               echo "La taille du fichier est trop grande (1Mo max).";
               exit();
-            }
           }
-          else {
-            echo "Pas de fichier";
-          }
+        }
           // on vérifie que le format est en pdf
-          if (isset($_FILES['offre']['name'])) {
-            $extension_upload = strtolower( substr( strrchr($_FILES['offre']['name'],'.') ,1) );
-            if (!in_array($extension_upload, $extensions_valides)) {
-              echo "Mauvais format du fichier (pdf nécessaire)";
-              exit();
-            }
-            else {
-              if (isset($_POST['nomSociete'])) {
-                $nomFichier = $_POST['nomSociete'];
-                $chemin = "offre/{$nomFichier}.{$extension_upload}";
-                if (isset($_FILES['offre']['tmp_name'])) {
-                  $resultat = move_uploaded_file($_FILES['offre']['tmp_name'], $chemin);
-                  if ($resultat) {
-                    echo "Transfert réussi";
-                  }
-                  else {
-                    echo "Echec de transfert";
-                  }
-                }
-                else{
-                  $resultat = null;
-                }
-              }
-              else{
-                $nomFichier = null;
-              }
-            }
+        if (isset($_FILES['offre']['name'])) {
+          $extensions_valides = array("pdf");
+          $extension_upload = strtolower( substr( strrchr($_FILES['offre']['name'],'.') ,1) );
+          if (!in_array($extension_upload, $extensions_valides)) {
+            echo "Mauvais format du fichier (pdf necessaire)";
+            exit();
           }
           else {
-            echo "Pas de fichier";
+            if (isset($_POST['nomSociete'])) {
+              $nomFichier = $_POST['nomSociete'];
+              $chemin = "offre/{$nomFichier}.{$extension_upload}";
+              if (isset($_FILES['offre']['tmp_name'])) {
+                $resultat = move_uploaded_file($_FILES['offre']['tmp_name'], $chemin);
+                  if (!$resultat) {
+                    echo "Echec de transfert";
+                    exit();
+                  }
+                }
+              }
+            }
           }
+        }
+        if($this->dao->ajoutEntreprise()) {
           $this->ctrlConfirmationInscription->genereVueConfirmationInscription("");
           return;
         }
