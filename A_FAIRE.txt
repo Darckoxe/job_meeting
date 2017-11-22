@@ -1,0 +1,7 @@
+Pour les étudiants :
+- Mettre en place une fonction permettant d'upload un nouveau CV qui écrase l'ancien.
+- Mettre en place une fonction permettant de télécharger l'offre .pdf des entreprises.
+
+Pour les entreprises :
+- Mettre en place une fonction permettant d'upload une nouvelle offre qui écrase l'ancienne s'il y en avai déjà une ou en crée une nouvelle
+- Mettre en place une fonction permettant de télécharger le CV .pdf des étudiants
