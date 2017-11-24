@@ -99,7 +99,9 @@ class Dao
 	{
 		try
 		{
-			$this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"info2-2015-jobda","jobdating");
+			// $this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"info2-2015-jobda","jobdating");
+			$this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"root","LaVlOx?44680");
+
 			//on se connecte au sgbd
 			$this->connexion->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);	//on active la gestion des erreurs et d'exceptions
 		}
@@ -702,6 +704,21 @@ class Dao
 					$statement->execute();
 					$this->deconnexion();
 					return $statement->fetchAll(PDO::FETCH_CLASS, "Etudiant");
+				}
+
+				/**
+				* Fonction qui permet de retourner un étudiant présent dans la table etudiant.
+				* @param  String $id l'identifiant de l'étudiant.
+				* @return Etudiant l'étudiant concerné.
+				*/
+				public function getMailEtu($id) {
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT mailEtu FROM etudiant WHERE IDEtu = ?;');
+					$statement->bindParam(1, $id);
+					$statement->execute();
+					$this->deconnexion();
+					$res = $statement->fetch();
+					return $res['mailEtu'];
 				}
 
 				/**

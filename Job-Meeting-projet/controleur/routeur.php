@@ -460,7 +460,12 @@ class Routeur {
       }
       if (isset($_POST['email'])){
         if ($_POST['email'] != "") {
-          $this->dao->editMailEtudiant(($_SESSION['idUser']), $_POST['email']);
+        $ancien_mail = $this->dao->getMailEtu($_SESSION['idUser']);
+        if ($ancien_mail != $_POST['email'] ) {
+          copy("cv/".$ancien_mail.".pdf", "cv/".$_POST['email'].".pdf");
+          unlink("cv/".$ancien_mail.".pdf");
+        }
+        $this->dao->editMailEtudiant(($_SESSION['idUser']), $_POST['email']);
         }
       }
       if (isset($_POST['numTelEtu'])){
@@ -485,6 +490,17 @@ class Routeur {
       }
       return;
     }
+
+    if (isset($_FILES['modif_cv']['error'])) {
+      /*1. Récupérer email de l'etudiant actuel
+        2. Supprimer le fichier du même nom que le mail
+        3. Upload du fichier
+        4. Changement du nom du fichier par l'adresse mail
+      */
+      $mail = $this->dao->getMailEtu($_SESSION['idUser']);
+    
+    }
+
     if (isset($_POST['modification_etudiant_motdepasse'])) {
       if ($_SESSION['type_connexion'] == "admin") {
         if ($_POST['mdpNouveau1'] != "" && $_POST['mdpNouveau2'] != "" && $_POST['mdpNouveau1'] == $_POST['mdpNouveau2']) {
@@ -530,15 +546,12 @@ class Routeur {
       $dateLimitEtu->setTime(23,59,59);
 
       if (($_POST['inscription'] == "etudiant") && ($dateNow >= $dateDebutEtu && $dateNow <= $dateLimitEtu)) {
-        $extensions_valides = array("pdf");
         // on vérifie que le fichier est bien upload
         if (isset($_FILES['cv']['error'])){
           if ($_FILES['cv']['error'] > 0) {
             echo "Une erreur lors du transfert de fichier est survenue.";
             echo $_FILES['cv']['error'];
             exit();}
-        }else {
-          echo "Pas de fichier";
         }
         // on vérifie la taille du fichier
         if (isset($_FILES['cv']['size'])){ // taille en octet
@@ -547,11 +560,9 @@ class Routeur {
             exit();
           }
         }
-        else {
-          echo "Pas de fichier";
-        }
         // on vérifie que le format est en pdf
         if (isset($_FILES['cv']['name'])) {
+          $extensions_valides = array("pdf");
           $extension_upload = strtolower( substr( strrchr($_FILES['cv']['name'],'.') ,1) );
           if (!in_array($extension_upload, $extensions_valides)) {
             echo "Mauvais format du fichier (pdf nécessaire)";
@@ -563,25 +574,13 @@ class Routeur {
               $chemin = "cv/{$nomFichier}.{$extension_upload}";
               if (isset($_FILES['cv']['tmp_name'])) {
                 $resultat = move_uploaded_file($_FILES['cv']['tmp_name'], $chemin);
-                if ($resultat) {
-                  echo "Transfert réussi";
-                }
-                else {
+                if (!$resultat) {
                   echo "Echec de transfert";
                   exit();
                 }
               }
-              else{
-                $resultat = null;
-              }
-            }
-            else{
-              $nomFichier = null;
             }
           }
-        }
-        else {
-          echo "Pas de fichier";
         }
         if ($this->dao->ajoutEtudiant()) {
           $this->ctrlConfirmationInscription->genereVueConfirmationInscription("<br>Après cette étape,  vous pourrez choisir les entreprises");

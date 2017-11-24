@@ -181,7 +181,7 @@ class VueInscriptionEtu{
 
 					<!-- Dépôt du CV -->
 					<br/>
-					<label for="nom"> Dépôt de votre CV (format .pdf) <span name="obligatoire">*</span></label>
+					<label for="nom"> Dépôt de votre CV (format .pdf | 1Mo max) <span name="obligatoire">*</span></label>
 					<br/>
 					<input type="hidden" name="MAX_SIZE" value=1048576>
 		      <input type="file" name="cv" required />

@@ -1402,16 +1402,35 @@ function Changement3() {
 				<br/>
 				<input required type="text" name="email" id="email" value="'.$profil->getMailEtu().'" onblur="verifEmail(this, \'messageEmail\')">
 	 			<p id="messageEmail" style="color:red"></p>
-
 				<label for="numTelEtu"> Numéro de téléphone</label>
-
 				<br/>
-	 			<input required type="text" id ="numTelEtu" name="numTelEtu" value="'.$profil->getNumTelEtu().'" onblur="verifTelephone(this, \'messageTel\')"> </TD>
-	 			<p id="messageTel" style="color:red"></p>
+	 			<input required type="text" id ="numTelEtu" name="numTelEtu" value="'.$profil->getNumTelEtu().'" onblur="verifTelephone(this, \'messageTel\')">
+				<br /> <br/>
+				</TD>
+				<p id="messageTel" style="color:red"></p>
 	 			<TD> 	<input type="submit" name="modification_etudiant_identite" value="confirmer"/> </TD>
 		</TABLE>
 		</div>
 		</form>
+
+		<form action="index.php" method="post" ">
+		<div class="resptab">
+		<TABLE id="tabModifEnt">
+			<CAPTION> Modifier mon CV </CAPTION>
+			<TR>
+				<TD>
+					<label for="nom"> Modifier votre CV (format .pdf | 1Mo max)</label>
+					<br/>
+					<input type="hidden" name="MAX_SIZE" value=1048576>
+					<input type="file" name="cv" required/>
+				</TD>
+				<p id="messageTel" style="color:red"></p>
+				<TD> 	<input type="submit" name="modification_cv" value="confirmer"/> </TD>
+		</TABLE>
+		</div>
+		</form>
+
+		<br/>
 
 		<form action="index.php" method="post" >
 		<div class="resptab">
@@ -1439,7 +1458,6 @@ function Changement3() {
 </html>
 
 		';
-
 		echo $util->generePied();
 		?>
 	</body>
