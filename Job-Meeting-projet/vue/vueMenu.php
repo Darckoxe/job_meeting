@@ -1413,7 +1413,7 @@ function Changement3() {
 		</div>
 		</form>
 
-		<form action="index.php" method="post" ">
+		<form action="index.php" method="post" enctype="multipart/form-data" ">
 		<div class="resptab">
 		<TABLE id="tabModifEnt">
 			<CAPTION> Modifier mon CV </CAPTION>

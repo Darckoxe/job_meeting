@@ -491,14 +491,51 @@ class Routeur {
       return;
     }
 
-    if (isset($_FILES['modif_cv']['error'])) {
+    if (isset($_POST['modification_cv'])) {
       /*1. Récupérer email de l'etudiant actuel
         2. Supprimer le fichier du même nom que le mail
         3. Upload du fichier
         4. Changement du nom du fichier par l'adresse mail
       */
       $mail = $this->dao->getMailEtu($_SESSION['idUser']);
-    
+      $_POST['email'] = $mail;
+      $nomfichier = "$mail".".pdf";
+      // on vérifie que le fichier est bien upload
+      if (isset($_FILES['cv']['error'])){
+        if ($_FILES['cv']['error'] > 0) {
+          echo "Une erreur lors du transfert de fichier est survenue.";
+          exit();}
+      }
+      // on vérifie la taille du fichier
+      if (isset($_FILES['cv']['size'])){ // taille en octet
+        if ($_FILES['cv']['size'] > 1048576) {
+          echo "La taille du fichier est trop grande (1Mo max).";
+          exit();
+        }
+      }
+      // on vérifie que le format est en pdf
+      if (isset($_FILES['cv']['name'])) {
+        $extensions_valides = array("pdf");
+        $extension_upload = strtolower( substr( strrchr($_FILES['cv']['name'],'.') ,1) );
+        if (!in_array($extension_upload, $extensions_valides)) {
+          echo "Mauvais format du fichier (pdf nécessaire)";
+          exit();
+        }
+        else {
+          if (isset($_POST['email'])) {
+            $nomFichier = $_POST['email'];
+            $chemin = "cv/{$nomFichier}.{$extension_upload}";
+            if (isset($_FILES['cv']['tmp_name'])) {
+              unlink("cv/".$nomfichier);
+              $resultat = move_uploaded_file($_FILES['cv']['tmp_name'], $chemin);
+              if (!$resultat) {
+                echo "Echec de transfert";
+                exit();
+              }
+            }
+          }
+        }
+      }
     }
 
     if (isset($_POST['modification_etudiant_motdepasse'])) {
@@ -868,5 +905,6 @@ class Routeur {
   //   }
   // }
 }
+
 
 ?>
