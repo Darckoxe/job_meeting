@@ -1,13 +1,18 @@
 <?php
+
+
 require_once 'util/utilitairePageHtml.php';
 require_once __DIR__."/../modele/dao/dao.php";
 require_once __DIR__."/../modele/bean/Etudiant.php";
 require_once __DIR__."/../modele/bean/Entreprise.php";
 require_once __DIR__."/../modele/formationV2.php";
+
 /**
  * Classe permettant de générer la majorité des pages du site.
  */
 class VueMenu{
+
+
 	/**
 	 * Méthode qui permet l'affichage du formulaire d'envoi de mail Personalisé
 	 * @param  array(array(String,String))  $listeMails  un tableau composé des couples (objet,contenu) de chaque mail.
@@ -45,6 +50,7 @@ class VueMenu{
 		<?php
 		echo $util->generePied();
 	}
+
 /**
  * Fonction permettant l'affichage de la page planning de l'étudiant.
  */
@@ -65,11 +71,10 @@ public function afficherPlanningEtu(){
 
 		<div id="main">
 		<p id="bonjouretudiant">
-
-			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
 			<?php
 			$this->afficherPlanning();
 			?>
+			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
 		</p>
 		</div>
 			<?php
@@ -77,17 +82,15 @@ public function afficherPlanningEtu(){
 			  else {
 			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
 			  }
+
 		?>
+
 		</tbody>
 		</table>
 		</diV>
-		<p> <br/> </p>
-	    <?php
-	    //Planning du point de vue des Etudiants
-			echo $util->generePied();
-			?>
-		</body>
-		</html>
+			<p>
+			<br/>
+			</p>
 
 	<br/><br/>
 	</div>
@@ -98,6 +101,190 @@ public function afficherPlanningEtu(){
 	public function afficherPlanning() {
 			?>
 
+			<?php
+	    //////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
+	    //On génére l'emploi du temps
+	    $dao = new Dao();
+	    $tabConfig = $dao -> getConfiguration();
+	    $tabEnt = $dao -> getAllEntreprises();
+
+			$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+
+			$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+			$numCreneauPauseAprem = -1;
+			$dureeCreneau = $tabConfig["dureeCreneau"];
+
+	    //Planning du point de vue des entreprises
+	    ?>
+			<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+			<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+			<script src="vue/js/selectionTab.js"></script>
+			<script type="text/javascript">
+			$(document).ready(function() {
+				var table = $('#tabPlanningEnt').dataTable({
+					"paging":         false,
+					"bSort": false,
+					"info": false
+				});
+			});
+			</script>
+
+	  	<div id="main">
+	  	<br/>
+			<h1>Planning</h1>
+	    <div class="resptab" >
+			<table id="tabPlanningEnt">
+
+
+			<thead>
+			<tr>
+				<td colspan= 1> Entreprise </td>
+				<td colspan= 1> Formation </td>
+				<?php
+				echo'<td colspan= '.$tabConfig["nbCreneauxMatin"].'> Matin </td>';
+				echo'<td colspan= 1> Pause midi </td>';
+				echo'<td colspan= '.$tabConfig["nbCreneauxAprem"].'> Après-midi </td>';
+				?>
+			</tr>
+
+			<?php
+			echo'<tr>';
+			echo'<td> </td>';
+			echo'<td> </td>';
+			$listeCreneaux = $dao->getListeCreneaux();
+
+
+			// Affichage des heures du matin
+			if($tabConfig["nbCreneauxMatin"] == 0){
+				echo '<td> </td>';
+			}else{
+				for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+					echo '<td>'.$listeCreneaux[$i].'</td>';
+				}
+			}
+
+			// Pause du midi
+			echo '<td> </td>';
+			$heureCreneauApresPause = $heureCreneauPause;
+			$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+			if($tabConfig["nbCreneauxAprem"] == 0){
+				echo '<td> </td>';
+			}else{
+				// Affichage des créneaux de l'après midi
+				for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+					// On récupère le numéro de la pause de l'après-midi
+					if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+						$numCreneauPauseAprem = $i;
+					}
+					echo '<td>'.$listeCreneaux[$i].'</td>';
+				}
+			}
+
+			echo'</tr>
+			</thead>
+			<tbody id="planning">';
+			foreach ($tabEnt as $ent) {
+				$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+			foreach ($tabForm as $form) {
+				echo '<tr id="entreprise">
+				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+				</td>
+				<td>'
+				.$form['typeFormation'].
+				'</td>';
+				;
+				if ($tabConfig["nbCreneauxMatin"]==0) {
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				}
+				for($i = 0; $i < $nbCreneaux; $i++) {
+					if ($i == $pauseMidi) {
+						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+					}
+					echo '<td class=colorMe>';
+
+					if ($numCreneauPauseAprem != -1 && $i >= $numCreneauPauseAprem) {
+						echo $dao -> getNomEtudiant($dao -> getCreneau($i+1, $form['IDformation']));
+					} else {
+						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+					}
+				}
+				if ($tabConfig["nbCreneauxAprem"]==0){
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				}
+				echo '</td> ';
+			}
+				echo '</tr>';
+		}
+	}
+	/**
+	 * Fonction permettant l'affichage de la page planning de l'entreprise.
+	 */
+public function afficherPlanningEnt(){
+$dao = new Dao();
+		$tableauConfig = $dao->getConfiguration();
+		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
+		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
+		$date = new DateTime();
+		$util = new UtilitairePageHtml();
+		echo $util->genereBandeauApresConnexion();
+	?>
+		<?php
+		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
+		 if ($dateDebutVuePlanning2< $date) { ?>
+		<div id="main">
+		<p id="bonjourEnt">
+
+			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+
+			<?php $this->afficherPlanning(); ?>
+		</div>
+			<?php
+	    	}
+			  else {
+			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
+			  }
+		?>
+		</tbody>
+		</table>
+		</diV>
+			<p>
+			<br/>
+			</p>
+
+	<br/><br/>
+	</div>
+		<?php
+		echo $util->generePied();
+	}
+
+	/**
+	 * Fonction permettant l'affichage de la page planning de l'administrateur.
+	 */
+	public function afficherPlanningAdmin(){
+
+			$dao = new Dao();
+			$tableauConfig = $dao->getConfiguration();
+			$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+			$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+
+
+			$util = new UtilitairePageHtml();
+			echo $util->genereBandeauApresConnexion();
+		?>
+
+
+		<div id="main">
+			<p id="bonjourAdmin">
+				Bonjour,
+				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+				<br/>Les emplois du temps relatifs à cet événement n'ont toujours pas été générés. Ils seront affichés le jour du forum.
+			</p>
+		</div>
 			<?php
 	    //////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
 	    //On génére l'emploi du temps
@@ -141,8 +328,7 @@ public function afficherPlanningEtu(){
 				<?php
 				echo'<td colspan= '.$tabConfig["nbCreneauxMatin"].'> Matin </td>';
 				echo'<td colspan= 1> Pause midi </td>';
-				$taillePlanning = $tabConfig["nbCreneauxAprem"] + 1;
-				echo'<td colspan= '.$taillePlanning.'> Après-midi </td>';
+				echo'<td colspan= '.$tabConfig["nbCreneauxAprem"].'> Après-midi </td>';
 				?>
 			</tr>
 
@@ -171,17 +357,11 @@ public function afficherPlanningEtu(){
 				echo '<td> </td>';
 			}else{
 				// Affichage des créneaux de l'après midi
-
-			for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-				// On récupère le numéro de la pause de l'après-midi
-				if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
-					$numCreneauPauseAprem = $i;
-				}
-			}
-			for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-				if ($numCreneauPauseAprem==$i) {
-					echo '<td>'."Pause".'</td>';
-				}
+				for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+					// On récupère le numéro de la pause de l'après-midi
+					if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+						$numCreneauPauseAprem = $i;
+					}
 					echo '<td>'.$listeCreneaux[$i].'</td>';
 				}
 			}
@@ -202,17 +382,15 @@ public function afficherPlanningEtu(){
 				if ($tabConfig["nbCreneauxMatin"]==0) {
 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
 				}
-				for($i = 0; $i <= $nbCreneaux; $i++) {
+				for($i = 0; $i < $nbCreneaux; $i++) {
 					if ($i == $pauseMidi) {
 						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
 					}
 					echo '<td class=colorMe>';
-					// Si c'est la pause on affiche un indicateur de pause
-					if ($i == $numCreneauPauseAprem) {
-						echo'-';
-					}
-					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
-					else {
+
+					if ($numCreneauPauseAprem != -1 && $i >= $numCreneauPauseAprem) {
+						echo $dao -> getNomEtudiant($dao -> getCreneau($i+1, $form['IDformation']));
+					} else {
 						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
 					}
 				}
@@ -228,82 +406,18 @@ public function afficherPlanningEtu(){
 		</tbody>
 		</table>
 		</diV>
-		<?php
-		}
-
-	/**
-	 * Fonction permettant l'affichage de la page planning de l'entreprise.
-	 */
-public function afficherPlanningEnt(){
-$dao = new Dao();
-		$tableauConfig = $dao->getConfiguration();
-		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
-		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
-		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
-		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
-		$date = new DateTime();
-		$util = new UtilitairePageHtml();
-		echo $util->genereBandeauApresConnexion();
-
-	?>
-		<?php
-		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
-
-		 if ($dateDebutVuePlanning2< $date) { ?>
-		<div id="main">
-		<p id="bonjourEnt">
-			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			<?php $this->afficherPlanning(); ?>
-		</div>
-			<?php
-	    	}
-			  else {
-			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
-			  }
-		?>
-		</tbody>
-		</table>
-		</diV>
 			<p>
 			<br/>
 			</p>
-
-	<br/><br/>
-	</div>
-		<?php
-		echo $util->generePied();
-	}
-
-	/**
-	 * Fonction permettant l'affichage de la page planning de l'administrateur.
-	 */
-	public function afficherPlanningAdmin(){
-
-			$dao = new Dao();
-			$tableauConfig = $dao->getConfiguration();
-			$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
-			$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
-
-
-			$util = new UtilitairePageHtml();
-			echo $util->genereBandeauApresConnexion();
-		?>
-
-
-		<div id="main">
-			<p id="bonjourAdmin">
-				Bonjour,
-				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			<?php $this->afficherPlanning(); ?>
-			</p>
-		</div>
-		<p> <br/> </p>
-			<?php
-
+	    <?php
 	    //Planning du point de vue des Etudiants
 			echo $util->generePied();
+			?>
+		</body>
+		</html>
 
-	   }
+		<?php
+		}
 
 /**
  * Fonction permettant l'affichage de la page comptes de l'administrateur.
@@ -334,14 +448,20 @@ public function afficherComptes() {
 				"paging": false,
 				"info": false
 			});
+
 			// Récupérer les checkbox cachés pour les envoyer au serveur
 			$('form').submit(function() {
+
 				var dataTableEtu = $('#tabEtudiants').dataTable();
 				var dataTableEnt = $('#tabEntreprises').dataTable();
+
+
 				var rowsEtu = dataTableEtu.fnGetNodes(), inputsEtu = [];
 				var rowsEnt = dataTableEnt.fnGetNodes(), inputsEnt = [];
+
 				for (var i = 0, len = rowsEtu.length; i < len; i++) {
 					var $fields = $(rowsEtu[i]).find('input[name]:hidden:checked');
+
 					$fields.each(function(idx, el) {
 						inputsEtu.push('<input type="hidden" name="'
 						+ $(el).attr('name') + '" value="'
@@ -349,8 +469,10 @@ public function afficherComptes() {
 					});
 				}
 				$(this).append(inputsEtu.join(''));
+
 				for (var i = 0, len = rowsEnt.length; i < len; i++) {
 					var $fields = $(rowsEnt[i]).find('input[name]:hidden:checked');
+
 					$fields.each(function(idx, el) {
 						inputsEnt.push('<input type="hidden" name="'
 						+ $(el).attr('name') + '" value="'
@@ -358,19 +480,24 @@ public function afficherComptes() {
 					});
 				}
 				$(this).append(inputsEnt.join(''));
+
 			});
 		});
+
 	</script>
 	<div id="main">
 	<script type="text/javascript">
 		function CocheTout(ref, name)
 		{
 			var form = ref;
+
 			while (form.parentNode && form.nodeName.toLowerCase() != 'form')
 			{
 				form = form.parentNode;
 			}
+
 			var elements = form.getElementsByTagName('input');
+
 			for (var i = 0; i < elements.length; i++)
 			{
 				if (elements[i].type == 'checkbox' && elements[i].name == name)
@@ -451,10 +578,12 @@ public function afficherComptes() {
 						}else{
 							echo 'Bien_faits';
 						}
+
 						echo '
 						</td>
 					</tr>';
 			}
+
 			foreach ($tabEtu as $etuTemp) {
 				echo '<tr>
 					<td>
@@ -483,6 +612,7 @@ public function afficherComptes() {
 					}else{
 						echo 'Bien_faits';
 					}
+
 					echo '
 					</td>
 				</tr>';
@@ -558,6 +688,7 @@ public function afficherComptes() {
 					</td>
 					</tr>';
 			}
+
 			foreach ($tabEnt as $entTemp) {
 				echo '<tr>
 					<td>
@@ -609,17 +740,21 @@ public function afficherComptes() {
 
 	</div>
 		<?php
+
 		echo $util->generePied();
+
 		?>
 	</body>
 	</html>
 
 	<?php
 	}
+
 /**
  * Fonction permettant l'affichage de la page de configuration de l'évènement.
  */
 	public function afficherConfig() {
+
 		$util = new UtilitairePageHtml();
 		echo $util->genereBandeauApresConnexion();
 		$dao = new Dao();
@@ -656,6 +791,7 @@ public function afficherComptes() {
 		<br/><br/>
 		<?php
 			echo'
+
 			Les emplois du temps débuteront le matin à : '.$heureDebutMatin.'.
 			<br/><br/>Les emplois du temps débuteront l\'après-midi à : '.$heureDebutAprem.'.
 			<br/><br/>Il y aura '.$nbCreneauxMatin.' créneau(x) le matin et '.$nbCreneauxAprem.' l\'après-midi.
@@ -729,7 +865,9 @@ public function afficherComptes() {
 	<script type = "text/javascript">
 		var numTel = document.getElementById('telAdmin');
 		var champErreur = document.getElementById('champErreurNumTel');
+
 		numTel.addEventListener('change',verifTelephone,false);
+
 	function verifTelephone() {
 		if(numTel.value.length != 10 || !/^\d+$/.test(numTel.value)) {
 			numTel.style.borderColor = "red";
@@ -743,12 +881,15 @@ public function afficherComptes() {
 	}
 	</script>
 		<?php
+
 		echo $util->generePied();
+
 		?>
 
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant, selon le nombre de places restantes disponibles pour une formation pour une entreprise, de mettre l'option du select selon une couleur précise.
 	 * @param  int     $idEntreprise      l'identifiant de l'entreprise
@@ -777,6 +918,7 @@ public function afficherComptes() {
 			}
 			echo '" ';
 		}
+
 	/**
 	 * Fonction permettant l'affichage de la page de choix des entreprises par les étudiants.
 	 */
@@ -835,8 +977,10 @@ public function afficherComptes() {
            $dateNow = new DateTime("now");
 		$tabConfig = $dao->getConfiguration();
 $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
+
 //Correction du décalage d'une journée
 $dateLimitEtu->setTime(23,59,59);
+
 														if ($dateNow > $dateLimitEtu) {
            echo "<b>Vous ne pouvez plus refaire vos choix. ";
            echo "Choix des entreprises termin&eacute;s depuis le  ".date_format($dateLimitEtu, "d/m/Y")."</b><br>";
@@ -846,6 +990,7 @@ $dateLimitEtu->setTime(23,59,59);
 
 		Vous pouvez faire ou refaire vos choix. Le premier choix sera favorisé par rapport aux suivants. Les doublons ne permettront pas l'envoi du formulaire.<br><br>
             <?php
+
             echo "<b>Attention fin des choix des entreprises est pr&eacute;vue le ".date_format($dateLimitEtu, "d/m/Y")." au soir.</b><br>";
             ?>
 
@@ -940,38 +1085,51 @@ function Changement1() {
 				document.getElementById("ent2").value = "Faire un choix...";
 				document.getElementById("ent3").value = "Faire un choix...";
 				document.getElementById("ent4").value = "Faire un choix...";
+
 			}
 			else {
 				document.getElementById("ent2").style.visibility = "";
 			}
 		}
+
 function Changement2() {
 			if (document.getElementById("ent2").value == "Faire un choix...") {
 				document.getElementById("ent3").style.visibility = "hidden";
 				document.getElementById("ent4").style.visibility = "hidden";
 				document.getElementById("ent3").value = "Faire un choix...";
 				document.getElementById("ent4").value = "Faire un choix...";
+
+
 			}
 			else {
 				document.getElementById("ent3").style.visibility = "";
 			}
 		}
+
 function Changement3() {
 			if (document.getElementById("ent3").value == "Faire un choix...") {
 				document.getElementById("ent4").style.visibility = "hidden";
 				document.getElementById("ent4").value = "Faire un choix...";
+
+
 			}
 			else {
 				document.getElementById("ent4").style.visibility = "";
 			}
 		}
+
+
 	function Changement4() {
 		}
+
+
 		function verifier() {
 			var value1 = document.getElementById("ent1").value;
 			var value2 = document.getElementById("ent2").value;
 			var value3 = document.getElementById("ent3").value;
 			var value4 = document.getElementById("ent4").value;
+
+
 			if (value1 == "Faire un choix...") {
 				return true;
 			}
@@ -994,17 +1152,25 @@ function Changement3() {
 			}
 			return false;
 		}
+
+
+
+
+
 		</script>
           <?php } ?>
 	</div>
 		<?php
+
 		echo $util->generePied();
+
 		?>
 	</body>
 	</html>
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant l'affichage de la liste des entreprises recherchant la formation de l'étudiant.
 	 */
@@ -1026,6 +1192,7 @@ function Changement3() {
 		<br/><br/><span style="categorie_profil">Liste des entreprises recherchant votre formation :</span><br/><br/>
 
 		<?php
+
 			if (sizeof($tabEntreprises) > 0 && !is_bool($tabEntreprises)) {
 				foreach ($tabEntreprises as $entreprise) {
 					echo '<a href="index.php?profil='.$entreprise->getId().'&type=Ent">'.$entreprise->getNomEnt().'</a><br/><br/>';
@@ -1034,18 +1201,22 @@ function Changement3() {
 			else {
 				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actuellement, aucune entreprise ne propose de formation correspondante à la votre.';
 			}
+
 		?>
 
 
 	</div>
 		<?php
+
 		echo $util->generePied();
+
 		?>
 	</body>
 	</html>
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant l'affichage de la page de modification d'un compte étudiant.
 	 */
@@ -1057,6 +1228,7 @@ function Changement3() {
 	$tabprofil = $dao->getEtu($id);
 	$profil = $tabprofil[0];
 	$util = new UtilitairePageHtml();
+
 	echo '
 	<!DOCTYPE html>
 	<html>
@@ -1074,6 +1246,9 @@ function Changement3() {
 	<br/><br/>
 	<span class="categorie_profil">Formation :</span> '.$profil->getFormationEtu().'
 	';
+
+
+
 		//<!-- Nom -->
 		?>
 		<script>
@@ -1084,6 +1259,7 @@ function Changement3() {
       else
         champ.style.backgroundColor = "";
       }
+
       function verifString(champ, txt, longMax) {
         if(champ.value.length > longMax) {
           surligne(champ, true);
@@ -1095,6 +1271,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifNombre(champ, txt, longMax) {
         if(champ.value.length > longMax || (!/^\d+$/.test(champ.value) && champ.value.length != 0)) {
           surligne(champ, true);
@@ -1106,6 +1283,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifTelephone(champ, txt) {
         if(champ.value.length != 10 || !/^\d+$/.test(champ.value)) {
           surligne(champ, true);
@@ -1117,6 +1295,8 @@ function Changement3() {
           return false;
         }
       }
+
+
       function verifEmail(champ, txt){
         var reg = new RegExp("^[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*@[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*[\.]{1}[a-z]{2,6}$", "i");
         if(!reg.test(champ.value)) {
@@ -1129,6 +1309,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifMdp(txt){
         var passw = document.getElementById("passw");
 				var passwBis = document.getElementById("passwBis");
@@ -1156,6 +1337,7 @@ function Changement3() {
 				EnableSubmit = function(val)
 				{
 				    var sbmt = document.getElementById("submit");
+
 				    if (val.checked == true)
 				    {
 				        sbmt.disabled = false;
@@ -1188,16 +1370,21 @@ function Changement3() {
 			</script>
 		<?php
 		echo'
+
 		<!--Les scripts pour vérifier chaque case-->
+
 		<br><br/>
 		----------------------------------------------------<br/>
+
 		<h2>Pour effectuer des changements : </h2>
+
 		<style>
 		#tabModifEnt tr td{
     padding: 15px;
     border: 1px solid navy;
 		}
 		</style>
+
 		<form action="index.php" method="post" onSubmit="return VerifSubmit();">
 		<div class="resptab">
 		<TABLE id="tabModifEnt">
@@ -1225,7 +1412,8 @@ function Changement3() {
 		</TABLE>
 		</div>
 		</form>
-		<form action="index.php" method="post" enctype="multipart/form-data">
+
+		<form action="index.php" method="post" enctype="multipart/form-data" ">
 		<div class="resptab">
 		<TABLE id="tabModifEnt">
 			<CAPTION> Modifier mon CV </CAPTION>
@@ -1241,7 +1429,9 @@ function Changement3() {
 		</TABLE>
 		</div>
 		</form>
+
 		<br/>
+
 		<form action="index.php" method="post" >
 		<div class="resptab">
 		<TABLE id="tabModifEnt">
@@ -1266,6 +1456,7 @@ function Changement3() {
 		<br/><br/><br/>
 		</html></body>
 </html>
+
 		';
 		echo $util->generePied();
 		?>
@@ -1274,6 +1465,7 @@ function Changement3() {
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant l'affichage des formations possibles d'une entreprise.
 	 */
@@ -1282,6 +1474,7 @@ function Changement3() {
 		echo $util->genereBandeauApresConnexion();
 		$dao = new Dao();
 		$config = $dao -> getConfiguration();
+
 	?>
 	<!DOCTYPE html>
 	<html>
@@ -1297,28 +1490,37 @@ function Changement3() {
 		<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;Une pause à midi est prévue pour les entretiens qui se déroulent toute la journée.
 		<?php
 		echo "<br/><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Un entretien dure ".$config['dureeCreneau']." minutes.</b></div>";
+
+
 		$id = $_SESSION['idUser'];
+
 		$listeFormation = $dao -> getFormationsAffichage($id);
 		$formation = "Formation";
 		$formation::afficherForm($listeFormation);
+
+
 		echo $util->generePied();
+
 		?>
 	</body>
 	</html>
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant l'affichage de la page de modification d'un compte entreprise.
 	 */
 	public function afficherCompteEnt(){
 		$util = new UtilitairePageHtml();
 		echo $util->genereBandeauApresConnexion();
+
 		$dao = new Dao();
 		$id = $_SESSION['idUser'];
 		$tabprofil = $dao->getEnt($id);
 		$profil = $tabprofil[0];
 		$util = new UtilitairePageHtml();
+
 		$dispo = "";
 		if ($profil->getTypeCreneau() == "journee") {
 			$dispo = "Journée.";
@@ -1353,6 +1555,9 @@ function Changement3() {
 		<br/><br/>
 		<span class="categorie_profil">Description de l\'offre :</span> '.$profil->getOffre().'
 			';
+
+
+
 		//<!-- Nom -->
 		?>
 		<script>
@@ -1363,6 +1568,7 @@ function Changement3() {
       else
         champ.style.backgroundColor = "";
       }
+
       function verifString(champ, txt, longMax) {
         if(champ.value.length > longMax) {
           surligne(champ, true);
@@ -1375,6 +1581,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifNombre(champ, txt, longMax) {
         if(champ.value.length > longMax || (!/^\d+$/.test(champ.value) && champ.value.length != 0)) {
           surligne(champ, true);
@@ -1387,6 +1594,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifCodePostal(champ, txt) {
         if(champ.value.length != 5 || !/^\d+$/.test(champ.value)) {
           surligne(champ, true);
@@ -1399,6 +1607,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifTelephone(champ, txt) {
         if(champ.value.length != 10 || !/^\d+$/.test(champ.value)) {
           surligne(champ, true);
@@ -1410,6 +1619,8 @@ function Changement3() {
           return false;
         }
       }
+
+
       function verifEmail(champ, txt){
         var reg = new RegExp("^[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*@[a-z0-9]+([_|\.|-]{1}[a-z0-9]+)*[\.]{1}[a-z]{2,6}$", "i");
         if(!reg.test(champ.value)) {
@@ -1423,6 +1634,7 @@ function Changement3() {
           return false;
         }
       }
+
       function verifMdp(txt){
         var passw = document.getElementById("passw");
 				var passwBis = document.getElementById("passwBis");
@@ -1454,6 +1666,7 @@ function Changement3() {
 				EnableSubmit = function(val)
 				{
 				    var sbmt = document.getElementById("submit");
+
 				    if (val.checked == true)
 				    {
 				        sbmt.disabled = false;
@@ -1496,15 +1709,19 @@ function Changement3() {
 		<?php
 		echo'
 			<!--Les scripts pour vérifier chaque case-->
+
 		<br><br/><br/><br/>
 		----------------------------------------------------<br/><br/>
+
 		<h2>Pour effectuer des changements : </h2>
+
 		<style>
 		#tabModifEnt tr td{
     padding: 15px;
     border: 1px solid navy;
 		}
 		</style>
+
 		<form action="index.php" method="post" onSubmit="return VerifSubmit();">
 			<TABLE id="tabModifEnt">
 		  	<CAPTION> Organisation </CAPTION>
@@ -1536,6 +1753,7 @@ function Changement3() {
 					<td><input type="submit" name="modification_entreprise_organisation" value="confirmer"/></td>
 			</TABLE>
 		</form><br/>
+
 		<form action="index.php" method="post">
 		<TABLE id="tabModifEnt">
 	  	';
@@ -1573,10 +1791,13 @@ function Changement3() {
 						}
 					}
 				}
+
 		 		echo '<TD> 	<input type="submit" name="modification_entreprise_formations" value="confirmer"/> </TD>
 			</TABLE>
 			</form><br/>';
 							}
+
+
 		echo '
 		<form action="index.php" method="post" >
 			<TABLE id="tabModifEnt">
@@ -1609,6 +1830,7 @@ function Changement3() {
 			</TABLE>
 		</form>
 		<br/>
+
 		<form action="index.php" method="post" >
 		<TABLE id="tabModifEnt">
 	  	<CAPTION> Contact </CAPTION>
@@ -1635,6 +1857,7 @@ function Changement3() {
 		</TABLE>
 		</form>
 		<br/>
+
 		<form action="index.php" method="post" >
 		<TABLE id="tabModifEnt">
 	  	<CAPTION> Modifier le mot de passe </CAPTION>
@@ -1662,7 +1885,13 @@ function Changement3() {
 		';
 		echo $util->generePied();
 }
+
+
+
+
+
 	/////////////////////∕FINFINFINFINFINFIFNIFNIFNFINFINFINFINFINFINFIFNFNIFNIFINFINFINFINFIFNIFN///////////////////////////
+
 	/**
 	 * Fonction permettant l'affichage de la page "Autres" destinée à l'administrateur.
 	 */
@@ -1755,6 +1984,7 @@ function Changement3() {
 
 	<?php
 	}
+
 	/**
 	 * Fonction permettant l'affichage du formulaire de modification du bandeau du site.
 	 */
@@ -1770,6 +2000,8 @@ function Changement3() {
 		</form>
 		<?php
 	}
+
+
 	/**
 	 * Fonction permettant l'affichage de la liste des formations.
 	 * @param  array   $tableauFormations              un tableau de formations avec pour chacune d'elle, les informations sur le nombre de créneaux affectés à la formation
@@ -1777,7 +2009,9 @@ function Changement3() {
 	 * @param  array   $tabListFormation               tableau des formations
 	 */
 	public function afficherListeFormations($tableauFormations, $tableauFormationsNonChoisies, $tabListFormation){
+
 	$util = new UtilitairePageHtml();
+
 	echo $util->genereBandeauApresConnexion("lorem", "ipsum");
 	?>
 
@@ -1898,6 +2132,7 @@ function Changement3() {
 	<?php
 	echo $util->generePied();
 	}
+
 	/**
 	 * Fonction permettant d'afficher une seule formation avec ses détails.
 	 * @param  array $tabFormation  un tableau composé des détails d'une entreprise
@@ -1905,6 +2140,7 @@ function Changement3() {
 	 */
 	public function afficherUneFormation($tabFormation, $url){
 		$util = new UtilitairePageHtml();
+
 		echo $util->genereBandeauApresConnexion();
 		?>
 
@@ -1924,11 +2160,14 @@ function Changement3() {
 					$nbTotalCreneauxAffectes = 0;
 					$nbTotalEtudiantsInscrits = 0;
 					$nbTotalCreneauxReserves = 0;
+
 					foreach ($tabFormation as $elt) {
 						$idFormation = $elt['IDformation'];
 						$nbTotalCreneauxAffectes += $elt['NBCreneauxAffectes'];
 						$nbTotalEtudiantsInscrits += $elt['nbEtudinantsInscrits'];
 						$nbTotalCreneauxReserves += $elt['nbcreneauxReserves'];
+
+
 						?>
 						<tr>
 							<td>
@@ -1956,5 +2195,7 @@ function Changement3() {
 		<?php
 		echo $util->generePied();
 	}
+
+
 }
 ?>
