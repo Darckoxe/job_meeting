@@ -38,7 +38,7 @@ Tâche 6 : Ajouter une liste déroulante des étudiants pour pouvoir les supprim
 Tâche 1 : Créer la fonction de dépôt d'offre pour une entreprise format pdf et ajout d'une description de l'offre sur le site
 - Mettre en place une fonction permettant d'upload une nouvelle offre ou de la modifier sur le compte de l'entreprise et dans l'admin
 
-Tâche 2 : Créer une fonctionnalité permettant aux étudiants de consulter les offres proposées par les entreprises
+Tâche 3 : Créer une fonctionnalité permettant aux étudiants de consulter les offres proposées par les entreprises
 - Pour l'instant, l'étudiant peut voir uniquement l'offr textuelle proposée par l'entreprise. Il faut qu'il puisse télécharger
 l'offre pdf sur le profil de l'entreprise.
 
