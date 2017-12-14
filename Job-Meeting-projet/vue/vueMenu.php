@@ -1627,7 +1627,7 @@ function Changement3() {
 		</div>
 		</form>
 		<br/>
-		
+
 		<form action="index.php" method="post" >
 		<TABLE id="tabModifEnt">
 	  	<CAPTION> Contact </CAPTION>
