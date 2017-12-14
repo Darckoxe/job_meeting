@@ -632,12 +632,15 @@ class Routeur {
       }
 
       if (($_POST['inscription'] == "entreprise") && ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt)) {
-        if ((isset($_FILES['offre']['error'])) && ($_FILES['offre']['error'] != 4)) {
+        echo "B1";
+        if ((isset($_FILES['offre']['error'])) && ($_FILES['offre']['error'] != 0)) {
               echo "Une erreur lors du transfert de fichier est survenue. ";
               echo "Code erreur ".$_FILES['offre']['error'];
               exit();
+        }
           // on vérifie la taille du fichier
-          if (isset($_FILES['offre']['size'])){ // taille en octet
+          if (isset($_FILES['offre']['size'])){  // taille en octet
+            echo "B2";
             if ($_FILES['offre']['size'] > 10485760) {
               echo "La taille du fichier est trop grande (1Mo max).";
               exit();
@@ -645,6 +648,7 @@ class Routeur {
         }
           // on vérifie que le format est en pdf
         if (isset($_FILES['offre']['name'])) {
+          echo "B3";
           $extensions_valides = array("pdf");
           $extension_upload = strtolower( substr( strrchr($_FILES['offre']['name'],'.') ,1) );
           if (!in_array($extension_upload, $extensions_valides)) {
@@ -653,6 +657,7 @@ class Routeur {
           }
           else {
             if (isset($_POST['nomSociete'])) {
+                      echo "B4";
               $nomFichier = $_POST['nomSociete'];
               $chemin = "offre/{$nomFichier}.{$extension_upload}";
               if (isset($_FILES['offre']['tmp_name'])) {
@@ -665,7 +670,6 @@ class Routeur {
               }
             }
           }
-        }
         if($this->dao->ajoutEntreprise()) {
           $this->ctrlConfirmationInscription->genereVueConfirmationInscription("");
           return;

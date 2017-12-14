@@ -1609,6 +1609,25 @@ function Changement3() {
 			</TABLE>
 		</form>
 		<br/>
+
+		<form action="index.php" method="post" enctype="multipart/form-data" ">
+		<div class="resptab">
+		<TABLE id="tabModifEnt">
+			<CAPTION> Modifier mon offre emploi </CAPTION>
+			<TR>
+				<TD>
+					<label for="nom"> Modifier votre offre (format .pdf | 1Mo max)</label>
+					<br/>
+					<input type="hidden" name="MAX_SIZE" value=1048576>
+					<input type="file" name="offre" required/>
+				</TD>
+				<p id="messageTel" style="color:red"></p>
+				<TD> 	<input type="submit" name="modification_offre" value="confirmer"/> </TD>
+		</TABLE>
+		</div>
+		</form>
+		<br/>
+		
 		<form action="index.php" method="post" >
 		<TABLE id="tabModifEnt">
 	  	<CAPTION> Contact </CAPTION>
