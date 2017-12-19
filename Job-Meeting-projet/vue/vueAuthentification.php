@@ -12,7 +12,7 @@ class VueAuthentification{
 	 * Fonction permettant de générer la vue d'authenfication du site.
 	 * @param  String  $erreur le message à afficher en cas d'erreur.
 	 */
-	public function genereVueAuthentification($erreur){
+	public function genereVueAuthentification($erreur){ 
 		$util = new UtilitairePageHtml();
 		echo $util->genereBandeauAvantConnexion();
 		?>

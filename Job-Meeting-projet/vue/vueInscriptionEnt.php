@@ -53,16 +53,13 @@ class VueInscriptionEnt{
 					<label for="offre_txt"> Description de votre offre d'emploi : (vous pouvez également déposez une offre .pdf plus bas) </label> <br />
 					<textarea name="offre_txt" rows="8" cols="80"></textarea>
 
-					<br/> <br/>
-					<label for="nom"> Dépôt de votre offre d'emploi (format .pdf) </label>
-					<br/>
-					<input type="hidden" name="MAX_SIZE" value=10485760>
-		      <input type="file" name="offre" />
+					<br/> 
 
 					<h2>Vous recherchez :</h2>
 
 					<!-- Formation -->
-					<label> Quelle(s) formation(s) vous intéresse(nt) ? <span name="obligatoire">*</span></label>
+					<label> Quelle(s) formation(s) vous intéresse(nt) ? <span name="obligatoire">*</span></label> <br/>
+					<label> Vous pouvez déposer une offre .pdf (1Mo max) pour chaque formation </label>
 					<br/><br/>
 					<?php
 						$compteur = 0;
@@ -83,6 +80,8 @@ class VueInscriptionEnt{
 									<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.
 										$formation->getDescription().'
 									</a>
+
+									<input type="file" name="offre_'.$formation->getInitiales().'">
 									<br/>';
 									$compteur = $compteur + 1;
 								}
