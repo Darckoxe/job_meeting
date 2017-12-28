@@ -49,6 +49,7 @@ public function afficherProfil($type,$profil){
 		<br/><br/><span class="categorie_profil">Email :</span> <a href="mailto:'.$profil->getMailEtu().'">'.$profil->getMailEtu().'</a>
 		<br/><br/><span class="categorie_profil">Téléphone :</span> '.$profil->getNumTelEtu().'
 		<br/><br/><span class="categorie_profil">Formation :</span> '.$profil->getFormationEtu().'
+		<br/><br/> <i> <a href="cv/'.$profil->getMailEtu().'.pdf"> Télécharger le CV de '.$profil->getPrenomEtu().' '.$profil->getNomEtu().' </a> </i>
 		';
 		//Permet à l'administrateur de modifier un compte étudiant
 		$dao = new Dao();
@@ -480,6 +481,11 @@ public function afficherProfil($type,$profil){
 		';
     $dao = new Dao();
     $id = $profil->getID();
+		$nomEnt = $profil->getNomEnt();
+		$listesFormationsRecherchees= $dao->getFormationsEntreprise($id);
+		foreach ($listesFormationsRecherchees as $formation) { ?>
+			<a href="offre/<?php echo $nomEnt ?>_offre_<?php echo $formation['typeFormation']?>.pdf"> <i> Télécharger l'offre d'emploi <?php echo $formation['typeFormation'] ?> </i> </a> <br/> <?php
+		}
 
     if ($_SESSION['type_connexion'] == "admin") {
 			$_SESSION['idUser'] = $id;

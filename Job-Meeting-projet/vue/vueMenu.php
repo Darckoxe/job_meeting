@@ -104,6 +104,7 @@ public function afficherPlanningEtu(){
 	    $dao = new Dao();
 	    $tabConfig = $dao -> getConfiguration();
 	    $tabEnt = $dao -> getAllEntreprises();
+			$tabEtu = $dao -> getAllEtudiants();
 
 			$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
 			$pauseMidi = $tabConfig["nbCreneauxMatin"];
@@ -213,7 +214,8 @@ public function afficherPlanningEtu(){
 					}
 					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
 					else {
-						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+						// echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+					 echo '<a href="index.php?profil='.$dao -> getCreneau($i, $form['IDformation']).'&type=Etu">'.$dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation'])).'</a>';
 					}
 				}
 				if ($tabConfig["nbCreneauxAprem"]==0){
@@ -1353,6 +1355,7 @@ function Changement3() {
 		<br/><br/>
 		<span class="categorie_profil">Description de l\'offre :</span> '.$profil->getOffre().'
 			';
+
 		//<!-- Nom -->
 		?>
 		<script>
@@ -1536,7 +1539,7 @@ function Changement3() {
 					<td><input type="submit" name="modification_entreprise_organisation" value="confirmer"/></td>
 			</TABLE>
 		</form><br/>
-		<form action="index.php" method="post">
+		<form action="index.php" method="post" enctype="multipart/form-data">
 		<TABLE id="tabModifEnt">
 	  	';
 			$compteur = 0;
@@ -1567,10 +1570,11 @@ function Changement3() {
 						if (in_array($formation->getInitiales(), $formationsRecherchees)) {
 							echo 'checked ';
 						}
-						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a>
-						'."\n\t\t\t\t".'<br/>'."\n\t\t\t\t";
+						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a> <br>
+						 <input type="file" name="offre_modif'.$formation->getInitiales().'"/> <br/> <br>'."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
 						$compteur = $compteur + 1;
 						}
+
 					}
 				}
 		 		echo '<TD> 	<input type="submit" name="modification_entreprise_formations" value="confirmer"/> </TD>
@@ -1607,24 +1611,6 @@ function Changement3() {
 					</TD>
 				</TR>
 			</TABLE>
-		</form>
-		<br/>
-
-		<form action="index.php" method="post" enctype="multipart/form-data" ">
-		<div class="resptab">
-		<TABLE id="tabModifEnt">
-			<CAPTION> Modifier mon offre emploi </CAPTION>
-			<TR>
-				<TD>
-					<label for="nom"> Modifier votre offre (format .pdf | 1Mo max)</label>
-					<br/>
-					<input type="hidden" name="MAX_SIZE" value=1048576>
-					<input type="file" name="offre" required/>
-				</TD>
-				<p id="messageTel" style="color:red"></p>
-				<TD> 	<input type="submit" name="modification_offre" value="confirmer"/> </TD>
-		</TABLE>
-		</div>
 		</form>
 		<br/>
 

@@ -50,16 +50,18 @@ class VueInscriptionEnt{
 					<p id="messageNom" style="color:red"></p>
 
 					<!-- Champ de dépot d'offre -->
-					<label for="offre_txt"> Description de votre offre d'emploi : (vous pouvez également déposez une offre .pdf plus bas) </label> <br />
+					<label for="offre_txt"> Description de votre offre emploi : (vous pouvez également déposez une offre .pdf plus bas) </label> <br />
 					<textarea name="offre_txt" rows="8" cols="80"></textarea>
 
-					<br/> 
+					<br/>
 
 					<h2>Vous recherchez :</h2>
 
 					<!-- Formation -->
 					<label> Quelle(s) formation(s) vous intéresse(nt) ? <span name="obligatoire">*</span></label> <br/>
-					<label> Vous pouvez déposer une offre .pdf (1Mo max) pour chaque formation </label>
+					<label> Vous pouvez déposer une offre .pdf (1Mo max) pour chaque formation </label> <br /> <br/>
+					<label> <b> <font color=red> ATTENTION, une fois enregistré, vous ne pourrez modifier uniquement les fichiers pdf envoyés lors de cette inscription.
+					Dans le cas où vous souhaiteriez mettre une nouvelle offre plus tard, veuillez envoyer un fichier pdf vide pour pouvoir le modifier ultérieurement </font> </b> </label>
 					<br/><br/>
 					<?php
 						$compteur = 0;
@@ -71,18 +73,20 @@ class VueInscriptionEnt{
 							}
 						}
 						foreach ($listeDepartements as $departement) {
-							echo '
-							<span><b>Département '.$departement.' :</b></span><br/>';
+							echo ' <span><b>Département '.$departement.' :</b></span><br/>';
 							foreach ($listeFormations as $formation) {
 								if($formation->getDepartement() == $departement) {
+									$name="offre_";
+									$name.=$formation->getInitiales();
+									echo $name;
 									echo '
 									<input type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" onClick="EnableSubmit(this)">
 									<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.
 										$formation->getDescription().'
 									</a>
-
-									<input type="file" name="offre_'.$formation->getInitiales().'">
-									<br/>';
+									<br />
+									<input type="file" name="'.$name.'">
+									<br/> <br />';
 									$compteur = $compteur + 1;
 								}
 							}
