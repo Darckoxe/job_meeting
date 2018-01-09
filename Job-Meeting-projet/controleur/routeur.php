@@ -254,61 +254,64 @@ class Routeur {
     }
 
     // Application des modifications apportées par l'administrateur sur la configuration globale de l'évènement.
-    if (isset($_POST['changementConfig'])) {
-      if ($_POST['heureDebutMatin'] != "") {
-        $this->dao->editHeureDebutMatin($_POST['heureDebutMatin']);
-      }
-      if ($_POST['heureDebutAprem']  != "") {
-        $this->dao->editHeureDebutAprem($_POST['heureDebutAprem']);
-      }
-      if ($_POST['nbCreneauxMatin'] != "") {
-        $this->dao->editNbCreneauxMatin($_POST['nbCreneauxMatin']);
-      }
-      if ($_POST['heureCreneauPause'] != ""){
-        $this->dao->editHeureCreneauPause($_POST['heureCreneauPause']);
-      }
-      if ($_POST['nbCreneauxAprem'] != "") {
-        $this->dao->editNbCreneauxAprem($_POST['nbCreneauxAprem']);
-      }
-      if ($_POST['dureeCreneau'] != "") {
-        $this->dao->editDureeCreneau($_POST['dureeCreneau']);
-      }
-      if ($_POST['dateDebutInscriptionEnt'] != "") {
-        $this->dao->editDateDebutInscriptionEnt($_POST['dateDebutInscriptionEnt']);
-      }
-      if ($_POST['dateFinInscriptionEnt'] != "") {
-        $this->dao->editDateFinInscriptionEnt($_POST['dateFinInscriptionEnt']);
-      }
-      if ($_POST['dateDebutInscriptionEtu'] != "") {
-        $this->dao->editDateDebutInscriptionEtu($_POST['dateDebutInscriptionEtu']);
-      }
-      if ($_POST['dateFinInscription'] != "") {
-        $this->dao->editDateFinInscription($_POST['dateFinInscription']);
-      }
-      if ($_POST['dateDebutVuePlanning'] != "") {
-        $this->dao->editDateDebutVuePlanning($_POST['dateDebutVuePlanning']);
-      }
-      if ($_POST['dateEvenement'] != "") {
-        $this->dao->editDateEvenement($_POST['dateEvenement']);
-      }
-      if ($_POST['siteEvenement'] != "") {
-        $this->dao->editSiteEvenement($_POST['siteEvenement']);
-      }
-      if ($_POST['adresseIUT'] != "") {
-        $this->dao->editAdresseIUT($_POST['adresseIUT']);
-      }
-      if ($_POST['mailAdministrateur'] != "") {
-        $this->dao->editMailAdministrateur($_POST['mailAdministrateur']);
-      }
-      if ($_POST['telAdministrateur'] != "") {
-        $this->dao->editTelAdministrateur($_POST['telAdministrateur']);
-      }
-      if ($_POST['nomAdministrateur'] != ""){
-        $this->dao->editnomAdministrateur($_POST['nomAdministrateur']);
-      }
-      $this->ctrlMenu->afficherMenu(5);
-      return;
+  if (isset($_POST['changementConfig'])) {
+    if ($_POST['heureDebutMatin'] != "") {
+      $this->dao->editHeureDebutMatin($_POST['heureDebutMatin']);
     }
+    if ($_POST['heureDebutAprem']  != "") {
+      $this->dao->editHeureDebutAprem($_POST['heureDebutAprem']);
+    }
+    if ($_POST['nbCreneauxMatin'] != "") {
+      $this->dao->editNbCreneauxMatin($_POST['nbCreneauxMatin']);
+    }
+    if ($_POST['heureCreneauPause'] != ""){
+      $this->dao->editHeureCreneauPause($_POST['heureCreneauPause']);
+    }
+    if ($_POST['heureCreneauPauseMatin'] != ""){
+      $this->dao->editHeureCreneauPauseMatin($_POST['heureCreneauPauseMatin']);
+    }
+    if ($_POST['nbCreneauxAprem'] != "") {
+      $this->dao->editNbCreneauxAprem($_POST['nbCreneauxAprem']);
+    }
+    if ($_POST['dureeCreneau'] != "") {
+      $this->dao->editDureeCreneau($_POST['dureeCreneau']);
+    }
+    if ($_POST['dateDebutInscriptionEnt'] != "") {
+      $this->dao->editDateDebutInscriptionEnt($_POST['dateDebutInscriptionEnt']);
+    }
+    if ($_POST['dateFinInscriptionEnt'] != "") {
+      $this->dao->editDateFinInscriptionEnt($_POST['dateFinInscriptionEnt']);
+    }
+    if ($_POST['dateDebutInscriptionEtu'] != "") {
+      $this->dao->editDateDebutInscriptionEtu($_POST['dateDebutInscriptionEtu']);
+    }
+    if ($_POST['dateFinInscription'] != "") {
+      $this->dao->editDateFinInscription($_POST['dateFinInscription']);
+    }
+    if ($_POST['dateDebutVuePlanning'] != "") {
+      $this->dao->editDateDebutVuePlanning($_POST['dateDebutVuePlanning']);
+    }
+    if ($_POST['dateEvenement'] != "") {
+      $this->dao->editDateEvenement($_POST['dateEvenement']);
+    }
+    if ($_POST['siteEvenement'] != "") {
+      $this->dao->editSiteEvenement($_POST['siteEvenement']);
+    }
+    if ($_POST['adresseIUT'] != "") {
+      $this->dao->editAdresseIUT($_POST['adresseIUT']);
+    }
+    if ($_POST['mailAdministrateur'] != "") {
+      $this->dao->editMailAdministrateur($_POST['mailAdministrateur']);
+    }
+    if ($_POST['telAdministrateur'] != "") {
+      $this->dao->editTelAdministrateur($_POST['telAdministrateur']);
+    }
+    if ($_POST['nomAdministrateur'] != ""){
+      $this->dao->editnomAdministrateur($_POST['nomAdministrateur']);
+    }
+    $this->ctrlMenu->afficherMenu(5);
+    return;
+  }
 
 
     // Les modifications de compte de l'entreprise

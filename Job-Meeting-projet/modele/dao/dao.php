@@ -946,6 +946,17 @@ class Dao
 					return;
 				}
 
+				public function editHeureCreneauPauseMatin($new)
+				{
+					$this->connexion();
+					$statement = $this->connexion->prepare("UPDATE scriptconfig SET heureCreneauPauseMatin = ?;");
+					$statement->bindParam(1, $new);
+					$statement->execute();
+					$this->deconnexion();
+					$this->updateHeureCreneau();
+					return;
+				}
+
 				/**
 				* Fonction qui permet d'obtenir les étudiants appartenant à une formation.
 				* @param  String $formation la formation à laquelle appartien l'étudiant.

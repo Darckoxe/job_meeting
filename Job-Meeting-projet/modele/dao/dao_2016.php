@@ -572,6 +572,8 @@ class Dao_2016 extends DAO
 			$nbCreneauxAprem = $configurationEvenement['nbCreneauxAprem'];
 			$dureeCreneau    = $configurationEvenement['dureeCreneau'];
 			$heureCreneauPause = (new DateTime($configurationEvenement['heureCreneauPause']))->format("H:i");
+			$heureCreneauPauseMatin = (new DateTime($configurationEvenement['heureCreneauPauseMatin']))->format("H:i");
+
 			$this->connexion();
 
 			// On vide la table contenant les anciennes valeurs
@@ -583,15 +585,20 @@ class Dao_2016 extends DAO
 
 
 			// Remplissage avec les créneaux du matin
-			if($nbCreneauxMatin != 0) {
-				for($i = 0; $i < $nbCreneauxMatin; $i++){
+			if($nbCreneauxMatin != 0){
+				for($i = 0; $i <= $nbCreneauxMatin+1; $i++){
 					$heureString = $heureDebutMatin->format("H:i");
-					$statement = $this->connexion->prepare($queryInsert);
-					$statement ->bindParam(1,$i);
-					$statement ->bindParam(2,$heureString);
-					$statement->execute();
-					$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+					if($heureString != $heureCreneauPauseMatin){
+						$statement = $this->connexion->prepare($queryInsert);
+						$statement ->bindParam(1,$i);
+						$statement ->bindParam(2,$heureString);
+						$statement->execute();
+						$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+					}else{
+						$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+					}
 				}
+
 			$cpt = $i; // On garde le numéro du dernier créneau pour continuer la numérotation des créneaux
 			}
 

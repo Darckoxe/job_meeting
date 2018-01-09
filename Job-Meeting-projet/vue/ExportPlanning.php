@@ -14,9 +14,14 @@ $heures = $dao->getListeCreneaux();
 
 $tabConfig = $dao->getConfiguration();
 $pause_apres_midi = (new DateTime($tabConfig['heureCreneauPause']))->format("H:i");
+$pause_matin = (new DateTime($tabConfig['heureCreneauPauseMatin']))->format("H:i");
+
 
 $heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+$heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
+
 $numCreneauPauseAprem = -1;
+$numCreneauPauseMatin = -1;
 $dureeCreneau = $tabConfig["dureeCreneau"];
 
 
@@ -27,7 +32,8 @@ if($pauseMidi == 0){
 
 $heureCreneauApresPause = $heureCreneauPause;
 $heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
-
+$heureCreneauApresPauseMatin = $heureCreneauPauseMatin;
+$heureCreneauApresPauseMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
 
 echo ' ; ';
 for($i = 0; $i < sizeof($heures); $i++)
@@ -35,12 +41,19 @@ for($i = 0; $i < sizeof($heures); $i++)
   if ($i == $pauseMidi) {
     echo ';Pause-midi';
   }
+  if ($heures[$i] == $pause_matin) {
+    echo ';';
+    $pause_matin = $i; # on stocke le numéro du créneau de pause du matin
+  }
   if ($heures[$i] == $pause_apres_midi){
     echo ';';
-    $pause_apres_midi = $i; # on stocke le numéro du créneau de pause
+    $pause_apres_midi = $i; # on stocke le numéro du créneau de pause de l'aprem
   }else{
     if($heures[$i] == $heureCreneauApresPause->format('H:i')){
       $numCreneauPauseAprem = $i;
+    }
+    if($heures[$i] == $heureCreneauApresPauseMatin->format('H:i')){
+      $numCreneauPauseMatin = $i;
     }
     echo ';"'.$heures[$i].'"';
   }
@@ -63,9 +76,16 @@ foreach ($tabEnt as $ent) {
       if ($i == $pause_apres_midi){
         echo ';';
       }
+      if ($i == $pause_matin){
+        echo ';';
+      }
       if ($numCreneauPauseAprem != -1 && $i >= $numCreneauPauseAprem) {
         echo ';"'.utf8_decode($dao -> getNomEtudiant($dao->getCreneau($i+1, $form['IDformation']))).'"';
-      } else {
+      }
+      if ($numCreneauPauseMatin != -1 && $i >= $numCreneauPauseMatin) {
+        echo ';"'.utf8_decode($dao -> getNomEtudiant($dao->getCreneau($i+1, $form['IDformation']))).'"';
+      }
+      else {
         echo ';"'.utf8_decode($dao -> getNomEtudiant($dao->getCreneau($i, $form['IDformation']))).'"';
       }
 

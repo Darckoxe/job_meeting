@@ -96,143 +96,159 @@ public function afficherPlanningEtu(){
 	}
 
 	public function afficherPlanning() {
-			?>
+		?>
 
-			<?php
-	    //////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
-	    //On génére l'emploi du temps
-	    $dao = new Dao();
-	    $tabConfig = $dao -> getConfiguration();
-	    $tabEnt = $dao -> getAllEntreprises();
-			$tabEtu = $dao -> getAllEtudiants();
-
-			$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
-			$pauseMidi = $tabConfig["nbCreneauxMatin"];
-
-			$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
-			$numCreneauPauseAprem = -1;
-			$dureeCreneau = $tabConfig["dureeCreneau"];
-
-	    //Planning du point de vue des entreprises
-	    ?>
-			<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-			<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-			<script src="vue/js/selectionTab.js"></script>
-			<script type="text/javascript">
-			$(document).ready(function() {
-				var table = $('#tabPlanningEnt').dataTable({
-					"paging":         false,
-					"bSort": false,
-					"info": false
-				});
-			});
-			</script>
-
-	  	<div id="main">
-	  	<br/>
-			<h1>Planning Entreprises</h1>
-	    <div class="resptab" >
-			<table id="tabPlanningEnt">
-
-
-			<thead>
-			<tr>
-				<td colspan= 1> Entreprise </td>
-				<td colspan= 1> Formation </td>
-				<?php
-				echo'<td colspan= '.$tabConfig["nbCreneauxMatin"].'> Matin </td>';
-				echo'<td colspan= 1> Pause midi </td>';
-				$taillePlanning = $tabConfig["nbCreneauxAprem"] + 1;
-				echo'<td colspan= '.$taillePlanning.'> Après-midi </td>';
-				?>
-			</tr>
-
-			<?php
-			echo'<tr>';
-			echo'<td> </td>';
-			echo'<td> </td>';
-			$listeCreneaux = $dao->getListeCreneaux();
-
-
-			// Affichage des heures du matin
-			if($tabConfig["nbCreneauxMatin"] == 0){
-				echo '<td> </td>';
-			}else{
-				for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
-					echo '<td>'.$listeCreneaux[$i].'</td>';
-				}
-			}
-
-			// Pause du midi
-			echo '<td> </td>';
-			$heureCreneauApresPause = $heureCreneauPause;
-			$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
-
-			if($tabConfig["nbCreneauxAprem"] == 0){
-				echo '<td> </td>';
-			}else{
-				// Affichage des créneaux de l'après midi
-
-			for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-				// On récupère le numéro de la pause de l'après-midi
-				if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
-					$numCreneauPauseAprem = $i;
-				}
-			}
-			for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-				if ($numCreneauPauseAprem==$i) {
-					echo '<td>'."Pause".'</td>';
-				}
-					echo '<td>'.$listeCreneaux[$i].'</td>';
-				}
-			}
-
-			echo'</tr>
-			</thead>
-			<tbody id="planning">';
-			foreach ($tabEnt as $ent) {
-				$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
-			foreach ($tabForm as $form) {
-				echo '<tr id="entreprise">
-				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
-				</td>
-				<td>'
-				.$form['typeFormation'].
-				'</td>';
-				;
-				if ($tabConfig["nbCreneauxMatin"]==0) {
-					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
-				}
-				for($i = 0; $i <= $nbCreneaux; $i++) {
-					if ($i == $pauseMidi) {
-						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
-					}
-					echo '<td class=colorMe>';
-					// Si c'est la pause on affiche un indicateur de pause
-					if ($i == $numCreneauPauseAprem) {
-						echo'-';
-					}
-					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
-					else {
-						// echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
-					 echo '<a href="index.php?profil='.$dao -> getCreneau($i, $form['IDformation']).'&type=Etu">'.$dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation'])).'</a>';
-					}
-				}
-				if ($tabConfig["nbCreneauxAprem"]==0){
-					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
-					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
-				}
-				echo '</td> ';
-			}
-				echo '</tr>';
-		}
-			?>
-		</tbody>
-		</table>
-		</diV>
 		<?php
+		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
+		//On génére l'emploi du temps
+		$dao = new Dao();
+		$tabConfig = $dao -> getConfiguration();
+		$tabEnt = $dao -> getAllEntreprises();
+
+		$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+		$pauseMidi = $tabConfig["nbCreneauxMatin"]+1;
+
+		$heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
+		$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+		$numCreneauPauseAprem = -1;
+		$numCreneauPauseMatin = -1;
+		$dureeCreneau = $tabConfig["dureeCreneau"];
+
+
+		//Planning du point de vue des entreprises
+		?>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+		<script src="vue/js/selectionTab.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			var table = $('#tabPlanningEnt').dataTable({
+				"paging":         false,
+				"bSort": false,
+				"info": false
+			});
+		});
+		</script>
+
+		<div id="main">
+		<br/>
+		<h1>Planning Entreprises</h1>
+		<div class="resptab" >
+		<table id="tabPlanningEnt">
+
+
+		<thead>
+		<tr>
+			<td colspan= 1> Entreprise </td>
+			<td colspan= 1> Formation </td>
+			<?php
+
+			$taillePlanningmatin = $tabConfig["nbCreneauxMatin"] + 1;
+			echo'<td colspan= '.$taillePlanningmatin.'> Matin </td>';
+			echo'<td colspan= 1> Pause midi </td>';
+			$taillePlanningaprem = $tabConfig["nbCreneauxAprem"] + 1;
+			echo'<td colspan= '.$taillePlanningaprem.'> Après-midi </td>';
+			?>
+		</tr>
+
+		<?php
+		echo'<tr>';
+		echo'<td> </td>';
+		echo'<td> </td>';
+		$listeCreneaux = $dao->getListeCreneaux();
+
+		$heureCreneauApresPause = $heureCreneauPause;
+		$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+		$heureCreneauApresPauseMatin = $heureCreneauPauseMatin;
+		$heureCreneauApresPauseMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+		// Affichage des heures du matin
+		if($tabConfig["nbCreneauxMatin"] == 0){
+			echo '<td> </td>';
+		}else{
+
+			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+				//On récupère le numéro de la pause du matin
+				if($listeCreneaux[$i] == $heureCreneauApresPauseMatin->format('H:i')){
+					$numCreneauPauseMatin = $i;
+				}
+			}
+
+
+			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+				if ($numCreneauPauseMatin == $i) {
+					echo '<td>'."Pause Matin".'</td>';
+				}
+				echo '<td>'.$listeCreneaux[$i].'</td>';
+
+			}
+		}
+		// Pause du midi
+		echo '<td> </td>';
+
+		if($tabConfig["nbCreneauxAprem"] == 0){
+			echo '<td> </td>';
+		}else{
+			// Affichage des créneaux de l'après midi
+
+		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+			// On récupère le numéro de la pause de l'après-midi
+			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+				$numCreneauPauseAprem = $i;
+			}
+		}
+		for ($i = 1+$tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+			if ($numCreneauPauseAprem==$i) {
+				echo '<td>'."Pause".'</td>';
+			}
+			echo '<td>'.$listeCreneaux[$i].'</td>';
+			}
 		}
 
+		echo'</tr>
+		</thead>
+		<tbody id="planning">';
+		foreach ($tabEnt as $ent) {
+			$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+		foreach ($tabForm as $form) {
+			echo '<tr id="entreprise">
+			<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+			</td>
+			<td>'
+			.$form['typeFormation'].
+			'</td>';
+			;
+			if ($tabConfig["nbCreneauxMatin"]==0) {
+				echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+			}
+			for($i = 0; $i <= $nbCreneaux; $i++) {
+				if ($i == $pauseMidi) {
+					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				}
+				echo '<td class=colorMe>';
+				// Si c'est la pause on affiche un indicateur de pause
+				if (($i == $numCreneauPauseAprem) ||($i == $numCreneauPauseMatin)) {
+					echo'-';
+				}
+				// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
+				else {
+					echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+				}
+			}
+			if ($tabConfig["nbCreneauxAprem"]==0){
+				echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+				echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+			}
+			echo '</td> ';
+		}
+			echo '</tr>';
+	}
+		?>
+	</tbody>
+	</table>
+	</diV>
+	<?php
+	}
 	/**
 	 * Fonction permettant l'affichage de la page planning de l'entreprise.
 	 */
@@ -621,136 +637,155 @@ public function afficherComptes() {
 /**
  * Fonction permettant l'affichage de la page de configuration de l'évènement.
  */
-	public function afficherConfig() {
-		$util = new UtilitairePageHtml();
-		echo $util->genereBandeauApresConnexion();
-		$dao = new Dao();
-    $heuresCreneaux = $dao->getListeCreneaux();
-		$tabConfig = $dao->getConfiguration();
-		$heureDebutMatin = $tabConfig['heureDebutMatin'];
-		$heureDebutAprem = $tabConfig['heureDebutAprem'];
-		$nbCreneauxMatin = $tabConfig['nbCreneauxMatin'];
-		$nbCreneauxAprem = $tabConfig['nbCreneauxAprem'];
-		$dureeCreneau = $tabConfig['dureeCreneau'];
-		$heureCreneauPause = (new DateTime($tabConfig['heureCreneauPause']))->format("H:i");
-		$dateDebutInscriptionEtu = $tabConfig['dateDebutInscriptionEtu'];
-		$dateDebutInscriptionEnt = $tabConfig['dateDebutInscriptionEnt'];
-		$dateFinInscription = $tabConfig['dateFinInscription'];
-		$dateFinInscriptionEnt = $tabConfig['dateFinInscriptionEnt'];
-		$dateDebutVuePlanning = $tabConfig['dateDebutVuePlanning'];
-		$dateEvenement = $tabConfig['dateEvenement'];
-		$siteEvenement = $tabConfig['siteEvenement'];
-		$adresseIUT = $tabConfig['adresseIUT'];
-		$mailAdministrateur = $tabConfig['mailAdministrateur'];
-		$telAdministrateur = $tabConfig['telAdministrateur'];
-		$nomAdministrateur = $tabConfig['nomAdministrateur'];
-	?>
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<link rel="stylesheet" type="text/css" href="vue/css/general.css">
-		<title></title>
-		<meta charset="UTF-8">
-	</head>
-	<body>
-	<div id="main">
-		<br/><span class="categorie_profil">Configuration actuelle :</span>
-		<br/><br/>
-		<?php
-			echo'
-			Les emplois du temps débuteront le matin à : '.$heureDebutMatin.'.
-			<br/><br/>Les emplois du temps débuteront l\'après-midi à : '.$heureDebutAprem.'.
-			<br/><br/>Il y aura '.$nbCreneauxMatin.' créneau(x) le matin et '.$nbCreneauxAprem.' l\'après-midi.
-			<br/><br/>Chaque créneau dure '.$dureeCreneau.' minutes.
-      <br/><br/>La pause durant l\'après-midi a lieu à '.$heureCreneauPause.'.
-			<br/><br/>Les inscriptions entreprise débutent le '.$dateDebutInscriptionEnt.' et se terminent le '.$dateFinInscriptionEnt.'.
-			<br/><br/>Les inscriptions étudiant débutent le '.$dateDebutInscriptionEtu.'.
-			<br/><br/>Les inscriptions se terminent le '.$dateFinInscription.'.
-			<br/><br/>Les plannings seront visibles à partir du '.$dateDebutVuePlanning.'.
-			<br/><br/>L\'évènement aura lieu le '.$dateEvenement.' au site '.$siteEvenement.' ('.$adresseIUT.').
-			<br/><br/>Le numéro de téléphone affiché en pied de page est le '.$telAdministrateur.'.
-			<br/><br/>L\'adresse mail utilisée pour envoyer les mails depuis le site est : '.$mailAdministrateur.'.
-			<br/><br/>Le nom utilisé comme expéditeur des mails est : '.$nomAdministrateur.'.
-			';
-		?>
+ public function afficherConfig() {
+ $util = new UtilitairePageHtml();
+ echo $util->genereBandeauApresConnexion();
+ $dao = new Dao();
+	 $heuresCreneaux = $dao->getListeCreneaux();
+ $tabConfig = $dao->getConfiguration();
+ $heureDebutMatin = $tabConfig['heureDebutMatin'];
+ $heureDebutAprem = $tabConfig['heureDebutAprem'];
+ $nbCreneauxMatin = $tabConfig['nbCreneauxMatin'];
+ $nbCreneauxAprem = $tabConfig['nbCreneauxAprem'];
+ $dureeCreneau = $tabConfig['dureeCreneau'];
+ $heureCreneauPause = (new DateTime($tabConfig['heureCreneauPause']))->format("H:i");
+ $heureCreneauPauseMatin = (new DateTime($tabConfig['heureCreneauPauseMatin']))->format("H:i");
 
-		<br/><br/><span class="categorie_profil">Nouvelle configuration :</span>
-		<form action="index.php" method="POST">
-			<br/>
-			<label>Début de la matinée (format hh:mm) : </label><input type="text" name="heureDebutMatin"/>
-			<br/><br/>
-			<label>Nombre de créneaux dans la matinée : </label><input type="text" name="nbCreneauxMatin"/>
-			<br/><br/>
-			<label>Début de l'après-midi (format hh:mm) : </label><input type="text" name="heureDebutAprem"/>
-			<br/><br/>
-			<label>Nombre de créneaux dans l'après-midi : </label><input type="text" name="nbCreneauxAprem"/>
-			<br/><br/>
-			<label>Durée en minutes d'un créneau : </label><input type="text" name="dureeCreneau"/>
-			<br/><br/>
-      <label>Heure de la pause de l'après-midi :
-      <select name = "heureCreneauPause">
-				<option value = ""><?=$heureCreneauPause?></option>
-        <?php
-        foreach($heuresCreneaux as $heure){
-					if($heure > $heureDebutAprem ) {
-					?>
-          <option value = "<?=$heure?>"><?=$heure?></option>
-          <?php
-        	}
-				}
-         ?>
-      </select>
-      <br/><br/>
-			<label>Début des inscriptions entreprises (format YYYY-MM-DD) : </label><input type="text" name="dateDebutInscriptionEnt"/>
-			<br/><br/>
-			<label>Deadline inscriptions entreprises (format YYYY-MM-DD) : </label><input type="text" name="dateFinInscriptionEnt"/>
-			<br/><br/>
-			<label>Début inscriptions étudiants (format YYYY-MM-DD) : </label><input type="text" name="dateDebutInscriptionEtu"/>
-			<br/><br/>
-			<label>Deadline inscriptions étudiants (format YYYY-MM-DD) : </label><input type="text" name="dateFinInscription"/>
-			<br/><br/>
-			<label>Date visibilité du planning (format YYYY-MM-DD): </label><input type="text" name="dateDebutVuePlanning"/>
-			<br/><br/>
-			<label>Date de l'évènement (format YYYY-MM-DD): </label><input type="text" name="dateEvenement"/>
-			<br/><br/>
-			<label>Lieu de l'évènement (site X) : </label><input type="text" name="siteEvenement"/>
-			<br/><br/>
-			<label>Adresse de l'IUT où se déroulera l'évènement : </label><input type="text" name="adresseIUT"/>
-			<br/><br/>
-			<label>Adresse email utilisée pour envoyer des mails depuis le site : </label><input type="text" name="mailAdministrateur"/>
-			<br/><br/>
-			<label>Nom utilisé pour signer les mails envoyés depuis le site (format : Prenom Nom) : </label><input type = "text" name = "nomAdministrateur"/>
-			<br/><br/>
-			<label>Le numéro de téléphone indiqué en pied de page (sans espace entre les numéros): </label><input id = "telAdmin" type="text" name="telAdministrateur"/>
-			<p id = "champErreurNumTel"></p>
-			<br/>
-			<input type="submit" name="changementConfig" value="Confirmer"/>
-		</form>
-	</div>
+ $dateDebutInscriptionEtu = $tabConfig['dateDebutInscriptionEtu'];
+ $dateDebutInscriptionEnt = $tabConfig['dateDebutInscriptionEnt'];
+ $dateFinInscription = $tabConfig['dateFinInscription'];
+ $dateFinInscriptionEnt = $tabConfig['dateFinInscriptionEnt'];
+ $dateDebutVuePlanning = $tabConfig['dateDebutVuePlanning'];
+ $dateEvenement = $tabConfig['dateEvenement'];
+ $siteEvenement = $tabConfig['siteEvenement'];
+ $adresseIUT = $tabConfig['adresseIUT'];
+ $mailAdministrateur = $tabConfig['mailAdministrateur'];
+ $telAdministrateur = $tabConfig['telAdministrateur'];
+ $nomAdministrateur = $tabConfig['nomAdministrateur'];
+?>
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" type="text/css" href="vue/css/general.css">
+ <title></title>
+ <meta charset="UTF-8">
+</head>
+<body>
+<div id="main">
+ <br/><span class="categorie_profil">Configuration actuelle :</span>
+ <br/><br/>
+ <?php
+	 echo'
+	 Les emplois du temps débuteront le matin à : '.$heureDebutMatin.'.
+	 <br/><br/>Les emplois du temps débuteront l\'après-midi à : '.$heureDebutAprem.'.
+	 <br/><br/>Il y aura '.$nbCreneauxMatin.' créneau(x) le matin et '.$nbCreneauxAprem.' l\'après-midi.
+	 <br/><br/>Chaque créneau dure '.$dureeCreneau.' minutes.
+	 <br/><br/>La pause durant l\'après-midi a lieu à '.$heureCreneauPause.'.
+				 <br/><br/>La pause du matin a lieu à '.$heureCreneauPauseMatin.'.
 
-	<script type = "text/javascript">
-		var numTel = document.getElementById('telAdmin');
-		var champErreur = document.getElementById('champErreurNumTel');
-		numTel.addEventListener('change',verifTelephone,false);
-	function verifTelephone() {
-		if(numTel.value.length != 10 || !/^\d+$/.test(numTel.value)) {
-			numTel.style.borderColor = "red";
-			champErreur.innerHTML = "<span style=\"color:red\">Format invalide (le numéro ne peut être composé que de 10 chiffres)</span>";
-			return true;
-		} else {
-			numTel.style.borderColor = "black";
-			champErreur.innerHTML = "";
-			return false;
-		}
-	}
-	</script>
-		<?php
-		echo $util->generePied();
-		?>
+	 <br/><br/>Les inscriptions entreprise débutent le '.$dateDebutInscriptionEnt.' et se terminent le '.$dateFinInscriptionEnt.'.
+	 <br/><br/>Les inscriptions étudiant débutent le '.$dateDebutInscriptionEtu.'.
+	 <br/><br/>Les inscriptions se terminent le '.$dateFinInscription.'.
+	 <br/><br/>Les plannings seront visibles à partir du '.$dateDebutVuePlanning.'.
+	 <br/><br/>L\'évènement aura lieu le '.$dateEvenement.' au site '.$siteEvenement.' ('.$adresseIUT.').
+	 <br/><br/>Le numéro de téléphone affiché en pied de page est le '.$telAdministrateur.'.
+	 <br/><br/>L\'adresse mail utilisée pour envoyer les mails depuis le site est : '.$mailAdministrateur.'.
+	 <br/><br/>Le nom utilisé comme expéditeur des mails est : '.$nomAdministrateur.'.
+	 ';
+ ?>
+
+ <br/><br/><span class="categorie_profil">Nouvelle configuration :</span>
+ <form action="index.php" method="POST">
+	 <br/>
+	 <label>Début de la matinée (format hh:mm) : </label><input type="text" name="heureDebutMatin"/>
+	 <br/><br/>
+	 <label>Nombre de créneaux dans la matinée : </label><input type="text" name="nbCreneauxMatin"/>
+	 <br/><br/>
+	 <label>Début de l'après-midi (format hh:mm) : </label><input type="text" name="heureDebutAprem"/>
+	 <br/><br/>
+	 <label>Nombre de créneaux dans l'après-midi : </label><input type="text" name="nbCreneauxAprem"/>
+	 <br/><br/>
+	 <label>Durée en minutes d'un créneau : </label><input type="text" name="dureeCreneau"/>
+	 <br/><br/>
+	 <label>Heure de la pause de l'après-midi :
+	 <select name = "heureCreneauPause">
+		 <option value = ""><?=$heureCreneauPause?></option>
+		 <?php
+		 foreach($heuresCreneaux as $heure){
+			 if($heure > $heureDebutAprem ) {
+			 ?>
+			 <option value = "<?=$heure?>"><?=$heure?></option>
+			 <?php
+			 }
+		 }
+			?>
+	 </select>
+	 <br/><br/>
+	 <label>Heure de la pause du matin :
+	 <select name = "heureCreneauPauseMatin">
+		 <option value = ""><?=$heureCreneauPauseMatin?></option>
+		 <?php
+		 foreach($heuresCreneaux as $heure){
+			 if($heure < $heureDebutAprem ) {
+			 ?>
+			 <option value = "<?=$heure?>"><?=$heure?></option>
+			 <?php
+			 }
+		 }
+			?>
+	 </select>
+
+	 <br/><br/>
+	 <label>Début des inscriptions entreprises (format YYYY-MM-DD) : </label><input type="text" name="dateDebutInscriptionEnt"/>
+	 <br/><br/>
+	 <label>Deadline inscriptions entreprises (format YYYY-MM-DD) : </label><input type="text" name="dateFinInscriptionEnt"/>
+	 <br/><br/>
+	 <label>Début inscriptions étudiants (format YYYY-MM-DD) : </label><input type="text" name="dateDebutInscriptionEtu"/>
+	 <br/><br/>
+	 <label>Deadline inscriptions étudiants (format YYYY-MM-DD) : </label><input type="text" name="dateFinInscription"/>
+	 <br/><br/>
+	 <label>Date visibilité du planning (format YYYY-MM-DD): </label><input type="text" name="dateDebutVuePlanning"/>
+	 <br/><br/>
+	 <label>Date de l'évènement (format YYYY-MM-DD): </label><input type="text" name="dateEvenement"/>
+	 <br/><br/>
+	 <label>Lieu de l'évènement (site X) : </label><input type="text" name="siteEvenement"/>
+	 <br/><br/>
+	 <label>Adresse de l'IUT où se déroulera l'évènement : </label><input type="text" name="adresseIUT"/>
+	 <br/><br/>
+	 <label>Adresse email utilisée pour envoyer des mails depuis le site : </label><input type="text" name="mailAdministrateur"/>
+	 <br/><br/>
+	 <label>Nom utilisé pour signer les mails envoyés depuis le site (format : Prenom Nom) : </label><input type = "text" name = "nomAdministrateur"/>
+	 <br/><br/>
+	 <label>Le numéro de téléphone indiqué en pied de page (sans espace entre les numéros): </label><input id = "telAdmin" type="text" name="telAdministrateur"/>
+	 <p id = "champErreurNumTel"></p>
+	 <br/>
+	 <input type="submit" name="changementConfig" value="Confirmer"/>
+ </form>
+</div>
+
+<script type = "text/javascript">
+ var numTel = document.getElementById('telAdmin');
+ var champErreur = document.getElementById('champErreurNumTel');
+ numTel.addEventListener('change',verifTelephone,false);
+function verifTelephone() {
+ if(numTel.value.length != 10 || !/^\d+$/.test(numTel.value)) {
+	 numTel.style.borderColor = "red";
+	 champErreur.innerHTML = "<span style=\"color:red\">Format invalide (le numéro ne peut être composé que de 10 chiffres)</span>";
+	 return true;
+ } else {
+	 numTel.style.borderColor = "black";
+	 champErreur.innerHTML = "";
+	 return false;
+ }
+}
+</script>
+ <?php
+ echo $util->generePied();
+ ?>
 
 
-	<?php
-	}
+<?php
+}
 	/**
 	 * Fonction permettant, selon le nombre de places restantes disponibles pour une formation pour une entreprise, de mettre l'option du select selon une couleur précise.
 	 * @param  int     $idEntreprise      l'identifiant de l'entreprise
