@@ -586,7 +586,7 @@ class Dao_2016 extends DAO
 
 			// Remplissage avec les créneaux du matin
 			if($nbCreneauxMatin != 0){
-				for($i = 0; $i <= $nbCreneauxMatin+1; $i++){
+				for($i = 0; $i <= $nbCreneauxMatin; $i++){
 					$heureString = $heureDebutMatin->format("H:i");
 					if($heureString != $heureCreneauPauseMatin){
 						$statement = $this->connexion->prepare($queryInsert);

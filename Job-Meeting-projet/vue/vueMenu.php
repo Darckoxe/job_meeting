@@ -48,72 +48,706 @@ class VueMenu{
 /**
  * Fonction permettant l'affichage de la page planning de l'étudiant.
  */
-public function afficherPlanningEtu(){
-		$dao = new Dao();
-		$tableauConfig = $dao->getConfiguration();
-		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
-		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
-		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
-		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
-		$date = new DateTime();
-		$util = new UtilitairePageHtml();
-		echo $util->genereBandeauApresConnexion();
-	?>
-		<?php
-		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
-		 if ($dateDebutVuePlanning2< $date) { ?>
+ public function afficherPlanningEtu(){
+ 		$dao = new Dao();
+ 		$tableauConfig = $dao->getConfiguration();
+ 		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+ 		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
+ 		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+ 		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
+ 		$idEtudiant = $_SESSION['idUser'];
+ 		$date = new DateTime();
+ 		$util = new UtilitairePageHtml();
+ 		echo $util->genereBandeauApresConnexion();
+ 	?>
+ 		<?php
+ 		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
+ 		 if ($dateDebutVuePlanning2< $date) { ?>
 
-		<div id="main">
-		<p id="bonjouretudiant">
+ 		<div id="main">
+ 		<p id="bonjouretudiant">
 
-			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			<?php
-			$this->afficherPlanning();
-			?>
-		</p>
-		</div>
-			<?php
-	    	}
-			  else {
-			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
-			  }
-		?>
-		</tbody>
-		</table>
-		</diV>
-		<p> <br/> </p>
-	    <?php
-	    //Planning du point de vue des Etudiants
-			echo $util->generePied();
-			?>
-		</body>
-		</html>
+ 			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+ <?php
+ 		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
+ 		//On génére l'emploi du temps
+ 		$dao = new Dao();
+ 		$tabConfig = $dao -> getConfiguration();
+ 		$tabEnt = $dao -> getAllEntreprises();
 
-	<br/><br/>
-	</div>
-		<?php
-		echo $util->generePied();
-	}
+ 		$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+
+ 		if ($tabConfig["nbCreneauxMatin"] == 0) {
+ 			$nbCreneaux --;
+ 		}
+
+ 		if($tabConfig["nbCreneauxMatin"] == 0) {
+ 			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+ 		} elseif ($tabConfig["nbCreneauxMatin"] != 0) {
+ 			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+ 			$pauseMidi += 1;
+ 		}
+
+ 		$heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
+ 		$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+ 		$numCreneauPauseAprem = -1;
+ 		$numCreneauPauseMatin = -1;
+ 		$dureeCreneau = $tabConfig["dureeCreneau"];
+
+ 		//Planning du point de vue des entreprises
+ 		?>
+ 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ 		<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+ 		<script src="vue/js/selectionTab.js"></script>
+ 		<script type="text/javascript">
+ 		$(document).ready(function() {
+ 			var table = $('#tabPlanningEnt').dataTable({
+ 				"paging":         false,
+ 				"bSort": false,
+ 				"info": false
+ 			});
+ 		});
+ 		</script>
+
+ 		<div id="main">
+ 		<br/>
+ 		<h1>Planning Entreprises</h1>
+ 		<div class="resptab" >
+ 		<table id="tabPlanningEnt">
+
+
+ 		<thead>
+ 		<tr>
+ 			<td colspan= 1> Entreprise </td>
+ 			<td colspan= 1> Formation </td>
+ 			<?php
+
+ 			$taillePlanningmatin = $tabConfig["nbCreneauxMatin"] + 1;
+ 			echo'<td colspan= '.$taillePlanningmatin.'> Matin </td>';
+ 			echo'<td colspan= 1> Pause midi </td>';
+ 			$taillePlanningaprem = $tabConfig["nbCreneauxAprem"] + 1;
+ 			echo'<td colspan= '.$taillePlanningaprem.'> Après-midi </td>';
+ 			?>
+ 		</tr>
+
+ 		<?php
+ 		echo'<tr>';
+ 		echo'<td> </td>';
+ 		echo'<td> </td>';
+ 		$listeCreneaux = $dao->getListeCreneaux();
+
+ 		$heureCreneauApresPause = $heureCreneauPause;
+ 		$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+ 		$heureCreneauApresPauseMatin = $heureCreneauPauseMatin;
+ 		$heureCreneauApresPauseMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+ 		// Affichage des heures du matin
+ 		if($tabConfig["nbCreneauxMatin"] == 0){
+
+ 			echo '<td> </td>';
+ 		}else{
+
+ 			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+ 				//On récupère le numéro de la pause du matin
+ 				if($listeCreneaux[$i] == $heureCreneauApresPauseMatin->format('H:i')){
+ 					$numCreneauPauseMatin = $i;
+ 				}
+ 			}
+
+
+ 			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+ 				if ($numCreneauPauseMatin == $i) {
+ 					echo '<td>'."Pause Matin".'</td>';
+ 				}
+ 				echo '<td>'.$listeCreneaux[$i].'</td>';
+
+ 			}
+ 		}
+ 		// Pause du midi
+ 		echo '<td> </td>';
+
+ 		if($tabConfig["nbCreneauxAprem"] == 0){
+ 			echo '<td> </td>';
+ 		}else{
+ 			// Affichage des créneaux de l'après midi
+
+ 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+ 			// On récupère le numéro de la pause de l'après-midi
+ 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+ 				$numCreneauPauseAprem = $i;
+ 			}
+ 		}
+ 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+ 			if ($numCreneauPauseAprem==$i) {
+ 				echo '<td>'."Pause".'</td>';
+ 			}
+ 			echo '<td>'.$listeCreneaux[$i].'</td>';
+ 			}
+ 		}
+ 		if ($tabConfig["nbCreneauxMatin"] != 0) {
+ 			$numCreneauPauseAprem ++;
+ 		}
+ 		echo'</tr>
+ 		</thead>
+ 		<tbody id="planning">';
+ 		foreach ($tabEnt as $ent) {
+ 			$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+ 		foreach ($tabForm as $form) {
+ 			$res = false;
+ 			for($i = 0; $i <= $nbCreneaux+1; $i++) {
+ 				if (($idEtudiant == ($dao -> getCreneau($i, $form['IDformation']))) && ($i != $numCreneauPauseMatin) && ( $i != $numCreneauPauseAprem)) {
+ 					$res = true;
+ 					echo $i;
+ 				}
+ 			}
+
+ 			if ($res) {
+
+ 				echo '<tr id="entreprise">
+ 				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+ 				</td>
+ 				<td>'
+ 				.$form['typeFormation'].
+ 				'</td>';
+ 				;
+ 				if ($tabConfig["nbCreneauxMatin"]==0) {
+ 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+ 				}
+ 				for($i = 0; $i <= $nbCreneaux+1; $i++) {
+ 					if ($i == $pauseMidi) {
+ 						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+ 					}
+ 					echo '<td class=colorMe>';
+ 					// Si c'est la pause on affiche un indicateur de pause
+ 					if (($i == $numCreneauPauseAprem) ||($i == $numCreneauPauseMatin)) {
+ 						echo'-';
+ 					}
+ 					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
+ 					else {
+ 						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+ 						echo $dao -> getCreneau($i, $form['IDformation']);
+ 					}
+ 				}
+ 				if ($tabConfig["nbCreneauxAprem"]==0){
+ 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+ 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+ 				}
+ 				echo '</td> ';
+
+ 			echo '</tr>';
+ 		}
+ 			}
+ 	}
+ 		?>
+ 	</tbody>
+ 	</table>
+ 	</diV>
+ 			<?php
+ 	    	}
+ 			  else {
+ 			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
+ 			  }
+ 		?>
+ 		</tbody>
+ 		</table>
+ 		</diV>
+ 		<p> <br/> </p>
+ 	    <?php
+ 	    //Planning du point de vue des Etudiants
+ 			echo $util->generePied();
+ 			?>
+ 		</body>
+ 		</html>
+
+ 	<br/><br/>
+ 	</div>
+ 		<?php
+ 	}
 
 	public function afficherPlanning() {
+                ?>
+
+                <?php
+                //////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR sAFFICHER/////////////////////////////////////
+                //On g??n??re l'emploi du temps
+                $dao = new Dao();
+                $tabConfig = $dao -> getConfiguration();
+                $tabEnt = $dao -> getAllEntreprises();
+
+                $nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+                $pauseMidi = $tabConfig["nbCreneauxMatin"]+1;
+
+                $heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
+                $heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+                $numCreneauPauseAprem = -1;
+                $numCreneauPauseMatin = -1;
+                $dureeCreneau = $tabConfig["dureeCreneau"];
+
+
+                //Planning du point de vue des entreprises
+                ?>
+                <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                <script
+src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+                <script src="vue/js/selectionTab.js"></script>
+                <script type="text/javascript">
+                $(document).ready(function() {
+                        var table = $('#tabPlanningEnt').dataTable({
+                                "paging":         false,
+                                "bSort": false,
+                                "info": false
+                        });
+                });
+                </script>
+
+                <div id="main">
+                <br/>
+                <h1>Planning Entreprises</h1>
+                <div class="resptab" >
+                <table id="tabPlanningEnt">
+
+
+                <thead>
+                <tr>
+                        <td colspan= 1> Entreprise </td>
+                        <td colspan= 1> Formation </td>
+                        <?php
+
+                        $taillePlanningmatin = $tabConfig["nbCreneauxMatin"] + 1;
+                        echo'<td colspan= '.$taillePlanningmatin.'> Matin </td>';
+                        echo'<td colspan= 1> Pause midi </td>';
+                        $taillePlanningaprem = $tabConfig["nbCreneauxAprem"] + 1;
+                        echo'<td colspan= '.$taillePlanningaprem.'> Après-midi </td>';
+                        ?>
+                </tr>
+
+                <?php
+                echo'<tr>';
+                echo'<td> </td>';
+                echo'<td> </td>';
+                $listeCreneaux = $dao->getListeCreneaux();
+
+                $heureCreneauApresPause = $heureCreneauPause;
+                $heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+                $heureCreneauApresPauseMatin = $heureCreneauPauseMatin;
+                $heureCreneauApresPauseMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+                // Affichage des heures du matin
+                if($tabConfig["nbCreneauxMatin"] == 0){
+                        echo '<td> </td>';
+                }else{
+
+                        for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+                                //On r??cup??re le num??ro de la pause du matin
+                                if($listeCreneaux[$i] == $heureCreneauApresPauseMatin->format('H:i')){
+                                        $numCreneauPauseMatin = $i;
+                                }
+                        }
+
+
+                        for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+                                if ($numCreneauPauseMatin == $i) {
+                                        echo '<td>'."Pause Matin".'</td>';
+                                }
+                                echo '<td>'.$listeCreneaux[$i].'</td>';
+
+                        }
+                }
+                // Pause du midi
+                echo '<td> </td>';
+
+                if($tabConfig["nbCreneauxAprem"] == 0){
+                        echo '<td> </td>';
+                }else{
+                        // Affichage des cr??neaux de l'apr??s midi
+
+                for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                        // On r??cup??re le num??ro de la pause de l'apr??s-midi
+                        if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                $numCreneauPauseAprem = $i;
+                        }
+                }
+                for ($i = 1+$tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                        if ($numCreneauPauseAprem==$i) {
+                                echo '<td>'."Pause".'</td>';
+                        }
+                        echo '<td>'.$listeCreneaux[$i].'</td>';
+                        }
+                }
+
+                echo'</tr>
+                </thead>
+                <tbody id="planning">';
+                foreach ($tabEnt as $ent) {
+                        $tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+                foreach ($tabForm as $form) {
+                        echo '<tr id="entreprise">
+                        <td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+                        </td>
+                        <td>'
+                        .$form['typeFormation'].
+                        '</td>';
+                        ;
+                        if ($tabConfig["nbCreneauxMatin"]==0) {
+                                echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+                        }
+                        for($i = 0; $i <= $nbCreneaux+1; $i++) {
+                                if ($i == $pauseMidi) {
+                                        echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+                                }
+                                echo '<td class=colorMe>';
+                                // Si c'est la pause on affiche un indicateur de pause
+                                if (($i == $numCreneauPauseAprem) ||($i == $numCreneauPauseMatin)) {
+                                        echo'-';
+                                }
+                                // Si ce n'est pas la pause, on affiche l'??tudiant affect?? ?? ce cr??neau
+                                else {
+                                        echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+                                }
+                        }
+                        if ($tabConfig["nbCreneauxAprem"]==0){
+                                echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+                                echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+                        }
+                        echo '</td> ';
+                }
+                        echo '</tr>';
+        }
+                ?>
+        </tbody>
+        </table>
+        </diV>
+        <?php
+        }
+	/**
+	 * Fonction permettant l'affichage de la page planning de l'entreprise.
+	 */
+	 public function afficherPlanningEnt(){
+	 $dao = new Dao();
+	 		$tableauConfig = $dao->getConfiguration();
+	 		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+	 		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
+	 		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+	 		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
+	 		$date = new DateTime();
+	 		$util = new UtilitairePageHtml();
+	 		echo $util->genereBandeauApresConnexion();
+	 		$idEntreprise = $_SESSION['idUser'];
+
+	 	?>
+	 		<?php
+	 		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
+
+	 		 if ($dateDebutVuePlanning2< $date) { ?>
+	 		<div id="main">
+	 		<p id="bonjourEnt">
+	 			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+
+
+	 		<?php
+	 		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
+	 		//On génére l'emploi du temps
+	 		$dao = new Dao();
+	 		$tabConfig = $dao -> getConfiguration();
+	 		$tabEnt = $dao -> getAllEntreprises();
+
+	 		$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
+
+	 		if ($tabConfig["nbCreneauxMatin"] == 0) {
+	 			$nbCreneaux --;
+	 		}
+
+	 		if($tabConfig["nbCreneauxMatin"] == 0) {
+	 			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+	 		} elseif ($tabConfig["nbCreneauxMatin"] != 0) {
+	 			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+	 			$pauseMidi += 1;
+	 		}
+
+	 		$heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
+	 		$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
+	 		$numCreneauPauseAprem = -1;
+	 		$numCreneauPauseMatin = -1;
+	 		$dureeCreneau = $tabConfig["dureeCreneau"];
+
+	 		//Planning du point de vue des entreprises
+	 		?>
+	 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	 		<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+	 		<script src="vue/js/selectionTab.js"></script>
+	 		<script type="text/javascript">
+	 		$(document).ready(function() {
+	 			var table = $('#tabPlanningEnt').dataTable({
+	 				"paging":         false,
+	 				"bSort": false,
+	 				"info": false
+	 			});
+	 		});
+	 		</script>
+
+	 		<div id="main">
+	 		<br/>
+	 		<h1>Planning Entreprises</h1>
+	 		<div class="resptab" >
+	 		<table id="tabPlanningEnt">
+
+
+	 		<thead>
+	 		<tr>
+	 			<td colspan= 1> Entreprise </td>
+	 			<td colspan= 1> Formation </td>
+	 			<?php
+
+	 			$taillePlanningmatin = $tabConfig["nbCreneauxMatin"] + 1;
+	 			echo'<td colspan= '.$taillePlanningmatin.'> Matin </td>';
+	 			echo'<td colspan= 1> Pause midi </td>';
+	 			$taillePlanningaprem = $tabConfig["nbCreneauxAprem"] + 1;
+	 			echo'<td colspan= '.$taillePlanningaprem.'> Après-midi </td>';
+	 			?>
+	 		</tr>
+
+	 		<?php
+	 		echo'<tr>';
+	 		echo'<td> </td>';
+	 		echo'<td> </td>';
+	 		$listeCreneaux = $dao->getListeCreneaux();
+
+	 		$heureCreneauApresPause = $heureCreneauPause;
+	 		$heureCreneauApresPause->add(new DateInterval('PT'.$dureeCreneau.'M'));
+	 		$heureCreneauApresPauseMatin = $heureCreneauPauseMatin;
+	 		$heureCreneauApresPauseMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+
+	 		// Affichage des heures du matin
+	 		if($tabConfig["nbCreneauxMatin"] == 0){
+
+	 			echo '<td> </td>';
+	 		}else{
+
+	 			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+	 				//On récupère le numéro de la pause du matin
+	 				if($listeCreneaux[$i] == $heureCreneauApresPauseMatin->format('H:i')){
+	 					$numCreneauPauseMatin = $i;
+	 				}
+	 			}
+
+
+	 			for ($i = 0; $i < $tabConfig["nbCreneauxMatin"]; $i++){
+	 				if ($numCreneauPauseMatin == $i) {
+	 					echo '<td>'."Pause Matin".'</td>';
+	 				}
+	 				echo '<td>'.$listeCreneaux[$i].'</td>';
+
+	 			}
+	 		}
+	 		// Pause du midi
+	 		echo '<td> </td>';
+
+	 		if($tabConfig["nbCreneauxAprem"] == 0){
+	 			echo '<td> </td>';
+	 		}else{
+	 			// Affichage des créneaux de l'après midi
+
+	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+	 			// On récupère le numéro de la pause de l'après-midi
+	 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+	 				$numCreneauPauseAprem = $i;
+	 			}
+	 		}
+	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+	 			if ($numCreneauPauseAprem==$i) {
+	 				echo '<td>'."Pause".'</td>';
+	 			}
+	 			echo '<td>'.$listeCreneaux[$i].'</td>';
+	 			}
+	 		}
+	 		if ($tabConfig["nbCreneauxMatin"] != 0) {
+	 			$numCreneauPauseAprem ++;
+	 		}
+	 		echo'</tr>
+	 		</thead>
+	 		<tbody id="planning">';
+	 		foreach ($tabEnt as $ent) {
+	 			$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
+	 		foreach ($tabForm as $form) {
+	 			if ( $ent->getID() == $idEntreprise) {
+	 				echo '<tr id="entreprise">
+	 				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
+	 				</td>
+	 				<td>'
+	 				.$form['typeFormation'].
+	 				'</td>';
+	 				;
+	 				if ($tabConfig["nbCreneauxMatin"]==0) {
+	 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+	 				}
+	 				for($i = 0; $i <= $nbCreneaux+1; $i++) {
+	 					if ($i == $pauseMidi) {
+	 						echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+	 					}
+	 					echo '<td class=colorMe>';
+	 					// Si c'est la pause on affiche un indicateur de pause
+	 					if (($i == $numCreneauPauseAprem) ||($i == $numCreneauPauseMatin)) {
+	 						echo'-';
+	 					}
+	 					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
+	 					else {
+	 						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+	 					}
+	 				}
+	 				if ($tabConfig["nbCreneauxAprem"]==0){
+	 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+	 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
+	 				}
+	 				echo '</td> ';
+	 		}
+	 		}
+	 			echo '</tr>';
+	 	}
+	 		?>
+	 	</tbody>
+	 	</table>
+	 	</diV>
+	 	<?php
+	 	    	}
+	 			  else {
+	 			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
+	 			  }
+	 		?>
+	 		</tbody>
+	 		</table>
+	 		</diV>
+	 			<p>
+	 			<br/>
+	 			</p>
+
+	 	<br/><br/>
+	 	</div>
+	 		<?php
+	 		echo $util->generePied();
+	 	}
+
+	/**
+	 * Fonction permettant l'affichage de la page planning de l'administrateur.
+	 */
+	public function afficherPlanningAdmin(){
+
+			$dao = new Dao();
+			$tableauConfig = $dao->getConfiguration();
+			$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
+			$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
+
+			$util = new UtilitairePageHtml();
+			echo $util->genereBandeauApresConnexion();
 		?>
 
+
+		<div id="main">
+			<p id="bonjourAdmin">
+				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+
+				<br /><br/>Pour effectuer des modifications sur un étudiant, sélectionnez l'heure puis l'étudiant à modifier.<br />
+				Pour supprimer un étudiant, sélectionnez une heure et l'étudiant seulement. <br />
+				Pour ajouter un étudiant sélectionnez l'heure, l'étudiant, l'entreprise et la formation.
+			</p>
+
+			<form class="" action="index.php" method="post">
+				<label>Heure :</label>
+					<select name='numero_creneau'>
+						<?php
+						$dao = new Dao();
+						for ($numCreneau=0; $numCreneau < 25 ; $numCreneau++) {
+							$heure = $dao->getHeure($numCreneau);
+								if ($heure != null) {
+								echo "<option value=".$numCreneau.">".$heure."</option>";
+							}
+						}
+
+						?>
+					</select>
+
+					<label>Etudiant :</label>
+					<select name="idEtudiantCre">
+						<?php
+							$nomEtu = $dao->getTousEtudiants();
+							foreach ($nomEtu as $res) {
+									echo "<option value=".$res['IDEtu'].">".$res['nomEtu']."</option>";
+							}
+						 ?>
+					</select>
+
+					<label>Entreprise :</label>
+					<select name="idEntrepriseCre">
+						<?php
+							$nomEnt = $dao->getTousEntreprises();
+							foreach ($nomEnt as $res) {
+									echo "<option value=".$res['IDEnt'].">".$res['nomEnt']."</option>";
+							}
+						 ?>
+					</select>
+
+					<label>Formation :</label>
+					<select name="idFormationEntrepriseCre">
+						<?php
+							$nomForm = $dao->getTousFormations();
+							foreach ($nomForm as $res) {
+									echo "<option value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
+							}
+						 ?>
+					</select>
+
+					<input type="submit" name="ajouterEtudiantCr" value="Ajouter l'étudiant">
+					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant">
+			</form>
+
+			<?php
+			if(isset($_POST['supprimerEtudiantCr'])) {
+				$dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']);
+			}
+			if(isset($_POST['ajouterEtudiantCr'])) {
+				$_POST['idFormationEntrepriseCre'] = $dao->getIDFormation($_POST['idFormationEntrepriseCre'], $_POST['idEntrepriseCre']);
+				// $verifNumCreneau = $dao->verifCreneau($_POST['idEtudiantCre'], $_POST['numero_creneau']);
+				$verifIdEtuNumCreneau = $dao->verifIdEtuCreneau($_POST['idEtudiantCre'], $_POST['numero_creneau']);
+				var_dump($verifIdEtuNumCreneau);
+					if ($_POST['numero_creneau'] != $verifIdEtuNumCreneau) {
+						echo "Cet étudiant est déjà sur le créneau horaire";
+					}
+					elseif($_POST['idFormationEntrepriseCre']==null){
+						echo "L'entreprise ne recherche pas d'étudiant dans cette formation";
+					}
+					else{
+						$dao->ajouterEtuCreneau($_POST['numero_creneau'],$_POST['idFormationEntrepriseCre'],$_POST['idEtudiantCre']);
+					}
+			}
+
+			echo $_POST['numero_creneau'];
+			echo "<br>".$_POST['idEtudiantCre'];
+			echo "<br>".$_POST['idEntrepriseCre'];
+			echo "<br>".$_POST['idFormationEntrepriseCre']; ?>
+		</div>
 		<?php
-		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
-		//On génére l'emploi du temps
+		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER///////////////////////////////////////On génére l'emploi du temps
 		$dao = new Dao();
 		$tabConfig = $dao -> getConfiguration();
 		$tabEnt = $dao -> getAllEntreprises();
 
 		$nbCreneaux = $tabConfig["nbCreneauxAprem"] + $tabConfig["nbCreneauxMatin"];
-		$pauseMidi = $tabConfig["nbCreneauxMatin"]+1;
+
+		if ($tabConfig["nbCreneauxMatin"] == 0) {
+			$nbCreneaux --;
+		}
+
+		if($tabConfig["nbCreneauxMatin"] == 0) {
+			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+		} elseif ($tabConfig["nbCreneauxMatin"] != 0) {
+			$pauseMidi = $tabConfig["nbCreneauxMatin"];
+			$pauseMidi += 1;
+		}
 
 		$heureCreneauPauseMatin = new DateTime($tabConfig['heureCreneauPauseMatin']);
 		$heureCreneauPause = new DateTime($tabConfig['heureCreneauPause']);
 		$numCreneauPauseAprem = -1;
 		$numCreneauPauseMatin = -1;
 		$dureeCreneau = $tabConfig["dureeCreneau"];
-
 
 		//Planning du point de vue des entreprises
 		?>
@@ -131,8 +765,7 @@ public function afficherPlanningEtu(){
 		</script>
 
 		<div id="main">
-		<br/>
-		<h1>Planning Entreprises</h1>
+		<h1>Planning administrateur</h1>
 		<div class="resptab" >
 		<table id="tabPlanningEnt">
 
@@ -164,6 +797,7 @@ public function afficherPlanningEtu(){
 
 		// Affichage des heures du matin
 		if($tabConfig["nbCreneauxMatin"] == 0){
+
 			echo '<td> </td>';
 		}else{
 
@@ -197,14 +831,16 @@ public function afficherPlanningEtu(){
 				$numCreneauPauseAprem = $i;
 			}
 		}
-		for ($i = 1+$tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
 			if ($numCreneauPauseAprem==$i) {
 				echo '<td>'."Pause".'</td>';
 			}
 			echo '<td>'.$listeCreneaux[$i].'</td>';
 			}
 		}
-
+		if ($tabConfig["nbCreneauxMatin"] != 0) {
+			$numCreneauPauseAprem ++;
+		}
 		echo'</tr>
 		</thead>
 		<tbody id="planning">';
@@ -221,7 +857,7 @@ public function afficherPlanningEtu(){
 			if ($tabConfig["nbCreneauxMatin"]==0) {
 				echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
 			}
-			for($i = 0; $i <= $nbCreneaux; $i++) {
+			for($i = 0; $i <= $nbCreneaux+1; $i++) {
 				if ($i == $pauseMidi) {
 					echo'<td id="pause_midi"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>';
 				}
@@ -242,80 +878,16 @@ public function afficherPlanningEtu(){
 			echo '</td> ';
 		}
 			echo '</tr>';
-	}
-		?>
-	</tbody>
-	</table>
-	</diV>
-	<?php
-	}
-	/**
-	 * Fonction permettant l'affichage de la page planning de l'entreprise.
-	 */
-public function afficherPlanningEnt(){
-$dao = new Dao();
-		$tableauConfig = $dao->getConfiguration();
-		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
-		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
-		$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
-		$dateDebutVuePlanning = implode("/",array_reverse($dateDebutVuePlanningTmp));
-		$date = new DateTime();
-		$util = new UtilitairePageHtml();
-		echo $util->genereBandeauApresConnexion();
-
-	?>
-		<?php
-		$dateDebutVuePlanning2 = DateTime::createFromFormat ('d/m/Y', $dateDebutVuePlanning);
-
-		 if ($dateDebutVuePlanning2< $date) { ?>
-		<div id="main">
-		<p id="bonjourEnt">
-			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			<?php $this->afficherPlanning(); ?>
-		</div>
-			<?php
-	    	}
-			  else {
-			 	echo "  Les emplois du temps relatifs à cet événement, le vôtre y compris, n'ont toujours pas été générés. L'administrateur vous en informera lorsque ceux-ci seront disponibles.";
-			  }
+		}
 		?>
 		</tbody>
 		</table>
 		</diV>
-			<p>
-			<br/>
-			</p>
 
-	<br/><br/>
-	</div>
-		<?php
-		echo $util->generePied();
-	}
-
-	/**
-	 * Fonction permettant l'affichage de la page planning de l'administrateur.
-	 */
-	public function afficherPlanningAdmin(){
-
-			$dao = new Dao();
-			$tableauConfig = $dao->getConfiguration();
-			$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
-			$dateEvenement = implode("/",array_reverse($dateEvenementTmp));
-
-
-			$util = new UtilitairePageHtml();
-			echo $util->genereBandeauApresConnexion();
-		?>
-
-
-		<div id="main">
-			<p id="bonjourAdmin">
-				Bonjour,
-				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-			<?php $this->afficherPlanning(); ?>
 			</p>
 		</div>
 		<p> <br/> </p>
+
 			<?php
 
 	    //Planning du point de vue des Etudiants

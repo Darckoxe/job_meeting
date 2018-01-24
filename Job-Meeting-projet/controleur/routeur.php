@@ -336,7 +336,6 @@ class Routeur {
     }
 
     if (isset($_POST['modification_entreprise_formations'])) {
-      $this->ctrlInscriptionEnt->gestionEnvoiOffreModif();
       if(isset($_POST['formation'])) {
         $stringFormations = "";
         $forms = $_POST['formation'];
@@ -344,6 +343,49 @@ class Routeur {
           $stringFormations = $stringFormations . $form . ",";
         }
         $this->dao->editFormationsRechercheesEntreprise(($_SESSION['idUser']), $stringFormations);
+        $_POST['nomSociete'] = $this->dao->getNomEntreprise($_SESSION['idUser']);
+        echo ($_POST['nomSociete']);
+        $listeFormations = $this->dao->getListeFormations();
+        foreach ($listeFormations as $formation){
+          $name="offre_";
+          $name.=$formation->getInitiales();
+          if (isset($_FILES[$name]['error'])) {
+            if(($_FILES[$name]['error'] == 0) || ($_FILES[$name]['error'] == 4)){
+              if ($_FILES[$name]['size'] > 10485760) {
+                echo "La taille du fichier est trop grande (1Mo max).";
+                exit();
+              }
+              $extensions_valides = array("pdf");
+              $extension_upload = strtolower( substr( strrchr($_FILES[$name]['name'],'.') ,1) );
+
+              if(($_FILES[$name]['error'] == 0)){
+                if (!in_array($extension_upload, $extensions_valides)) {
+                  echo "Mauvais format du fichier (pdf necessaire)";
+                  exit();
+                }
+              }
+
+              if ((isset($_POST['nomSociete'])) && ($_FILES[$name]['error'] == 0)) {
+                  $nomFichier = $_POST['nomSociete'].'_'.$name;
+                  $chemin = "offre/{$nomFichier}.{$extension_upload}";
+                  echo $nomFichier;
+                  if (isset($_FILES[$name]['tmp_name'])) {
+                    $resultat = move_uploaded_file($_FILES[$name]['tmp_name'], $chemin);
+                      if (!$resultat) {
+                        echo "Echec de transfert";
+                        exit();
+                      }
+                  }
+              }
+            }
+            else{
+              echo "Une erreur lors du transfert de fichier est survenue. ";
+              echo "Code erreur ".$_FILES[$name]['error'];
+              exit();
+            }
+          }
+        }
+
       }
       if(isset($_SESSION['testProfil']) && isset($_SESSION['testType'])){
         $_SESSION['testProfil'] = $this->dao->getEnt($_SESSION['idUser']);
@@ -354,6 +396,7 @@ class Routeur {
       }
       return;
     }
+
 
     if (isset($_POST['modification_entreprise_informations'])) {
       if ($_POST['nomSociete'] != "") {
@@ -384,6 +427,7 @@ class Routeur {
 
       return;
     }
+
     if (isset($_POST['modification_entreprise_contact'])) {
       if ($_POST['nomContactSociete'] != "") {
         $this->dao->editNomContactEntreprise(($_SESSION['idUser']), $_POST['nomContactSociete']);
@@ -587,10 +631,23 @@ class Routeur {
       $dateLimitEnt->setTime(23,59,59);
       $dateLimitEtu->setTime(23,59,59);
 
-      if ((isset($_POST['inscription'])) && ($dateNow >= $dateDebutEtu && $dateNow <= $dateLimitEtu)) {
+      if ((($_POST['inscription'] == "etudiant")) && ($dateNow >= $dateDebutEtu && $dateNow <= $dateLimitEtu)) {
+          if ($this->dao->ajoutEtudiant()) {
+            $this->ctrlInscriptionEtu->gestionEnvoiCV();
+            $this->ctrlConfirmationInscription->genereVueConfirmationInscription("<br>Après cette étape,  vous pourrez choisir les entreprises");
+            return;
+          }
+          else {
+            $_SESSION['fail'] = "Une autre personne du même nom ou utilisant cette adresse email semble déjà inscrite. Veuillez réessayer avec une autre adresse ou vérifiez que vous n'êtes pas déjà inscrit.";
+            $this->ctrlInscriptionEtu->inscriptionEtu();
+            unset($_SESSION['fail']);
+            return;
+          }
+      }
+
+      if (($_POST['inscription'] == "entreprise") && ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt)) {
         if($this->dao->ajoutEntreprise()) {
           echo $_FILES[$name]['name'];
-
           $listeFormations = $this->dao->getListeFormations();
           foreach ($listeFormations as $formation){
             $name="offre_";
@@ -631,29 +688,17 @@ class Routeur {
               }
             }
           }
+          $this->ctrlConfirmationInscription->genereVueConfirmationInscription("");
+          return;
         }
-    else {
-      $_SESSION['fail'] = "Cette adresse email a déjà été utilisée ou cette entreprise est déjà inscrite à l'événement. Veuillez vérifier que vous n'êtes pas déjà inscrit ou réessayez avec une autre adresse email.";
-      $this->ctrlInscriptionEnt->inscriptionEnt();
-      unset($_SESSION['fail']);
-      return;
+        else {
+          $_SESSION['fail'] = "Cette adresse email a déjà été utilisée ou cette entreprise est déjà inscrite à l'événement. Veuillez vérifier que vous n'êtes pas déjà inscrit ou réessayez avec une autre adresse email.";
+          $this->ctrlInscriptionEnt->inscriptionEnt();
+          unset($_SESSION['fail']);
+          return;
+        }
+      }
     }
-    $this->ctrlConfirmationInscription->genereVueConfirmationInscription("");
-    return;
-  }
-
-      if ($this->dao->ajoutEtudiant()) {
-        $this->ctrlInscriptionEtu->gestionEnvoiCV();
-        $this->ctrlConfirmationInscription->genereVueConfirmationInscription("<br>Après cette étape,  vous pourrez choisir les entreprises");
-        return;
-      }
-      else {
-        $_SESSION['fail'] = "Une autre personne du même nom ou utilisant cette adresse email semble déjà inscrite. Veuillez réessayer avec une autre adresse ou vérifiez que vous n'êtes pas déjà inscrit.";
-        $this->ctrlInscriptionEtu->inscriptionEtu();
-        unset($_SESSION['fail']);
-        return;
-      }
-  }
 
     // Validation de l'inscription d'un utilisateur
     if (isset($_GET['validation']) && isset($_GET['id']) && isset($_GET['type']) && isset($_SESSION['type_connexion'])) {
@@ -849,7 +894,7 @@ class Routeur {
       return;
     }
 
-    if (isset($_POST['edition_compte'])) {
+      if (isset($_POST['edition_compte'])) {
       /*
       TODO
       Si mdp correct

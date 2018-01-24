@@ -287,6 +287,7 @@ class Dao
 	{
 		try
 		{
+			echo "Connexion 1";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEtu from temp_etudiant WHERE mailEtu="'.$_POST['email'].'";');
 			$statement->execute();
@@ -296,6 +297,7 @@ class Dao
 			{
 				return false;
 			}
+			echo "Connexion 2";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEtu from etudiant WHERE mailEtu="'.$_POST['email'].'";');
 			$statement->execute();
@@ -305,6 +307,7 @@ class Dao
 			{
 				return false;
 			}
+			echo "Connexion 3";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEnt from temp_entreprise WHERE mailEnt="'.$_POST['email'].'";');
 			$statement->execute();
@@ -314,6 +317,7 @@ class Dao
 			{
 				return false;
 			}
+			echo "Connexion 4";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEnt from entreprise WHERE mailEnt="'.$_POST['email'].'";');
 			$statement->execute();
@@ -323,6 +327,7 @@ class Dao
 			{
 				return false;
 			}
+			echo "Connexion 5";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT emailadmin from identificationadmin WHERE emailadmin="'.$_POST['email'].'";');
 			$statement->execute();
@@ -344,6 +349,7 @@ class Dao
 			}
 			$mdpEtu = crypt($_POST['password'], "$6$".$salt) ; //On chiffre le mot de passe à l'aide du sel ("$salt") créé ci-dessus
 			//$mdpEtu = crypt($_POST['password']);
+			echo "Connexion 6";
 			$this->connexion();
 			$statement = $this->connexion->prepare('INSERT INTO temp_etudiant (nomEtu,prenomEtu,mailEtu,mdpEtu,numtelEtu,formationEtu) VALUES (?, ?, ?, ?, ?, ?);');
 			$statement->bindParam(1, $nomEtu);
@@ -2871,6 +2877,121 @@ class Dao
 					}
 
 				}
+
+				public function getHeure($num){
+					try {
+						$this->connexion();
+						$statement = $this->connexion->prepare('SELECT heure FROM heurecreneau WHERE num=?;');
+						$statement->bindParam(1,$num);
+						$statement->execute();
+						$tabResult = $statement->fetch();
+						$this->deconnexion();
+						return $tabResult["heure"];
+					}
+					catch (AccesTableException $e)
+					{
+						print($e->getMessage());
+					}
+				}
+
+				public function verifCreneau($idEtu, $numCreneau){
+					try {
+						$this->connexion();
+						$statement = $this->connexion->prepare('SELECT numeroCreneau FROM creneau where idEtudiant = ? and numeroCreneau = ?');
+						$statement->bindParam(1,$idEtu);
+						$statement->bindParam(2,$numCreneau);
+						$statement->execute();
+						$res = $statement->fetch();
+						$this->deconnexion();
+						return $res;
+					}
+					catch (AccesTableException $e)
+					{
+						print($e->getMessage());
+					}
+				}
+
+				public function verifIdEtuCreneau($numCreneau, $idEtu){
+					try {
+						$this->connexion();
+						$statement = $this->connexion->prepare('SELECT idEtudiant FROM creneau where numeroCreneau = ? and idEtudiant = ?');
+						$statement->bindParam(1,$numCreneau);
+						$statement->bindParam(2,$idEtu);
+						$statement->execute();
+						$res = $statement->fetch();
+						$this->deconnexion();
+						return $res;
+					}
+					catch (AccesTableException $e)
+					{
+						print($e->getMessage());
+					}
+				}
+
+				public function supprimerEtuCreneau($numCreneau, $idEtu)
+				{
+					$this->connexion();
+					$statement = $this->connexion->prepare('DELETE FROM creneau WHERE numeroCreneau = ? AND idEtudiant= ?');
+					$statement->bindParam(1, $numCreneau);
+					$statement->bindParam(2, $idEtu);
+					$statement->execute();
+					$this->deconnexion();
+					return;
+				}
+
+				public function ajouterEtuCreneau($numCreneau, $idFormation, $idEtu)
+				{
+					$heure_debut = "00:00:00";
+					$heure_fin = "00:00:00";
+
+					$this->connexion();
+					$statement = $this->connexion->prepare('INSERT INTO creneau VALUES (?,?,?,?,?)');
+					$statement->bindParam(1, $numCreneau);
+					$statement->bindParam(2, $heure_debut);
+					$statement->bindParam(3, $heure_fin);
+					$statement->bindParam(4, $idFormation);
+					$statement->bindParam(5, $idEtu);
+					$statement->execute();
+					$this->deconnexion();
+					return;
+				}
+
+				public function getIdEtudiant($nomEtudiant){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT IDEtu FROM etudiant WHERE nomEtu = ?');
+					$statement->bindParam(1, $nomEtudiant);
+					$statement->execute();
+					$res = $statement->fetch();
+					$this->deconnexion();
+					return $res;
+				}
+
+				public function getTousEtudiants(){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT * FROM etudiant ORDER BY nomEtu');
+					$statement->execute();
+					$res = $statement->fetchAll();
+					$this->deconnexion();
+					return $res;
+				}
+
+				public function getTousEntreprises() {
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT * from entreprise order by nomEnt;');
+					$statement->execute();
+					$this->deconnexion();
+					return $statement->fetchAll();
+				}
+
+				public function getTousFormations() {
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT distinct typeFormation from formation order by typeFormation;');
+					$statement->execute();
+					$this->deconnexion();
+					return $statement->fetchAll();
+				}
+
+
 
 			}
 			?>
