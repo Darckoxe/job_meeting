@@ -647,7 +647,6 @@ class Routeur {
 
       if (($_POST['inscription'] == "entreprise") && ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt)) {
         if($this->dao->ajoutEntreprise()) {
-          echo $_FILES[$name]['name'];
           $listeFormations = $this->dao->getListeFormations();
           foreach ($listeFormations as $formation){
             $name="offre_";

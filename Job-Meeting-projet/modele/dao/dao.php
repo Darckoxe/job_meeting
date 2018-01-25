@@ -287,7 +287,6 @@ class Dao
 	{
 		try
 		{
-			echo "Connexion 1";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEtu from temp_etudiant WHERE mailEtu="'.$_POST['email'].'";');
 			$statement->execute();
@@ -297,7 +296,6 @@ class Dao
 			{
 				return false;
 			}
-			echo "Connexion 2";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEtu from etudiant WHERE mailEtu="'.$_POST['email'].'";');
 			$statement->execute();
@@ -307,7 +305,6 @@ class Dao
 			{
 				return false;
 			}
-			echo "Connexion 3";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEnt from temp_entreprise WHERE mailEnt="'.$_POST['email'].'";');
 			$statement->execute();
@@ -317,7 +314,6 @@ class Dao
 			{
 				return false;
 			}
-			echo "Connexion 4";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT mailEnt from entreprise WHERE mailEnt="'.$_POST['email'].'";');
 			$statement->execute();
@@ -327,7 +323,6 @@ class Dao
 			{
 				return false;
 			}
-			echo "Connexion 5";
 			$this->connexion();
 			$statement = $this->connexion->prepare('SELECT emailadmin from identificationadmin WHERE emailadmin="'.$_POST['email'].'";');
 			$statement->execute();
@@ -349,7 +344,6 @@ class Dao
 			}
 			$mdpEtu = crypt($_POST['password'], "$6$".$salt) ; //On chiffre le mot de passe à l'aide du sel ("$salt") créé ci-dessus
 			//$mdpEtu = crypt($_POST['password']);
-			echo "Connexion 6";
 			$this->connexion();
 			$statement = $this->connexion->prepare('INSERT INTO temp_etudiant (nomEtu,prenomEtu,mailEtu,mdpEtu,numtelEtu,formationEtu) VALUES (?, ?, ?, ?, ?, ?);');
 			$statement->bindParam(1, $nomEtu);
@@ -2894,10 +2888,10 @@ class Dao
 					}
 				}
 
-				public function verifCreneau($idEtu, $numCreneau){
+				public function verifEtuSurCreneau($idEtu, $numCreneau){
 					try {
 						$this->connexion();
-						$statement = $this->connexion->prepare('SELECT numeroCreneau FROM creneau where idEtudiant = ? and numeroCreneau = ?');
+						$statement = $this->connexion->prepare('SELECT idEtudiant from creneau where idEtudiant = ? and numeroCreneau = ?');
 						$statement->bindParam(1,$idEtu);
 						$statement->bindParam(2,$numCreneau);
 						$statement->execute();
@@ -2911,12 +2905,12 @@ class Dao
 					}
 				}
 
-				public function verifIdEtuCreneau($numCreneau, $idEtu){
+				public function verifEtuSurCreneauEntreprise($idFormation, $numCreneau){
 					try {
 						$this->connexion();
-						$statement = $this->connexion->prepare('SELECT idEtudiant FROM creneau where numeroCreneau = ? and idEtudiant = ?');
-						$statement->bindParam(1,$numCreneau);
-						$statement->bindParam(2,$idEtu);
+						$statement = $this->connexion->prepare('SELECT idEtudiant FROM creneau WHERE idFormation = ? and numeroCreneau = ?');
+						$statement->bindParam(1,$idFormation);
+						$statement->bindParam(2,$numCreneau);
 						$statement->execute();
 						$res = $statement->fetch();
 						$this->deconnexion();

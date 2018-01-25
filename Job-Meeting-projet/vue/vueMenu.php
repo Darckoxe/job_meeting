@@ -111,7 +111,7 @@ class VueMenu{
 
  		<div id="main">
  		<br/>
- 		<h1>Planning Entreprises</h1>
+ 		<h1>Planning Etudiant</h1>
  		<div class="resptab" >
  		<table id="tabPlanningEnt">
 
@@ -225,7 +225,6 @@ class VueMenu{
  					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
  					else {
  						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
- 						echo $dao -> getCreneau($i, $form['IDformation']);
  					}
  				}
  				if ($tabConfig["nbCreneauxAprem"]==0){
@@ -424,6 +423,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 */
 	 public function afficherPlanningEnt(){
 	 $dao = new Dao();
+	 $etu = new Etudiant();
 	 		$tableauConfig = $dao->getConfiguration();
 	 		$dateEvenementTmp = explode("-",$tableauConfig['dateEvenement']);
 	 		$dateDebutVuePlanningTmp = explode("-",$tableauConfig['dateDebutVuePlanning']);
@@ -569,7 +569,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 		foreach ($tabEnt as $ent) {
 	 			$tabForm = $dao -> getFormationsEntreprise($ent -> getID());
 	 		foreach ($tabForm as $form) {
-	 			if ( $ent->getID() == $idEntreprise) {
+	 			if ($ent->getID() == $idEntreprise) {
 	 				echo '<tr id="entreprise">
 	 				<td><a href="index.php?profil='.$ent->getID().'&type=Ent">'.$ent->getNomEnt().'</a>
 	 				</td>
@@ -591,7 +591,9 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 					}
 	 					// Si ce n'est pas la pause, on affiche l'étudiant affecté à ce créneau
 	 					else {
-	 						echo $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+							$etuNom= $dao -> getNomEtudiant($dao -> getCreneau($i, $form['IDformation']));
+							$etuId =  $dao->getIdEtudiant($etuNom);
+							echo "<a href=\"index.php?profil=$etuId[0]&type=Etu\"> $etuNom </a>";
 	 					}
 	 				}
 	 				if ($tabConfig["nbCreneauxAprem"]==0){
@@ -704,25 +706,32 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 				$dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']);
 			}
 			if(isset($_POST['ajouterEtudiantCr'])) {
+				/*
+				1. Vérifier que l'entreprise recherche bien la formation de l'étudiant
+				2. Vérifier que l'étudiant ne soit pas déjà présent sur le créneau
+				3. Vérifier qu'il n'y a pas déjà un étudiant sur le créneau de la formation
+				*/
 				$_POST['idFormationEntrepriseCre'] = $dao->getIDFormation($_POST['idFormationEntrepriseCre'], $_POST['idEntrepriseCre']);
-				// $verifNumCreneau = $dao->verifCreneau($_POST['idEtudiantCre'], $_POST['numero_creneau']);
-				$verifIdEtuNumCreneau = $dao->verifIdEtuCreneau($_POST['idEtudiantCre'], $_POST['numero_creneau']);
-				var_dump($verifIdEtuNumCreneau);
-					if ($_POST['numero_creneau'] != $verifIdEtuNumCreneau) {
-						echo "Cet étudiant est déjà sur le créneau horaire";
-					}
-					elseif($_POST['idFormationEntrepriseCre']==null){
+				$verifEtuSurCreneau = $dao->verifEtuSurCreneau($_POST['idEtudiantCre'], $_POST['numero_creneau']);
+				$verifEtuSurCreneauEnt = $dao->verifEtuSurCreneauEntreprise($_POST['idFormationEntrepriseCre'], $_POST['numero_creneau']);
+
+				//1.
+					if($_POST['idFormationEntrepriseCre']==null){
 						echo "L'entreprise ne recherche pas d'étudiant dans cette formation";
 					}
-					else{
-						$dao->ajouterEtuCreneau($_POST['numero_creneau'],$_POST['idFormationEntrepriseCre'],$_POST['idEtudiantCre']);
+				//2.
+					elseif ($_POST['idEtudiantCre'] == $verifEtuSurCreneau[0]) {
+						echo "Cet étudiant est déjà sur le créneau horaire";
 					}
+				//3.
+				elseif ($verifEtuSurCreneauEnt[0]!=null) {
+					echo "Un étudiant est déjà présent pour cette formation à cette heure";
+				}
+				else{
+					$dao->ajouterEtuCreneau($_POST['numero_creneau'],$_POST['idFormationEntrepriseCre'],$_POST['idEtudiantCre']);
+				}
 			}
-
-			echo $_POST['numero_creneau'];
-			echo "<br>".$_POST['idEtudiantCre'];
-			echo "<br>".$_POST['idEntrepriseCre'];
-			echo "<br>".$_POST['idFormationEntrepriseCre']; ?>
+ ?>
 		</div>
 		<?php
 		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER///////////////////////////////////////On génére l'emploi du temps

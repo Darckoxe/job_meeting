@@ -78,7 +78,6 @@ class VueInscriptionEnt{
 								if($formation->getDepartement() == $departement) {
 									$name="offre_";
 									$name.=$formation->getInitiales();
-									echo $name;
 									echo '
 									<input type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" onClick="EnableSubmit(this)">
 									<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.
