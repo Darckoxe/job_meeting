@@ -171,14 +171,14 @@ class VueMenu{
  		}else{
  			// Affichage des créneaux de l'après midi
 
- 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+ 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
  			// On récupère le numéro de la pause de l'après-midi
  			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
  				$numCreneauPauseAprem = $i;
  			}
 
  		}
- 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+ 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
  			if ($numCreneauPauseAprem==$i) {
  				echo '<td>'."Pause".'</td>';
  			}
@@ -547,13 +547,13 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 		}else{
 	 			// Affichage des créneaux de l'après midi
 
-	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
 	 			// On récupère le numéro de la pause de l'après-midi
 	 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
 	 				$numCreneauPauseAprem = $i;
 	 			}
 	 		}
-	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
 	 			if ($numCreneauPauseAprem==$i) {
 	 				echo '<td>'."Pause".'</td>';
 	 			}
@@ -645,16 +645,12 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
 		<div id="main">
 			<p id="bonjourAdmin">
-				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
-
-				<br /><br/>Pour effectuer des modifications sur un étudiant, sélectionnez l'heure puis l'étudiant à modifier.<br />
-				Pour supprimer un étudiant, sélectionnez une heure et l'étudiant seulement. <br />
-				Pour ajouter un étudiant sélectionnez l'heure, l'étudiant, l'entreprise et la formation.
-			</p>
+				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.	</p>
 
 			<form class="" action="index.php" method="post">
 				<label>Heure :</label>
 					<select name='numero_creneau'>
+						<option value="null"> ----- </option>
 						<?php
 						$dao = new Dao();
 						for ($numCreneau=0; $numCreneau < 25 ; $numCreneau++) {
@@ -669,6 +665,38 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
 					<label>Etudiant :</label>
 					<select name="idEtudiantCre">
+						<option value="null"> ----- </option>
+						<?php
+							$nomEtu = $dao->getTousEtudiants();
+							foreach ($nomEtu as $res) {
+									echo "<option value=".$res['IDEtu'].">".$res['nomEtu']."</option>";
+							}
+						 ?>
+					</select>
+					<br>
+					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant" onclick="return checkDelete()">
+				</form>
+
+				<br><br>
+
+			<form class="" action="index.php" method="post">
+				<label>Heure :</label>
+					<select name='numero_creneau'>
+						<option value="null"> ----- </option>
+						<?php
+						$dao = new Dao();
+						for ($numCreneau=0; $numCreneau < 25 ; $numCreneau++) {
+							$heure = $dao->getHeure($numCreneau);
+								if ($heure != null) {
+								echo "<option value=".$numCreneau.">".$heure."</option>";
+							}
+						}
+						?>
+					</select>
+
+					<label>Etudiant :</label>
+					<select name="idEtudiantCre">
+						<option value="null"> ----- </option>
 						<?php
 							$nomEtu = $dao->getTousEtudiants();
 							foreach ($nomEtu as $res) {
@@ -677,28 +705,28 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 						 ?>
 					</select>
 
-					<label>Entreprise :</label>
-					<select name="idEntrepriseCre">
-						<?php
-							$nomEnt = $dao->getTousEntreprises();
-							foreach ($nomEnt as $res) {
-									echo "<option value=".$res['IDEnt'].">".$res['nomEnt']."</option>";
-							}
-						 ?>
-					</select>
+						 <label>Entreprise :</label>
+	 					<select name="idEntrepriseCre">
+	 						<option value="null"> ----- </option>
+	 						<?php
+	 							$nomEnt = $dao->getTousEntreprises();
+	 							foreach ($nomEnt as $res) {
+	 									echo "<option value=".$res['IDEnt'].">".$res['nomEnt']."</option>";
+	 							}
+	 						 ?>
+	 					</select>
 
-					<label>Formation :</label>
-					<select name="idFormationEntrepriseCre">
-						<?php
-							$nomForm = $dao->getTousFormations();
-							foreach ($nomForm as $res) {
-									echo "<option value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
-							}
-						 ?>
-					</select>
-
+	 				<label>Formation :</label>
+	 				<select name="idFormationEntrepriseCre">
+	 						<option value="null"> ----- </option>
+	 						<?php
+	 							$nomForm = $dao->getTousFormations();
+	 							foreach ($nomForm as $res) {
+	 									echo "<option value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
+	 							}
+	 						 ?>
+	 				</select>
 					<input type="submit" name="ajouterEtudiantCr" value="Ajouter l'étudiant">
-					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant" onclick="return checkDelete()">
 			</form>
 
 			<script>
@@ -842,13 +870,13 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 		}else{
 			// Affichage des créneaux de l'après midi
 
-		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
 			// On récupère le numéro de la pause de l'après-midi
 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
 				$numCreneauPauseAprem = $i;
 			}
 		}
-		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
 			if ($numCreneauPauseAprem==$i) {
 				echo '<td>'."Pause".'</td>';
 			}
