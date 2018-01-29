@@ -16,7 +16,11 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
+Tâche 1 : Vérifier le site sur infoweb
 
+Tâche 2 : Afficher correctement le planning lorsqu'on change la durée des créneaux (Utiliser le javascript)
+
+Tâche 3 : Lorsqu'on coche une case de sélection de formation, le bouton d'upoload apparait
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -50,3 +54,7 @@ Tâche : Afficher le planning après un jour j pour les étudiants et les entrep
 Tâche : Ajouter une liste déroulante des étudiants pour en ajouter ou en supprimer dans le planning
 
 Tâche : L'étudiant et l'entreprise doivent pouvoir mettre à jour le cv ou des nouvelles offres d'emploi
+
+Tâche : Pouvoir mettre à jour des nouvelles offres d'emploi pour les entreprises.
+
+Tâche : Afficher le bouton de validation des choix
