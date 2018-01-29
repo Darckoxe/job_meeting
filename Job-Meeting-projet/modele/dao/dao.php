@@ -1172,15 +1172,16 @@ class Dao
 					$statement->bindParam(1, $formation);
 					$statement->execute();
 					$tabResult = $statement->fetchAll();
-					$sortie = array();
-					foreach ($tabResult as $id)
-					{
-						$statement = $this->connexion->prepare('SELECT * FROM entreprise WHERE IDEnt = '.intval($id['entPropose']).';');
-						$statement->execute();
-						array_push($sortie,$statement->fetchAll(PDO::FETCH_CLASS, "Entreprise")[0]);
-					}
+					// $sortie = array();
+					// foreach ($tabResult as $id)
+					// {
+					// 	$statement = $this->connexion->prepare('SELECT * FROM entreprise WHERE IDEnt = '.intval($id['entPropose']).';');
+					// 	$statement->execute();
+					// 	array_push($sortie,$statement->fetchAll(PDO::FETCH_CLASS, "Entreprise")[0]);
+					// }
 					$this->deconnexion();
-					return $sortie;
+					return $tabResult;
+					// return $sortie;
 				}
 
 

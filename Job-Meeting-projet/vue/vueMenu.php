@@ -176,6 +176,7 @@ class VueMenu{
  			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
  				$numCreneauPauseAprem = $i;
  			}
+
  		}
  		for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
  			if ($numCreneauPauseAprem==$i) {
@@ -197,7 +198,6 @@ class VueMenu{
  			for($i = 0; $i <= $nbCreneaux+1; $i++) {
  				if (($idEtudiant == ($dao -> getCreneau($i, $form['IDformation']))) && ($i != $numCreneauPauseMatin) && ( $i != $numCreneauPauseAprem)) {
  					$res = true;
- 					echo $i;
  				}
  			}
 
@@ -698,13 +698,21 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 					</select>
 
 					<input type="submit" name="ajouterEtudiantCr" value="Ajouter l'étudiant">
-					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant">
+					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant" onclick="return checkDelete()">
 			</form>
 
-			<?php
-			if(isset($_POST['supprimerEtudiantCr'])) {
-				$dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']);
+			<script>
+			function checkDelete() {
+				if (confirm('Êtes-vous sûr(e) de vouloir supprimer l\'étudiant ?')) {
+						return true;
+						<?php $dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']); ?>
+				} else {
+						return false;
+				}
 			}
+			</script>
+
+			<?php
 			if(isset($_POST['ajouterEtudiantCr'])) {
 				/*
 				1. Vérifier que l'entreprise recherche bien la formation de l'étudiant
@@ -1403,7 +1411,9 @@ function verifTelephone() {
 		echo $util->genereBandeauApresConnexion();
 		$dao = new Dao();
 		$etudiantCourant = $dao->getEtu($_SESSION['idUser'])[0];
-		$listeEntreprises = $dao->getEntreprisesParFormation($etudiantCourant->getFormationEtu());
+		// $listeEntreprises = $dao->getEntreprisesParFormation($etudiantCourant->getFormationEtu());
+		$listeEntreprises = $dao->getEntreprisesParFormation($dao->getFormationEtudiant($_SESSION['idUser']));
+
 	?>
 	<!DOCTYPE html>
 	<html>
@@ -1449,13 +1459,13 @@ function verifTelephone() {
 
 		<br/>
 
-           <?php
-           $dateNow = new DateTime("now");
-		$tabConfig = $dao->getConfiguration();
+<?php
+$dateNow = new DateTime("now");
+$tabConfig = $dao->getConfiguration();
 $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
-//Correction du décalage d'une journée
-$dateLimitEtu->setTime(23,59,59);
-														if ($dateNow > $dateLimitEtu) {
+						//Correction du décalage d'une journée
+						$dateLimitEtu->setTime(23,59,59);
+					if ($dateNow > $dateLimitEtu) {
            echo "<b>Vous ne pouvez plus refaire vos choix. ";
            echo "Choix des entreprises termin&eacute;s depuis le  ".date_format($dateLimitEtu, "d/m/Y")."</b><br>";
            }
@@ -1483,47 +1493,90 @@ $dateLimitEtu->setTime(23,59,59);
 
 		<form action="index.php" method="POST" onsubmit="return verifier();">
 
-			<select id="ent1" name="choix1" onchange="Changement1()" >
+			<select id="ent1" name="choix1" onchange="Changement1()">
 				<option value="Faire un choix...">Faire un choix...</option>
 				<?php
-					$formationEtu = $etudiantCourant->getFormationEtu();
-					foreach ($listeEntreprises as $entreprise) {
-						echo '<option value="'.$entreprise->getId().'"';
-						$this->choixCouleurs($entreprise->getID(),$formationEtu);
-						echo '>'.$entreprise->getNomEnt().'</option>';
-						//Mise en forme des options dans le code source
-						echo "\n\t\t\t\t";
-					}
+				$formationEtu = $etudiantCourant->getFormationEtu();
+				foreach ($listeEntreprises as $entreprise) {
+					$id_entreprise = $entreprise[0];
+					$nom_entreprise = $dao->getNomEntreprise($id_entreprise);
+
+					echo '<option value="'.$id_entreprise.'"';
+					$this->choixCouleurs($id_entreprise,$formationEtu);
+					echo '>'.$nom_entreprise.'</option>';
+					//Mise en forme des options dans le code source
+					echo "\n\t\t\t\t";
+				}
+					// $formationEtu = $etudiantCourant->getFormationEtu();
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
 				?>
 			</select>
 
 			<br/><br/>
 
-			<select id="ent2" name="choix2" onchange="Changement2()" style="visibility:hidden;">
+			<select id="ent2" name="choix2" onchange="Changement2()" style="visibility:hidden">
 				<option value="Faire un choix...">Faire un choix...</option>
 				<?php
-					foreach ($listeEntreprises as $entreprise) {
-						echo '<option value="'.$entreprise->getId().'"';
-						$this->choixCouleurs($entreprise->getID(),$formationEtu);
-						echo '>'.$entreprise->getNomEnt().'</option>';
-						//Mise en forme des options dans le code source
-						echo "\n\t\t\t\t";
-					}
+				$formationEtu = $etudiantCourant->getFormationEtu();
+				foreach ($listeEntreprises as $entreprise) {
+					$id_entreprise = $entreprise[0];
+					$nom_entreprise = $dao->getNomEntreprise($id_entreprise);
+
+					echo '<option value="'.$id_entreprise.'"';
+					$this->choixCouleurs($id_entreprise,$formationEtu);
+					echo '>'.$nom_entreprise.'</option>';
+					//Mise en forme des options dans le code source
+					echo "\n\t\t\t\t";
+				}
+					// $formationEtu = $etudiantCourant->getFormationEtu();
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
 				?>
 			</select>
+
 
 			<br/><br/>
 
 			<select id="ent3" name="choix3" onchange="Changement3()" style="visibility:hidden;">
 				<option value="Faire un choix...">Faire un choix...</option>
 				<?php
-					foreach ($listeEntreprises as $entreprise) {
-						echo '<option value="'.$entreprise->getId().'"';
-						$this->choixCouleurs($entreprise->getID(),$formationEtu);
-						echo '>'.$entreprise->getNomEnt().'</option>';
-						//Mise en forme des options dans le code source
-						echo "\n\t\t\t\t";
-					}
+				$formationEtu = $etudiantCourant->getFormationEtu();
+				foreach ($listeEntreprises as $entreprise) {
+					$id_entreprise = $entreprise[0];
+					$nom_entreprise = $dao->getNomEntreprise($id_entreprise);
+
+					echo '<option value="'.$id_entreprise.'"';
+					$this->choixCouleurs($id_entreprise,$formationEtu);
+					echo '>'.$nom_entreprise.'</option>';
+					//Mise en forme des options dans le code source
+					echo "\n\t\t\t\t";
+				}
+					// $formationEtu = $etudiantCourant->getFormationEtu();
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
 				?>
 			</select>
 
@@ -1532,13 +1585,32 @@ $dateLimitEtu->setTime(23,59,59);
 			<select id="ent4" name="choix4" onchange="Changement4()" style="visibility:hidden;">
 				<option value="Faire un choix...">Faire un choix...</option>
 				<?php
-					foreach ($listeEntreprises as $entreprise) {
-						echo '<option value="'.$entreprise->getId().'"';
-						$this->choixCouleurs($entreprise->getID(),$formationEtu);
-						echo '>'.$entreprise->getNomEnt().'</option>';
-						//Mise en forme des options dans le code source
-						echo "\n\t\t\t\t";
-					}
+				$formationEtu = $etudiantCourant->getFormationEtu();
+				foreach ($listeEntreprises as $entreprise) {
+					$id_entreprise = $entreprise[0];
+					$nom_entreprise = $dao->getNomEntreprise($id_entreprise);
+
+					echo '<option value="'.$id_entreprise.'"';
+					$this->choixCouleurs($id_entreprise,$formationEtu);
+					echo '>'.$nom_entreprise.'</option>';
+					//Mise en forme des options dans le code source
+					echo "\n\t\t\t\t";
+				}
+					// $formationEtu = $etudiantCourant->getFormationEtu();
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
+					// foreach ($listeEntreprises as $entreprise) {
+					// 	echo '<option value="'.$entreprise->getId().'"';
+					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
+					// 	echo '>'.$entreprise->getNomEnt().'</option>';
+					// 	//Mise en forme des options dans le code source
+					// 	echo "\n\t\t\t\t";
+					// }
 				?>
 			</select>
 
@@ -1644,9 +1716,14 @@ function Changement3() {
 		<br/><br/><span style="categorie_profil">Liste des entreprises recherchant votre formation :</span><br/><br/>
 
 		<?php
+			echo "<br/>";
 			if (sizeof($tabEntreprises) > 0 && !is_bool($tabEntreprises)) {
 				foreach ($tabEntreprises as $entreprise) {
-					echo '<a href="index.php?profil='.$entreprise->getId().'&type=Ent">'.$entreprise->getNomEnt().'</a><br/><br/>';
+					$id_entreprise = $entreprise['entPropose'];
+					$nom_entreprise = $dao->getNomEntreprise($id_entreprise);
+					if($nom_entreprise != "-----------"){
+						echo '<a href="index.php?profil='.$id_entreprise.'&type=Ent">'.$nom_entreprise.'</a><br/><br/>';
+					}
 				}
 			}
 			else {
@@ -2187,7 +2264,7 @@ function Changement3() {
 							echo 'checked ';
 						}
 						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a> <br>
-						 <input type="file" name="offre_modif'.$formation->getInitiales().'"/> <br/> <br>'."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
+						 <input type="file" name="offre_'.$formation->getInitiales().'"/> <br/> <br>'."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
 						$compteur = $compteur + 1;
 						}
 

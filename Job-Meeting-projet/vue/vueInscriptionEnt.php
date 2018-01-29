@@ -60,8 +60,6 @@ class VueInscriptionEnt{
 					<!-- Formation -->
 					<label> Quelle(s) formation(s) vous intéresse(nt) ? <span name="obligatoire">*</span></label> <br/>
 					<label> Vous pouvez déposer une offre .pdf (1Mo max) pour chaque formation </label> <br /> <br/>
-					<label> <b> <font color=red> ATTENTION, une fois enregistré, vous ne pourrez modifier uniquement les fichiers pdf envoyés lors de cette inscription.
-					Dans le cas où vous souhaiteriez mettre une nouvelle offre plus tard, veuillez envoyer un fichier pdf vide pour pouvoir le modifier ultérieurement </font> </b> </label>
 					<br/><br/>
 					<?php
 						$compteur = 0;

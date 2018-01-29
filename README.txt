@@ -16,7 +16,7 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 : Pouvoir mettre à jour des nouvelles offres d'emploi pour les entreprises.
+
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -48,3 +48,5 @@ Tâche : Afficher le planning après un jour j pour les étudiants et les entrep
 	- L'entreprise doit voir uniquement les étudiants qu'elle rencontre
 
 Tâche : Ajouter une liste déroulante des étudiants pour en ajouter ou en supprimer dans le planning
+
+Tâche : L'étudiant et l'entreprise doivent pouvoir mettre à jour le cv ou des nouvelles offres d'emploi

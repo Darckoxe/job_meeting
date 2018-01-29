@@ -344,7 +344,6 @@ class Routeur {
         }
         $this->dao->editFormationsRechercheesEntreprise(($_SESSION['idUser']), $stringFormations);
         $_POST['nomSociete'] = $this->dao->getNomEntreprise($_SESSION['idUser']);
-        echo ($_POST['nomSociete']);
         $listeFormations = $this->dao->getListeFormations();
         foreach ($listeFormations as $formation){
           $name="offre_";
@@ -368,7 +367,6 @@ class Routeur {
               if ((isset($_POST['nomSociete'])) && ($_FILES[$name]['error'] == 0)) {
                   $nomFichier = $_POST['nomSociete'].'_'.$name;
                   $chemin = "offre/{$nomFichier}.{$extension_upload}";
-                  echo $nomFichier;
                   if (isset($_FILES[$name]['tmp_name'])) {
                     $resultat = move_uploaded_file($_FILES[$name]['tmp_name'], $chemin);
                       if (!$resultat) {
