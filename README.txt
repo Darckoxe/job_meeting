@@ -16,15 +16,18 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 : Vérifier le site sur infoweb
+Tâche 1 : Vérifier le site sur infoweb (les uploads ne fonctionnent pas)
 
-Tâche 2 : Afficher correctement le planning lorsqu'on change la durée des créneaux (Utiliser le javascript)
+Tâche 2 : Dans la vue config, créer une liste pour la durée des créeaux. 
+Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
 Tâche 3 : Lorsqu'on coche une case de sélection de formation, le bouton d'upoload apparait
 
-Tâche 4 : Lors de l'inscription des étudiants, s'ils ne parviennent pas à upload leur cv, il faut annuler l'inscription
+Tâche 4 : Lors de l'inscription des étudiants, s'ils ne parviennent pas à upload leur cv, il faut annuler l'inscription en base de données
 
-Tâche 5 : Téléchargement des emplois du temps en .ics
+Tâche 5 : Lors d'une erreur d'upload, afficher un lien de retour. 
+
+Tâche 6 : Téléchargement des emplois du temps en .ics
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
