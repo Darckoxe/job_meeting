@@ -645,9 +645,11 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
 		<div id="main">
 			<p id="bonjourAdmin">
-				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.	</p>
+				<br/>Bienvenue sur votre espace administrateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+				<br> <br/ > <a title="Ajouter un étudiant" href="#" onclick="afficherAjoutEtu();return false;"> Ajouter un étudiant au planning</a>
+			<br/ > <a title="Supprimer un étudiant" href="#" onclick="afficherSupprEtu();return false;">Supprimer un étudiant du planning</a> </p>
 
-			<form class="" action="index.php" method="post">
+			<form id="formSupprEtu" action="index.php" method="post" style="visibility:hidden">
 				<label>Heure :</label>
 					<select name='numero_creneau'>
 						<option value="null"> ----- </option>
@@ -676,10 +678,8 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 					<br>
 					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant" onclick="return checkDelete()">
 				</form>
-
-				<br><br>
-
-			<form class="" action="index.php" method="post">
+				
+			<form id="formAjoutEtu" action="index.php" method="post" style="visibility:hidden">
 				<label>Heure :</label>
 					<select name='numero_creneau'>
 						<option value="null"> ----- </option>
@@ -737,6 +737,16 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 				} else {
 						return false;
 				}
+			}
+
+			function afficherSupprEtu(){
+				document.getElementById("formSupprEtu").style.visibility = "";
+				document.getElementById("formAjoutEtu").style.visibility = "hidden";
+			}
+			function afficherAjoutEtu(){
+				document.getElementById("formAjoutEtu").style.visibility = "";
+				document.getElementById("formSupprEtu").style.visibility = "hidden";
+
 			}
 			</script>
 
@@ -1535,14 +1545,6 @@ $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
 					//Mise en forme des options dans le code source
 					echo "\n\t\t\t\t";
 				}
-					// $formationEtu = $etudiantCourant->getFormationEtu();
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
 				?>
 			</select>
 
@@ -1562,14 +1564,6 @@ $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
 					//Mise en forme des options dans le code source
 					echo "\n\t\t\t\t";
 				}
-					// $formationEtu = $etudiantCourant->getFormationEtu();
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
 				?>
 			</select>
 
@@ -1590,21 +1584,6 @@ $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
 					//Mise en forme des options dans le code source
 					echo "\n\t\t\t\t";
 				}
-					// $formationEtu = $etudiantCourant->getFormationEtu();
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
 				?>
 			</select>
 
@@ -1624,21 +1603,6 @@ $dateLimitEtu = new DateTime($tabConfig['dateFinInscription']);
 					//Mise en forme des options dans le code source
 					echo "\n\t\t\t\t";
 				}
-					// $formationEtu = $etudiantCourant->getFormationEtu();
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
-					// foreach ($listeEntreprises as $entreprise) {
-					// 	echo '<option value="'.$entreprise->getId().'"';
-					// 	$this->choixCouleurs($entreprise->getID(),$formationEtu);
-					// 	echo '>'.$entreprise->getNomEnt().'</option>';
-					// 	//Mise en forme des options dans le code source
-					// 	echo "\n\t\t\t\t";
-					// }
 				?>
 			</select>
 

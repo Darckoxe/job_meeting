@@ -22,13 +22,15 @@ Tâche 2 : Afficher correctement le planning lorsqu'on change la durée des cré
 
 Tâche 3 : Lorsqu'on coche une case de sélection de formation, le bouton d'upoload apparait
 
+Tâche 4 : Lors de l'inscription des étudiants, s'ils ne parviennent pas à upload leur cv, il faut annuler l'inscription
+
+Tâche 5 : Téléchargement des emplois du temps en .ics
+
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
 Tâche : Création d'un QCM de satisfaction
 
 Tâche : Modifier l’affichage du planning général root pour éviter le scroll horizontal
-
-Tâche : Téléchargement des emplois du temps en .ics
 
 Tâche : Ajout d’un système interactif de passage avec code couleur
 
