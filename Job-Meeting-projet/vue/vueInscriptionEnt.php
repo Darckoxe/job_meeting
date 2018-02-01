@@ -60,7 +60,7 @@ class VueInscriptionEnt{
 					<!-- Formation -->
 					<label> Quelle(s) formation(s) vous intéresse(nt) ? <span name="obligatoire">*</span></label> <br/>
 					<label> Vous pouvez déposer une offre .pdf (1Mo max) pour chaque formation </label> <br /> <br/>
-					<br/><br/>
+
 					<?php
 						$compteur = 0;
 						$listeFormations = $dao->getListeFormations();
@@ -77,19 +77,21 @@ class VueInscriptionEnt{
 									$name="offre_";
 									$name.=$formation->getInitiales();
 									echo '
-									<input type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" onClick="EnableSubmit(this)">
+									<input id="'.$compteur.'" type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" onclick="EnableSubmit(this)">
 									<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.
 										$formation->getDescription().'
 									</a>
-									<br />
-									<input type="file" name="'.$name.'">
-									<br/> <br />';
+									<br/>
+									<input type="file" name="'.$name.'" style="display:none" id="boutonUpload'.$compteur.'">
+									<br/>';
 									$compteur = $compteur + 1;
+									// Pour le javascript : Pouvoir compter le nombre d'id qu'il y a. Réutiliser la balise.id du TD webclient
 								}
 							}
 						}
 
 					?>
+
 					<br/>
 
 					<span name="information">Pour plus d'informations sur nos formations : <a href="http://www.iutnantes.univ-nantes.fr/20796624/0/fiche___pagelibre/&RH=1183111171330&RF=1183119182323" target="_blank">www.univ-nantes.fr/iutnantes</a> </span>
@@ -324,25 +326,28 @@ class VueInscriptionEnt{
 					}
 				}
 
-
 				</script>
 
 
 				<script type="text/javascript">
+
 				EnableSubmit = function(val)
 				{
 					var sbmt = document.getElementById("submit");
 
 					if (val.checked == true)
 					{
+						document.getElementById("boutonUpload"+val.id).style = "display";
 						sbmt.disabled = false;
 					}
 					else
 					{
+						document.getElementById("boutonUpload"+val.id).style = "display:none";
 						sbmt.disabled = true;
 					}
 				}
 				</script>
+
 				<script>
 				VerifSubmit = function()
 				{

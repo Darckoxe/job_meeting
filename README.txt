@@ -16,18 +16,13 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 : Vérifier le site sur infoweb (les uploads ne fonctionnent pas)
+Tâche 1 : Vérifier le site sur infoweb
+	- Lors de la suppression, afficher une boite de dialogue demandant la confirmation de la suppression
 
-Tâche 2 : Dans la vue config, créer une liste pour la durée des créeaux. 
+Tâche 2 : Dans la vue config, créer une liste pour la durée des créeaux.
 Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
-Tâche 3 : Lorsqu'on coche une case de sélection de formation, le bouton d'upoload apparait
-
-Tâche 4 : Lors de l'inscription des étudiants, s'ils ne parviennent pas à upload leur cv, il faut annuler l'inscription en base de données
-
-Tâche 5 : Lors d'une erreur d'upload, afficher un lien de retour. 
-
-Tâche 6 : Téléchargement des emplois du temps en .ics
+Tâche 3 : Téléchargement des emplois du temps en .ics
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -37,7 +32,7 @@ Tâche : Modifier l’affichage du planning général root pour éviter le scrol
 
 Tâche : Ajout d’un système interactif de passage avec code couleur
 
------ TACHES TERMINEES -----
+----- TACHES TERMINEES S3 -----
 
 Tâche : Rédaction du cahier des charges
 
@@ -62,4 +57,14 @@ Tâche : L'étudiant et l'entreprise doivent pouvoir mettre à jour le cv ou des
 
 Tâche : Pouvoir mettre à jour des nouvelles offres d'emploi pour les entreprises.
 
+----- TACHES TERMINEES S4 -----
+
 Tâche : Afficher le bouton de validation des choix
+
+Tâche : Lors de l'inscription des étudiants, s'ils ne parviennent pas à upload leur cv, il faut annuler l'inscription en base de données
+
+Tâche : Lorsqu'on coche une case de sélection de formation, le bouton d'upoload apparait dans la vue inscription entreprise
+
+Tâche : Quand on supprime un étudiant de la base de données, il faut aussi supprimer son CV
+
+Tâche : Quand on supprime une entreprise de la base de données, il faut aussi supprimer ses offres

@@ -1537,6 +1537,22 @@ class Dao
 					}
 				}
 
+				public function getNomEntrepriseTmp($idEnt)  {
+					try {
+						$this->connexion();
+						$statement = $this->connexion->prepare('SELECT nomEnt FROM temp_entreprise WHERE IDEnt = "'.$idEnt.'";');
+						$statement->execute();
+						$this->deconnexion();
+						if ($result = $statement->fetch()) {
+							return $result['nomEnt'];
+						} else {
+							return "-----------";
+						}
+					} catch (AccesTableException $e) {
+						print($e -> getMessage());
+					}
+				}
+
 
 
 
@@ -2987,6 +3003,27 @@ class Dao
 					$this->deconnexion();
 					return $statement->fetchAll();
 				}
+
+				public function getFormationsRecherchees($idEnt){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT formationsRecherchees from entreprise where IDEnt = ?');
+					$statement->bindParam(1, $idEnt);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetch();
+					return $str;
+				}
+
+				public function getFormationsRechercheesTmp($idEnt){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT formationsRecherchees from temp_entreprise where IDEnt = ?');
+					$statement->bindParam(1, $idEnt);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetch();
+					return $str;
+				}
+
 
 
 

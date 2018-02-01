@@ -649,7 +649,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 				<br> <br/ > <a title="Ajouter un étudiant" href="#" onclick="afficherAjoutEtu();return false;"> Ajouter un étudiant au planning</a>
 			<br/ > <a title="Supprimer un étudiant" href="#" onclick="afficherSupprEtu();return false;">Supprimer un étudiant du planning</a> </p>
 
-			<form id="formSupprEtu" action="index.php" method="post" style="visibility:hidden">
+			<form id="formSupprEtu" action="index.php" method="post" style="display:none">
 				<label>Heure :</label>
 					<select name='numero_creneau'>
 						<option value="null"> ----- </option>
@@ -678,8 +678,8 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 					<br>
 					<input type="submit" name="supprimerEtudiantCr" value="Supprimer l'étudiant" onclick="return checkDelete()">
 				</form>
-				
-			<form id="formAjoutEtu" action="index.php" method="post" style="visibility:hidden">
+
+			<form id="formAjoutEtu" action="index.php" method="post" style="display:none">
 				<label>Heure :</label>
 					<select name='numero_creneau'>
 						<option value="null"> ----- </option>
@@ -729,23 +729,25 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 					<input type="submit" name="ajouterEtudiantCr" value="Ajouter l'étudiant">
 			</form>
 
-			<script>
-			function checkDelete() {
-				if (confirm('Êtes-vous sûr(e) de vouloir supprimer l\'étudiant ?')) {
-						return true;
-						<?php $dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']); ?>
-				} else {
-						return false;
+				<script>
+				function checkDelete() {
+					if (confirm('Êtes-vous sûr(e) de vouloir supprimer l\'étudiant ?')) {
+							return true;
+							<?php $dao->supprimerEtuCreneau($_POST['numero_creneau'],$_POST['idEtudiantCre']); ?>
+					} else {
+							return false;
+					}
 				}
-			}
+				</script>
 
+			<script>
 			function afficherSupprEtu(){
-				document.getElementById("formSupprEtu").style.visibility = "";
-				document.getElementById("formAjoutEtu").style.visibility = "hidden";
+				document.getElementById("formSupprEtu").style = "display";
+				document.getElementById("formAjoutEtu").style = "display:none";
 			}
 			function afficherAjoutEtu(){
-				document.getElementById("formAjoutEtu").style.visibility = "";
-				document.getElementById("formSupprEtu").style.visibility = "hidden";
+				document.getElementById("formAjoutEtu").style = "display";
+				document.getElementById("formSupprEtu").style = "display:none";
 
 			}
 			</script>

@@ -112,15 +112,41 @@ class Routeur {
           foreach($_POST['mails'] as $tmp){
             $tab = explode("+",$tmp);
             if (strcmp($tab[2],"Etu") == 0) {
+              unlink("cv/".$tab[0].".pdf");
               $this->dao->supprimerEtu($tab[1]);
             }
             if (strcmp($tab[2],"tmpEtu") == 0) {
+              unlink("cv/".$tab[0].".pdf");
               $this->dao->supprimerEtuTemp($tab[1]);
             }
             if (strcmp($tab[2],"Ent") == 0) {
+              // tab[1] donne l'id de l'Entreprise
+              // avec l'id je recupere les formation recherchees
+              // je supprime les offres
+              $nomEnt = $this->dao->getNomEntreprise($tab[1]);
+              $nomEnt = strtoupper($nomEnt);
+              $str = $this->dao->getFormationsRecherchees($tab[1]);
+              if($str[0]!=null){
+                $tabFormations = explode(",",$str[0]);
+                foreach ($tabFormations as $offre) {
+                  $nomOffre = $nomEnt."_offre_".$offre.".pdf";
+                  unlink("offre/".$nomOffre);
+                }
+              }
+
               $this->dao->supprimerEnt($tab[1]);
             }
             if (strcmp($tab[2],"tmpEnt") == 0) {
+              $nomEnt = $this->dao->getNomEntrepriseTmp($tab[1]);
+              $nomEnt = strtoupper($nomEnt);
+              $str = $this->dao->getFormationsRechercheesTmp($tab[1]);
+              if($str[0]!=null){
+                $tabFormations = explode(",",$str[0]);
+                foreach ($tabFormations as $offre) {
+                  $nomOffre = $nomEnt."_offre_".$offre.".pdf";
+                  unlink("offre/".$nomOffre);
+                }
+              }
               $this->dao->supprimerEntTemp($tab[1]);
             }
           }
@@ -344,6 +370,7 @@ class Routeur {
         }
         $this->dao->editFormationsRechercheesEntreprise(($_SESSION['idUser']), $stringFormations);
         $_POST['nomSociete'] = $this->dao->getNomEntreprise($_SESSION['idUser']);
+        $_POST['nomSociete'] = strtoupper($_POST['nomSociete']);
         $listeFormations = $this->dao->getListeFormations();
         foreach ($listeFormations as $formation){
           $name="offre_";
@@ -630,8 +657,8 @@ class Routeur {
       $dateLimitEtu->setTime(23,59,59);
 
       if ((($_POST['inscription'] == "etudiant")) && ($dateNow >= $dateDebutEtu && $dateNow <= $dateLimitEtu)) {
-          if ($this->dao->ajoutEtudiant()) {
-            $this->ctrlInscriptionEtu->gestionEnvoiCV();
+          if($this->ctrlInscriptionEtu->gestionEnvoiCV()){
+            $this->dao->ajoutEtudiant();
             $this->ctrlConfirmationInscription->genereVueConfirmationInscription("<br>Après cette étape,  vous pourrez choisir les entreprises");
             return;
           }
@@ -666,9 +693,9 @@ class Routeur {
                 }
 
                 if ((isset($_POST['nomSociete'])) && ($_FILES[$name]['error'] == 0)) {
+                    $_POST['nomSociete'] = strtoupper($_POST['nomSociete']);
                     $nomFichier = $_POST['nomSociete'].'_'.$name;
                     $chemin = "offre/{$nomFichier}.{$extension_upload}";
-                    echo $nomFichier;
                     if (isset($_FILES[$name]['tmp_name'])) {
                       $resultat = move_uploaded_file($_FILES[$name]['tmp_name'], $chemin);
                         if (!$resultat) {
