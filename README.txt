@@ -19,10 +19,20 @@ jobdating
 Tâche 1 : Vérifier le site sur infoweb
 	- Lors de la suppression, afficher une boite de dialogue demandant la confirmation de la suppression
 
-Tâche 2 : Dans la vue config, créer une liste pour la durée des créeaux.
+Tâche 2 : Dans la vue config, créer une liste pour la durée des créneaux.
 Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
 Tâche 3 : Téléchargement des emplois du temps en .ics
+
+Tâche 4 : Lorsque l'entreprise décoche s formation, il faut supprimer l'offre du serveur.
+
+Tache 5 : Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)7
+
+Tache 6 : Quand on met juste les créneaux de l'après midi on fait en sorte de bien afficher le planning
+
+Tache 7 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
+
+Tâche 8 : Quand on a une erreur 404, afficher un message d'erreur
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
