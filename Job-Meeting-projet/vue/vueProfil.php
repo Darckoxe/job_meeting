@@ -483,10 +483,14 @@ public function afficherProfil($type,$profil){
     $id = $profil->getID();
 		$nomEnt = $profil->getNomEnt();
 		$listesFormationsRecherchees= $dao->getFormationsEntreprise($id);
-		foreach ($listesFormationsRecherchees as $formation) { ?>
-			<a href="offre/<?php echo $nomEnt ?>_offre_<?php echo $formation['typeFormation']?>.pdf"> <i> Télécharger l'offre d'emploi <?php echo $formation['typeFormation'] ?> </i> </a> <br/> <?php
+		foreach ($listesFormationsRecherchees as $formation) {
+			$forma = $formation['typeFormation'];
+			$chemin = "offre/$nomEnt"."_offre_"."$forma".".pdf";
+			if (file_exists($chemin)) {	?>
+				<a name="lien_offre" href="offre/<?php echo $nomEnt ?>_offre_<?php echo $formation['typeFormation']?>.pdf"> <i> Télécharger l'offre d'emploi <?php echo $formation['typeFormation'] ?> </i> </a> <br/>
+				<?php
+			}
 		}
-
     if ($_SESSION['type_connexion'] == "admin") {
 			$_SESSION['idUser'] = $id;
 			$_SESSION['type_modification'] = "Ent";

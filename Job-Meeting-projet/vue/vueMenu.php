@@ -169,21 +169,36 @@ class VueMenu{
  		if($tabConfig["nbCreneauxAprem"] == 0){
  			echo '<td> </td>';
  		}else{
- 			// Affichage des créneaux de l'après midi
+                        // Affichage des créneaux de l'après midi
 
- 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
- 			// On récupère le numéro de la pause de l'après-midi
- 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
- 				$numCreneauPauseAprem = $i;
- 			}
-
- 		}
- 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
- 			if ($numCreneauPauseAprem==$i) {
- 				echo '<td>'."Pause".'</td>';
- 			}
- 			echo '<td>'.$listeCreneaux[$i].'</td>';
- 			}
+                if ($tabConfig["nbCreneauxMatin"] == 0) {
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                        // On récupère le numéro de la pause de l'après-midi
+                                 if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                        $numCreneauPauseAprem = $i;
+                                 }
+                        }
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                                if ($numCreneauPauseAprem==$i) {
+                                        echo '<td>'."Pause".'</td>';
+                                }
+                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                        }
+                }
+                else {
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                        // On récupère le numéro de la pause de l'après-midi
+                                if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                        $numCreneauPauseAprem = $i;
+                                }
+                }
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                                if ($numCreneauPauseAprem==$i) {
+                                        echo '<td>'."Pause".'</td>';
+                                }
+                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                        }
+                }
  		}
  		if ($tabConfig["nbCreneauxMatin"] != 0) {
  			$numCreneauPauseAprem ++;
@@ -287,6 +302,9 @@ class VueMenu{
                 ?>
                 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
                 <script
+
+
+
 src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
                 <script src="vue/js/selectionTab.js"></script>
                 <script type="text/javascript">
@@ -545,20 +563,36 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 		if($tabConfig["nbCreneauxAprem"] == 0){
 	 			echo '<td> </td>';
 	 		}else{
-	 			// Affichage des créneaux de l'après midi
+                        // Affichage des créneaux de l'après midi
 
-	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-	 			// On récupère le numéro de la pause de l'après-midi
-	 			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
-	 				$numCreneauPauseAprem = $i;
-	 			}
-	 		}
-	 		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-	 			if ($numCreneauPauseAprem==$i) {
-	 				echo '<td>'."Pause".'</td>';
-	 			}
-	 			echo '<td>'.$listeCreneaux[$i].'</td>';
-	 			}
+                                if ($tabConfig["nbCreneauxMatin"] == 0) {
+                                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                                        // On récupère le numéro de la pause de l'après-midi
+                                                 if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                                        $numCreneauPauseAprem = $i;
+                                                 }
+                                        }
+                                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                                                if ($numCreneauPauseAprem==$i) {
+                                                        echo '<td>'."Pause".'</td>';
+                                                }
+                                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                                        }
+                                }
+                                else {
+                                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                                        // On récupère le numéro de la pause de l'après-midi
+                                                if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                                        $numCreneauPauseAprem = $i;
+                                                }
+                                }
+                                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                                                if ($numCreneauPauseAprem==$i) {
+                                                        echo '<td>'."Pause".'</td>';
+                                                }
+                                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                                        }
+                                }
 	 		}
 	 		if ($tabConfig["nbCreneauxMatin"] != 0) {
 	 			$numCreneauPauseAprem ++;
@@ -882,19 +916,36 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 		}else{
 			// Affichage des créneaux de l'après midi
 
-		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-			// On récupère le numéro de la pause de l'après-midi
-			if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
-				$numCreneauPauseAprem = $i;
-			}
-		}
-		for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
-			if ($numCreneauPauseAprem==$i) {
-				echo '<td>'."Pause".'</td>';
-			}
-			echo '<td>'.$listeCreneaux[$i].'</td>';
-			}
-		}
+                if ($tabConfig["nbCreneauxMatin"] == 0) {
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                        // On récupère le numéro de la pause de l'après-midi
+                                 if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                        $numCreneauPauseAprem = $i;
+                                 }
+                        }
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i <= $nbCreneaux; $i++){
+                                if ($numCreneauPauseAprem==$i) {
+                                        echo '<td>'."Pause".'</td>';
+                                }
+                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                        }
+                }
+                else {
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                        // On récupère le numéro de la pause de l'après-midi
+                                if($listeCreneaux[$i] == $heureCreneauApresPause->format('H:i')){
+                                        $numCreneauPauseAprem = $i;
+                                }
+                }
+                        for ($i = $tabConfig["nbCreneauxMatin"]; $i < $nbCreneaux; $i++){
+                                if ($numCreneauPauseAprem==$i) {
+                                        echo '<td>'."Pause".'</td>';
+                                }
+                                echo '<td>'.$listeCreneaux[$i].'</td>';
+                        }
+                }
+                }
+		
 		if ($tabConfig["nbCreneauxMatin"] != 0) {
 			$numCreneauPauseAprem ++;
 		}
