@@ -363,11 +363,35 @@ class Routeur {
 
     if (isset($_POST['modification_entreprise_formations'])) {
       if(isset($_POST['formation'])) {
+        /* 1 - Récupérer les formations AVANT la modification des formations recherchees
+          2 - Comparer les nouveaux changements avec les anciens
+          3 - Supprimer les différences */
+
+        // 1 -
+        $formationAvantModif = $this->dao->getFormationsRecherchees($_SESSION['idUser']);
+        $formationAvantModifExplode=explode(",",$formationAvantModif[0]);
+
+
         $stringFormations = "";
         $forms = $_POST['formation'];
+
         foreach ($forms as $form){
           $stringFormations = $stringFormations . $form . ",";
         }
+
+        // 2 -
+        $difference = array_diff($formationAvantModifExplode, $forms);
+
+        // 3 -
+        $nomEntre = $this->dao->getNomEntreprise($_SESSION['idUser']);
+
+        foreach ($difference as $offreASupprimer) {
+        $path = $nomEntre."_offre_".$offreASupprimer.".pdf";
+        if(file_exists("offre/".$path)){
+          unlink("offre/".$path);
+          }
+        }
+
         $this->dao->editFormationsRechercheesEntreprise(($_SESSION['idUser']), $stringFormations);
         $_POST['nomSociete'] = $this->dao->getNomEntreprise($_SESSION['idUser']);
         $_POST['nomSociete'] = strtoupper($_POST['nomSociete']);

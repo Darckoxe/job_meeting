@@ -24,11 +24,10 @@ Quand on indiquera la durée des créneaux via cette liste, la liste des heures 
 
 Tâche 3 : Téléchargement des emplois du temps en .ics
 
-Tâche 4 : Lorsque l'entreprise décoche une formation, il faut supprimer l'offre du serveur.
+Tache 4 : Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
+	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants 
 
-Tache 5 : Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)7
-
-Tache 6 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
+Tache 5 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -78,3 +77,5 @@ Tâche : Quand on supprime une entreprise de la base de données, il faut aussi 
 Tâche : Quand on a une erreur 404, afficher un message d'erreur --> On affiche uniquement s'il y a des fichiers sinon rien.
 
 Tache : Quand on met juste les créneaux de l'après midi on fait en sorte de bien afficher le planning (créneau matin = 0)
+
+Tâche : Lorsque l'entreprise décoche une formation, il faut supprimer l'offre du serveur.

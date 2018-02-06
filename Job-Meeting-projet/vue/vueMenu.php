@@ -945,7 +945,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
                         }
                 }
                 }
-		
+
 		if ($tabConfig["nbCreneauxMatin"] != 0) {
 			$numCreneauPauseAprem ++;
 		}
@@ -1898,10 +1898,12 @@ function Changement3() {
 				    var sbmt = document.getElementById("submit");
 				    if (val.checked == true)
 				    {
+								document.getElementById("boutonUpload"+val.id).style = "display";
 				        sbmt.disabled = false;
 				    }
 				    else
 				    {
+								document.getElementById("boutonUpload"+val.id).style = "display:none";
 				        sbmt.disabled = true;
 				    }
 				}
@@ -2195,13 +2197,16 @@ function Changement3() {
 				EnableSubmit = function(val)
 				{
 				    var sbmt = document.getElementById("submit");
+						console.log(val.id);
 				    if (val.checked == true)
 				    {
-				        sbmt.disabled = false;
+							document.getElementById("boutonUpload"+val.id).style = "display";
+				      //  sbmt.disabled = false;
 				    }
 				    else
 				    {
-				        sbmt.disabled = true;
+							document.getElementById("boutonUpload"+val.id).style = "display:none";
+				        // sbmt.disabled = true;
 				    }
 				}
 			</script>
@@ -2304,12 +2309,12 @@ function Changement3() {
 					echo '<span><b>Département '.$departement.' :</b></span><br/>'."\n\t\t\t";
 					foreach ($listeFormations as $formation) {
 						if($formation->getDepartement() == $departement) {
-							echo '<input type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" onClick="EnableSubmit(this)" ';
+							echo '<input type="checkbox" name="formation['.$compteur.']" value="'.$formation->getInitiales().'" id="'.$compteur.'" onClick="EnableSubmit(this)" ';
 						if (in_array($formation->getInitiales(), $formationsRecherchees)) {
 							echo 'checked ';
 						}
-						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a> <br>
-						 <input type="file" name="offre_'.$formation->getInitiales().'"/> <br/> <br>'."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
+						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().'</a> <br/>
+						 <input type="file" name="offre_'.$formation->getInitiales().'" style="display:none" id="boutonUpload'.$compteur.'"/> '."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
 						$compteur = $compteur + 1;
 						}
 
