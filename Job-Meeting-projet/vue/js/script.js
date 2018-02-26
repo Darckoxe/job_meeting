@@ -5,7 +5,7 @@ $(document).ready(function(){
 
 					type: "GET",
 					dataType: "json",
-					url: "http://infoweb/~E149769S/Job-Meeting/Gitlab/JobMeetAdmin/codePostalComplete.php",
+					url: "http://infoweb/~job-dating/Job-Meeting-projet/codePostalComplete.php",
 					data: 'commune=' + $('#ville').val() + '&maxRows=10',
 					success: function(data){
 						response($.map(data, function(item){
