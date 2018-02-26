@@ -16,18 +16,39 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 : Vérifier le site sur infoweb
+Tâche 1 : Calendrier ics par étudiant et un ics par formation
+
+Tâche 2 : Sur le planning admin, quand on choisit une formation,
+ca actualise la liste étudiant qui sont dans cette formation ainsi que le planning.
+
+Tâche 3 : Quand on supprime une entreprise des comptes, il faut supprimer les créneaux qui lui sont associé.
+
+Tâche 4 : Ne pas sauter les créneaux quand on met les pauses.
+
+Tâche 5 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
+le tableau des créneaux gris soit actualisé.
+
+
+
+
+
+Tâche 6 : Vérifier le site sur infoweb
 	- Lors de la suppression, afficher une boite de dialogue demandant la confirmation de la suppression
 
-Tâche 2 : Dans la vue config, créer une liste pour la durée des créneaux.
+Tâche 7 : Dans la vue config, créer une liste pour la durée des créneaux.
 Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
-Tâche 3 : Téléchargement des emplois du temps en .ics
+Tâche 8 : Téléchargement des emplois du temps en .ics
+- L'heure dans le script doit être H-1 pour que l'heure corresponde avec l'heure réelle.
 
-Tache 4 : Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
-	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants 
+Tache 9: Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
+	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants
 
-Tache 5 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
+Tache 10 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
+
+
+
+Tâche 7 : Si l'entreprise a coché une formation mais sans avoir déposer d'offre alors afficher le input de dépôt
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -79,3 +100,5 @@ Tâche : Quand on a une erreur 404, afficher un message d'erreur --> On affiche 
 Tache : Quand on met juste les créneaux de l'après midi on fait en sorte de bien afficher le planning (créneau matin = 0)
 
 Tâche : Lorsque l'entreprise décoche une formation, il faut supprimer l'offre du serveur.
+
+Tâche : Si le fichier d'offre existe, l'entreprise peut voir son offre sinon le lien n'apparait pas.

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Job-Meeting-projet.iml" filepath="$PROJECT_DIR$/.idea/Job-Meeting-projet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../culture-com.fr/site_huitre/.idea/site_huitre.iml" filepath="$PROJECT_DIR$/../../../culture-com.fr/site_huitre/.idea/site_huitre.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../web-client.fr/.idea/web-client.fr.iml" filepath="$PROJECT_DIR$/../../../web-client.fr/.idea/web-client.fr.iml" />
+    </modules>
+  </component>
+</project>

@@ -2096,6 +2096,7 @@ function Changement3() {
 		<span class="categorie_profil">Description de l\'offre :</span> '.$profil->getOffre().'
 			';
 
+
 		//<!-- Nom -->
 		?>
 		<script>
@@ -2283,6 +2284,7 @@ function Changement3() {
 			</TABLE>
 		</form><br/>
 		<form action="index.php" method="post" enctype="multipart/form-data">
+
 		<TABLE id="tabModifEnt">
 	  	';
 			$compteur = 0;
@@ -2297,7 +2299,7 @@ function Changement3() {
 			$listeDepartements = array();
 			if ($dateNow <= $dateLimitEnt && $dateNow >= $dateDebutEnt) {
 		echo
-		'<CAPTION> Formations recherchées</CAPTION>
+        '<CAPTION> Formations recherchées</CAPTION>
 			<TR>
 				<TD> ';
 				foreach ($listeFormations as $formation) {
@@ -2313,8 +2315,13 @@ function Changement3() {
 						if (in_array($formation->getInitiales(), $formationsRecherchees)) {
 							echo 'checked ';
 						}
-						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().'</a> <br/>
-						 <input type="file" name="offre_'.$formation->getInitiales().'" style="display:none" id="boutonUpload'.$compteur.'"/> '."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t";
+						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().'</a>';
+						if(file_exists("offre/".$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf'))
+						{
+							echo'<a href="offre/'.$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf"> [Voir l\'offre enregistrée] </a>';
+						}
+						 echo '<br> <input type="file" name="offre_'.$formation->getInitiales().'" style="display:none" id="boutonUpload'.$compteur.'"/> '."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t ";
+
 						$compteur = $compteur + 1;
 						}
 
