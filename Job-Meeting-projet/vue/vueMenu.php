@@ -894,12 +894,16 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 					</select>
 
 	 				<label>Formation :</label>
-	 				<select name="idFormationEntrepriseCre">
-	 						<option value="null"> ----- </option>
+	 				<select id="formation_entreprise" name="idFormationEntrepriseCre">
 	 						<?php
+								$i = 0;
 	 							$nomForm = $dao->getTousFormations();
 	 							foreach ($nomForm as $res) {
-	 									echo "<option value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
+									if($i == 0){
+										echo "<option id=".$i." value=\"\"> ----- </option>";
+									}
+	 									echo "<option id=".$i." value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
+										$i++;
 	 							}
 	 						 ?>
 	 				</select>
@@ -991,10 +995,22 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function() {
 			var table = $('#tabPlanningEnt').dataTable({
-				"paging":         false,
+				"paging": false,
 				"bSort": false,
 				"info": false
 			});
+
+			var search = $("#tabPlanningEnt_filter label input");
+
+			var nom_formation = $("#formation_entreprise option:selected").text();
+
+			$("#formation_entreprise").change(function functionName() {
+				console.log("ok");
+				console.log($("#formation_entreprise option:selected").val());
+				search.val($("#formation_entreprise option:selected").val());
+				search.focus();
+			})
+
 		});
 		</script>
 
@@ -1002,7 +1018,6 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 		<h1>Planning administrateur</h1>
 		<div class="resptab" >
 		<table id="tabPlanningEnt">
-
 
 		<thead>
 		<tr>

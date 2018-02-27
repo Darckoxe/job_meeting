@@ -16,7 +16,7 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 :  Calendrier ics par formation
+Tâche 1 : Calendrier ics par formation
 
 Tâche 2 : Sur le planning admin, quand on choisit une formation,
 ca actualise la liste étudiant qui sont dans cette formation ainsi que le planning.
