@@ -1490,6 +1490,86 @@ public function afficherComptes() {
 <html>
 <head>
  <link rel="stylesheet" type="text/css" href="vue/css/general.css">
+
+ <script type="text/javascript">
+
+ 	function readData() {
+ 		var oSelect1 = document.getElementById("heureCreneauPauseApresmidi");
+ 		var oOpts1 = oSelect1.getElementsByTagName("option");
+ 		var oSelect2 = document.getElementById("HeurePauseMatin");
+ 		var oOpts2 = oSelect2.getElementsByTagName("option");
+ 		var duree_de_creneau = document.getElementById("duree_crenau").options[document.getElementById("duree_crenau").selectedIndex].value;
+ 		var oOption1, oInner1, oOption2, oInner2;
+
+ 		oSelect1.innerHTML= "";
+ 		while(oOpts1[1]){
+ 			oSelect1.removeChild(oOpts1[1]); //je supprime les éléments de ma liste
+ 		}
+
+ 		var longueur = <?php echo "$nbCreneauxAprem"; ?>;
+ 		var creneau_min = <?php $tmp_min = explode(":", $heureDebutAprem)[1];
+ 		 																echo "$tmp_min"?>;
+ 		var creneau_heure = <?php $tmp_heure = explode(":", $heureDebutAprem)[0];
+ 																			echo "$tmp_heure"; ?>;
+ 		for (var i = 0; i < longueur; i++ ){
+ 			creneau_min = parseInt(creneau_min);
+ 			duree_de_creneau = parseInt(duree_de_creneau);
+ 			if (creneau_min<10 && creneau_heure < 10){
+ 				var tmp = "0"+creneau_heure+":"+"0"+creneau_min;
+ 			}
+ 			else if (creneau_min<10){
+ 				var tmp = creneau_heure+":"+"0"+creneau_min;
+ 			}
+ 			else if (creneau_heure<10){
+ 				var tmp = "0"+creneau_heure+":"+creneau_min;
+ 			}
+ 			else {
+ 				var tmp = creneau_heure+":"+creneau_min; //je concatène à un format HH:MM
+ 			}
+ 			oOption1 = document.createElement("option"); //je crée ici mon options
+ 			oInner1 = document.createTextNode(tmp.toString()); //je crée le text qui ira dans mon option
+ 			oOption1.appendChild(oInner1);
+ 			oSelect1.appendChild(oOption1);
+ 			if(creneau_min+duree_de_creneau >= 60){
+ 				creneau_heure++;
+ 			}
+ 			creneau_min=(creneau_min+duree_de_creneau)%60;
+ 		}
+
+ 		oSelect2.innerHTML= "";
+ 		while(oOpts2[1]){
+ 			oSelect2.removeChild(oOpts2[1]); //je supprime les éléments de ma liste
+ 		}
+ 		var longueur = <?php echo "$nbCreneauxAprem"; ?>;
+ 		creneau_min = <?php $tmp_min = explode(":", $heureDebutMatin)[1]; echo "$tmp_min"?>;
+ 		creneau_heure = <?php $tmp_heure = explode(":", $heureDebutMatin)[0]; echo "$tmp_heure"; ?>;
+ 		for (var i = 0; i < longueur; i++ ){
+ 			creneau_min = parseInt(creneau_min);
+ 			duree_de_creneau = parseInt(duree_de_creneau);
+ 			if (creneau_min<10 && creneau_heure < 10){
+ 				var tmp = "0"+creneau_heure+":"+"0"+creneau_min;
+ 			}
+ 			else if (creneau_min<10){
+ 				var tmp = creneau_heure+":"+"0"+creneau_min;
+ 			}
+ 			else if (creneau_heure<10){
+ 				var tmp = "0"+creneau_heure+":"+creneau_min;
+ 			}
+ 			else {
+ 				var tmp = creneau_heure+":"+creneau_min; //je concatène à un format HH:MM
+ 			}
+ 			oOption2 = document.createElement("option"); //je crée ici mon options
+ 			oInner2 = document.createTextNode(tmp.toString()); //je crée le text qui ira dans mon option
+ 			oOption2.appendChild(oInner2);
+ 			oSelect2.appendChild(oOption2);
+ 			if(creneau_min+duree_de_creneau >= 60){
+ 				creneau_heure++;
+ 			}
+ 			creneau_min=(creneau_min+duree_de_creneau)%60;
+ 		}
+ 	}
+  </script>
+
  <title></title>
  <meta charset="UTF-8">
 </head>
@@ -1528,10 +1608,21 @@ public function afficherComptes() {
 	 <br/><br/>
 	 <label>Nombre de créneaux dans l'après-midi : </label><input type="text" name="nbCreneauxAprem"/>
 	 <br/><br/>
-	 <label>Durée en minutes d'un créneau : </label><input type="text" name="dureeCreneau"/>
+	 <label>Durée en minutes d'un créneau : </label>
+		 <select name = "dureeCreneau" id="duree_crenau" onchange="readData()">
+			<option value = ""><?="---"?></option>
+			<?php
+			for ($i=5; $i < 35 ; $i+=5) {
+				 ?>
+					<option value = <?php echo "$i"?>> <?=$i?></option>
+					<?php
+			}
+				 ?>
+	   </select>
+
 	 <br/><br/>
 	 <label>Heure de la pause de l'après-midi :
-	 <select name = "heureCreneauPause">
+	 <select name = "heureCreneauPause" id="heureCreneauPauseApresmidi">
 		 <option value = ""><?=$heureCreneauPause?></option>
 		 <?php
 		 foreach($heuresCreneaux as $heure){
@@ -1545,7 +1636,7 @@ public function afficherComptes() {
 	 </select>
 	 <br/><br/>
 	 <label>Heure de la pause du matin :
-	 <select name = "heureCreneauPauseMatin">
+	 <select name = "heureCreneauPauseMatin" id="HeurePauseMatin">
 		 <option value = ""><?=$heureCreneauPauseMatin?></option>
 		 <?php
 		 foreach($heuresCreneaux as $heure){
