@@ -4,6 +4,7 @@ require_once __DIR__."/../modele/dao/dao.php";
 require_once __DIR__."/../modele/bean/Etudiant.php";
 require_once __DIR__."/../modele/bean/Entreprise.php";
 require_once __DIR__."/../modele/formationV2.php";
+require_once __DIR__."/../controleur/ICSGeneration.php";
 /**
  * Classe permettant de générer la majorité des pages du site.
  */
@@ -112,6 +113,77 @@ class VueMenu{
  		<div id="main">
  		<br/>
  		<h1>Planning Etudiant</h1>
+		<?php
+		// On rempli un tableau jusqu'à ce que tous les créneaux soient fais.
+			$i = 0;
+			$tabPropsGeneral = array();
+			$nbCreneau = $dao->getNombreCreneau();
+			$tabNumCreneau = array();
+			$tabIdFormation = array();
+
+			$dateDebut = $dao->getDateEvent();
+			$dateDebut = explode("-",$dateDebut[0]);
+			$dateDebut=$dateDebut[0].$dateDebut[1].$dateDebut[2];
+
+			$dateFin = $dateDebut;
+
+			$heureDebut = $dao->getNumCreneauEtu($_SESSION['idUser']);
+			$titre = $dao->getIdFormationEtu($_SESSION['idUser']);
+
+
+			foreach ($heureDebut as $value) {
+					array_push($tabNumCreneau,$value[0]);
+			}
+
+			foreach ($titre as $value) {
+				array_push($tabIdFormation,$value[0]);
+			}
+
+
+			foreach ($tabNumCreneau as $numeroCreno) { // Oui il y a une faute d'AURTOGRAPHE é alor ?
+
+					$heureDebut = $dao->getHeureNumCreneau($numeroCreno);
+					$heureFin = $heureDebut;
+					$heureDebut = explode(":",$heureDebut[0]);
+
+					$heureDebut = $heureDebut[0].$heureDebut[1]."00";
+					$heureFin = explode(":",$heureFin[0]);
+
+
+					if($heureFin[1] + $dureeCreneau >= 60){
+						$heureFin[0]++;
+						$heureFin[1] += $dureeCreneau - 60;
+						$heureFin = $heureFin[0].$heureFin[1]."00";
+					}
+					else {
+						$heureFin[1] += $dureeCreneau;
+						$heureFin = $heureFin[0].$heureFin[1]."00";
+					}
+
+					$titre = $dao->getIDEntIDform($tabIdFormation[$i]);
+					$titre = $dao->getNomEntreprise($titre);
+
+					// echo "<br>"."dateDebut : ".$dateDebut."<br>";
+					// echo "dateFin :".$dateFin."<br>";
+					// echo "heureDebut :".$heureDebut."<br>";
+					// echo "heureFin :".$heureFin."<br>";
+					// echo "titre :".$titre."<br>";
+
+					$tabProps1=array(
+						$dateDebut,
+						$heureDebut,
+						$dateFin,
+						$heureFin,
+						$titre
+					);
+
+					array_push($tabPropsGeneral, $tabProps1);
+					$i++;
+			}
+		 ?>
+		 <a href="../ICS.php?tabGeneral=<?php echo urlencode(serialize($tabPropsGeneral))?>">  Télécharger mon planning au format agenda </a>
+
+		<br/><br/>
  		<div class="resptab" >
  		<table id="tabPlanningEnt">
 
@@ -460,6 +532,77 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 		<div id="main">
 	 		<p id="bonjourEnt">
 	 			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
+
+				<?php
+
+				echo $_SESSION['idUser'];
+				// On récupère l'entreprise et les formations qu'elle recherche.
+				$i = 0;
+				$tabPropsGeneral = array();
+				$nbCreneau = $dao->getNombreCreneau();
+				$tabNumCreneau = array();
+				$tabIdFormation = array();
+
+				$dateDebut = $dao->getDateEvent();
+				$dateDebut = explode("-",$dateDebut[0]);
+				$dateDebut=$dateDebut[0].$dateDebut[1].$dateDebut[2];
+
+				$dateFin = $dateDebut;
+
+				$heureDebut = $dao->getNumCreneauEtu($_SESSION['idUser']);
+				$titre = $dao->getIdFormationEtu($_SESSION['idUser']);
+
+
+				foreach ($heureDebut as $value) {
+						array_push($tabNumCreneau,$value[0]);
+				}
+
+				foreach ($titre as $value) {
+					array_push($tabIdFormation,$value[0]);
+				}
+
+
+				foreach ($tabNumCreneau as $numeroCreno) { // Oui il y a une faute d'AURTOGRAPHE é alor ?
+
+						$heureDebut = $dao->getHeureNumCreneau($numeroCreno);
+						$heureFin = $heureDebut;
+						$heureDebut = explode(":",$heureDebut[0]);
+
+						$heureDebut = $heureDebut[0].$heureDebut[1]."00";
+						$heureFin = explode(":",$heureFin[0]);
+
+
+						if($heureFin[1] + $dureeCreneau >= 60){
+							$heureFin[0]++;
+							$heureFin[1] += $dureeCreneau - 60;
+							$heureFin = $heureFin[0].$heureFin[1]."00";
+						}
+						else {
+							$heureFin[1] += $dureeCreneau;
+							$heureFin = $heureFin[0].$heureFin[1]."00";
+						}
+
+						$titre = $dao->getIDEntIDform($tabIdFormation[$i]);
+						$titre = $dao->getNomEntreprise($titre);
+
+						echo "<br>"."dateDebut : ".$dateDebut."<br>";
+						echo "dateFin :".$dateFin."<br>";
+						echo "heureDebut :".$heureDebut."<br>";
+						echo "heureFin :".$heureFin."<br>";
+						echo "titre :".$titre."<br>";
+
+						$tabProps1=array(
+							$dateDebut,
+							$heureDebut,
+							$dateFin,
+							$heureFin,
+							$titre
+						);
+
+						array_push($tabPropsGeneral, $tabProps1);
+						$i++;
+				}
+				 ?>
 
 
 	 		<?php

@@ -130,7 +130,9 @@ class Routeur {
                 $tabFormations = explode(",",$str[0]);
                 foreach ($tabFormations as $offre) {
                   $nomOffre = $nomEnt."_offre_".$offre.".pdf";
-                  unlink("offre/".$nomOffre);
+                  if(file_exists("offre/".$nomOffre)){
+                    unlink("offre/".$nomOffre);
+                  }
                 }
               }
 
@@ -144,7 +146,9 @@ class Routeur {
                 $tabFormations = explode(",",$str[0]);
                 foreach ($tabFormations as $offre) {
                   $nomOffre = $nomEnt."_offre_".$offre.".pdf";
-                  unlink("offre/".$nomOffre);
+                  if(file_exists("offre/".$nomOffre)){
+                    unlink("offre/".$nomOffre);
+                  }
                 }
               }
               $this->dao->supprimerEntTemp($tab[1]);

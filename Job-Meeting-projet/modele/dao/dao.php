@@ -674,7 +674,10 @@ class Dao
 				*/
 				public function supprimerEnt($id) {
 					$this->connexion();
-					$statement = $this->connexion->prepare('DELETE FROM entreprise WHERE IDEnt = ?;');
+					$statement = $this->connexion->prepare('DELETE FROM entreprise WHERE IDEnt = ?');
+					$statement->bindParam(1, $id);
+					$statement->execute();
+					$statement = $this->connexion->prepare('DELETE FROM formation WHERE entPropose = ?');
 					$statement->bindParam(1, $id);
 					$statement->execute();
 					$this->deconnexion();
@@ -3023,6 +3026,55 @@ class Dao
 					$str = $statement->fetch();
 					return $str;
 				}
+
+				public function getDateEvent(){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT dateEvenement FROM scriptconfig');
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetch();
+					return $str;
+				}
+
+				public function getNumCreneauEtu($idEtu){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT numeroCreneau from creneau where idEtudiant = ?');
+					$statement->bindParam(1, $idEtu);
+					$statement->execute();
+					$this->deconnexion();
+					return $statement->fetchAll();
+				}
+
+				public function getHeureNumCreneau($numCreneau){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT heure from heurecreneau where num = ?');
+					$statement->bindParam(1, $numCreneau);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetch();
+					return $str;
+				}
+
+				public function getNombreCreneau(){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT COUNT(*) FROM heurecreneau');
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetch();
+					return $str;
+				}
+
+				public function getIdFormationEtu($idEtu){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT idFormation FROM creneau WHERE idEtudiant = ?');
+					$statement->bindParam(1, $idEtu);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetchAll();
+					return $str;
+				}
+
+
 
 
 

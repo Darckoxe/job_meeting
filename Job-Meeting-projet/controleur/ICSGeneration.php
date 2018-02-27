@@ -115,8 +115,8 @@ class ICSGeneration{
     }
 
     $calendar .= "END:VCALENDAR\n";
-    ICSGeneration::sauvegarderICS($cheminDossier."/"."Entretiens Job-Meeting",$calendar);
-    return "Entretiens Job-Meeting.ics";
+    ICSGeneration::sauvegarderICS($cheminDossier."/"."Entretiens-Job-Meeting",$calendar);
+    return "Entretiens-Job-Meeting.ics";
   }
 
   /**
