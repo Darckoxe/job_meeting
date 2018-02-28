@@ -18,18 +18,17 @@ jobdating
 
 Tâche 1 : Calendrier ics par formation
 
-Tâche 3 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
+Tâche : Ne pas sauter les créneaux quand on met les pauses.
+
+Tâche 2 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
 le tableau des créneaux gris soit actualisé.
 
-Tâche 4 : Vérifier le site sur infoweb
-	- Lors de la suppression, afficher une boite de dialogue demandant la confirmation de la suppression
-
-Tache 6: Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
+Tache 3: Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
 	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants
 
-Tache 7 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
+Tache 4 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
 
-Tâche 8 : Si l'entreprise a coché une formation mais sans avoir déposer d'offre alors afficher le input de dépôt
+Tâche 5 : Si l'entreprise a coché une formation mais sans avoir déposer d'offre alors afficher le input de dépôt
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
@@ -83,8 +82,6 @@ Tache : Quand on met juste les créneaux de l'après midi on fait en sorte de bi
 Tâche : Lorsque l'entreprise décoche une formation, il faut supprimer l'offre du serveur.
 
 Tâche : Si le fichier d'offre existe, l'entreprise peut voir son offre sinon le lien n'apparait pas.
-
-Tâche : Ne pas sauter les créneaux quand on met les pauses.
 
 Tâche : Quand on supprime une entreprise des comptes, il faut supprimer les créneaux qui lui sont associé.
 
