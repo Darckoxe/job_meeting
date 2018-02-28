@@ -18,8 +18,8 @@ jobdating
 
 Tâche 1 : Calendrier ics par formation
 
-Tâche 2 : Sur le planning admin, quand on choisit une formation,
-ca actualise la liste étudiant qui sont dans cette formation ainsi que le planning.
+Tâche 2 : Sur le planning admin, quand on choisi une formation
+ca actualise la liste étudiant qui sont dans cette formation.
 
 Tâche 3 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
 le tableau des créneaux gris soit actualisé.
@@ -95,3 +95,5 @@ Tâche : Ne pas sauter les créneaux quand on met les pauses.
 Tâche : Quand on supprime une entreprise des comptes, il faut supprimer les créneaux qui lui sont associé.
 
 Tâche : Calendrier ics par étudiant
+
+Tâche : Sur le planning admin, quand on choisit une formation, ca actualise le planning
