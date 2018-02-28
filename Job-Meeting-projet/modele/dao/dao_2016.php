@@ -586,16 +586,17 @@ class Dao_2016 extends DAO
 
 			// Remplissage avec les créneaux du matin
 			if($nbCreneauxMatin != 0){
-				for($i = 0; $i < $nbCreneauxMatin; $i++){
-					if ($heureCreneauPauseMatin == ($heureDebutMatin->format("H:i"))) {
+				for($i = 0; $i <= $nbCreneauxMatin; $i++){
+					$heureString = $heureDebutMatin->format("H:i");
+					if($heureString != $heureCreneauPauseMatin){
+						$statement = $this->connexion->prepare($queryInsert);
+						$statement ->bindParam(1,$i);
+						$statement ->bindParam(2,$heureString);
+						$statement->execute();
+						$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
+					}else{
 						$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
 					}
-					$heureString = $heureDebutMatin->format("H:i");
-					$statement = $this->connexion->prepare($queryInsert);
-					$statement ->bindParam(1,$i);
-					$statement ->bindParam(2,$heureString);
-					$statement->execute();
-					$heureDebutMatin->add(new DateInterval('PT'.$dureeCreneau.'M'));
 				}
 
 			$cpt = $i; // On garde le numéro du dernier créneau pour continuer la numérotation des créneaux
@@ -603,17 +604,17 @@ class Dao_2016 extends DAO
 
 			// Remplissage avec les créneaux de l'après midi
 			if($nbCreneauxAprem != 0){
-				for($i = $cpt; $i < $nbCreneauxAprem + $cpt; $i++){
-					if ($heureCreneauPause == ($heureDebutAprem->format("H:i"))) {
-						$heureDebutAprem->add(new DateInterval('PT'.$dureeCreneau.'M'));
-					}
+				for($i = $cpt; $i <= $nbCreneauxAprem + $cpt; $i++){
 					$heureString = $heureDebutAprem->format("H:i");
+					if($heureString != $heureCreneauPause){
 						$statement = $this->connexion->prepare($queryInsert);
 						$statement ->bindParam(1,$i);
 						$statement ->bindParam(2,$heureString);
 						$statement->execute();
 						$heureDebutAprem->add(new DateInterval('PT'.$dureeCreneau.'M'));
-
+					}else{
+						$heureDebutAprem->add(new DateInterval('PT'.$dureeCreneau.'M'));
+					}
 				}
 			}
 
