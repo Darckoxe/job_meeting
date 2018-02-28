@@ -533,78 +533,6 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 		<p id="bonjourEnt">
 	 			<br/>Bienvenue sur votre espace utilisateur créé à l'occasion des rencontres alternances du <?=$dateEvenement?>.
 
-				<?php
-
-				echo $_SESSION['idUser'];
-				// On récupère l'entreprise et les formations qu'elle recherche.
-				$i = 0;
-				$tabPropsGeneral = array();
-				$nbCreneau = $dao->getNombreCreneau();
-				$tabNumCreneau = array();
-				$tabIdFormation = array();
-
-				$dateDebut = $dao->getDateEvent();
-				$dateDebut = explode("-",$dateDebut[0]);
-				$dateDebut=$dateDebut[0].$dateDebut[1].$dateDebut[2];
-
-				$dateFin = $dateDebut;
-
-				$heureDebut = $dao->getNumCreneauEtu($_SESSION['idUser']);
-				$titre = $dao->getIdFormationEtu($_SESSION['idUser']);
-
-
-				foreach ($heureDebut as $value) {
-						array_push($tabNumCreneau,$value[0]);
-				}
-
-				foreach ($titre as $value) {
-					array_push($tabIdFormation,$value[0]);
-				}
-
-
-				foreach ($tabNumCreneau as $numeroCreno) { // Oui il y a une faute d'AURTOGRAPHE é alor ?
-
-						$heureDebut = $dao->getHeureNumCreneau($numeroCreno);
-						$heureFin = $heureDebut;
-						$heureDebut = explode(":",$heureDebut[0]);
-
-						$heureDebut = $heureDebut[0].$heureDebut[1]."00";
-						$heureFin = explode(":",$heureFin[0]);
-
-
-						if($heureFin[1] + $dureeCreneau >= 60){
-							$heureFin[0]++;
-							$heureFin[1] += $dureeCreneau - 60;
-							$heureFin = $heureFin[0].$heureFin[1]."00";
-						}
-						else {
-							$heureFin[1] += $dureeCreneau;
-							$heureFin = $heureFin[0].$heureFin[1]."00";
-						}
-
-						$titre = $dao->getIDEntIDform($tabIdFormation[$i]);
-						$titre = $dao->getNomEntreprise($titre);
-
-						echo "<br>"."dateDebut : ".$dateDebut."<br>";
-						echo "dateFin :".$dateFin."<br>";
-						echo "heureDebut :".$heureDebut."<br>";
-						echo "heureFin :".$heureFin."<br>";
-						echo "titre :".$titre."<br>";
-
-						$tabProps1=array(
-							$dateDebut,
-							$heureDebut,
-							$dateFin,
-							$heureFin,
-							$titre
-						);
-
-						array_push($tabPropsGeneral, $tabProps1);
-						$i++;
-				}
-				 ?>
-
-
 	 		<?php
 	 		//////////////////////////////////////ATTTENTION METTRE EN PLACE SYSTEME DATE POUR AFFICHER/////////////////////////////////////
 	 		//On génére l'emploi du temps
@@ -872,7 +800,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 					</select>
 
 					<label>Etudiant :</label>
-					<select name="idEtudiantCre">
+					<select name="idEtudiantCre" id="nom_etu">
 						<option value="null"> ----- </option>
 						<?php
 							$nomEtu = $dao->getTousEtudiants();
@@ -894,7 +822,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 					</select>
 
 	 				<label>Formation :</label>
-	 				<select id="formation_entreprise" name="idFormationEntrepriseCre">
+	 				<select id="formation_entreprise" name="idFormationEntrepriseCre" onchange="maj_etudiant(this)">
 	 						<?php
 								$i = 0;
 	 							$nomForm = $dao->getTousFormations();
@@ -931,6 +859,49 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 				document.getElementById("formSupprEtu").style = "display:none";
 
 			}
+			</script>
+
+			<script type="text/javascript">
+			function maj_etudiant(oSelect){
+				var formation_selectionne = oSelect.options[oSelect.selectedIndex].value;
+				console.log(formation_selectionne);
+				$.ajax({
+					dataType : 'json',
+					url: 'index.php',
+					type: 'GET',
+					data: {
+						formSelectionee : formation_selectionne
+					},
+
+					success : function(reponse){
+							readData(reponse);
+						},
+					error: function(reponse){
+						console.log(reponse,"error");
+					}
+				});
+			}
+
+						function readData(oData){
+				var oSelect = document.getElementById("nom_etu");
+				var oOpts = oSelect.getElementsByTagName("option");
+
+				var oOption, oInner;
+
+				oSelect.innerHTML = "";
+				while(oOpts[1]){
+					oSelect.removeChild(oOpts[1]);
+				}
+				$.each(oData, function(i, item){
+
+					oOption = document.createElement("option");
+					oInner = document.createTextNode(item[2]);
+					oOption.appendChild(oInner);
+					oSelect.appendChild(oOption);
+					//console.log(item[2]);
+				})
+			}
+
 			</script>
 
 			<?php
@@ -1005,6 +976,7 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 			var nom_formation = $("#formation_entreprise option:selected").text();
 
 			$("#formation_entreprise").change(function functionName() {
+
 				console.log("ok");
 				console.log($("#formation_entreprise option:selected").val());
 				search.val($("#formation_entreprise option:selected").val());

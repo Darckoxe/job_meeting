@@ -9,6 +9,7 @@ require_once 'controleurLost.php';
 require_once 'controleurMenu.php';
 require_once 'controleurProfil.php';
 require_once 'controleurMail.php';
+require_once 'controleurFormation.php';
 require_once __DIR__."/../modele/dao/dao.php";
 
 /**
@@ -24,6 +25,7 @@ class Routeur {
   private $ctrlLost;
   private $ctrlProfil;
   private $ctrlMail;
+  private $ctrlFormation;
   private $dao;
 
   /**
@@ -39,11 +41,17 @@ class Routeur {
     $this->ctrlLost = new ControleurLost();
     $this->ctrlProfil = new ControleurProfil();
     $this->ctrlMail = new ControleurMail();
+    $this->ctrlFormation = new controleurFormation();
     $this->dao = new Dao_2016();
   }
 
   // Traite une requête entrante
   public function routerRequete() {
+
+    if(isset($_GET['formSelectionee'])){
+      $this->ctrlFormation->liste_etudiant($_GET['formSelectionee']);
+      return;
+    }
 
     if (isset($_POST['submit_login'])) {
       $this->dao->connexion();
@@ -440,6 +448,7 @@ class Routeur {
         }
 
       }
+
       if(isset($_SESSION['testProfil']) && isset($_SESSION['testType'])){
         $_SESSION['testProfil'] = $this->dao->getEnt($_SESSION['idUser']);
         $this->ctrlProfil->afficherProfil($_SESSION['testType'],$_SESSION['testProfil']);

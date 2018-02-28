@@ -18,17 +18,11 @@ jobdating
 
 Tâche 1 : Calendrier ics par formation
 
-Tâche 2 : Sur le planning admin, quand on choisi une formation
-ca actualise la liste étudiant qui sont dans cette formation.
-
 Tâche 3 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
 le tableau des créneaux gris soit actualisé.
 
 Tâche 4 : Vérifier le site sur infoweb
 	- Lors de la suppression, afficher une boite de dialogue demandant la confirmation de la suppression
-
-Tâche 5 : Dans la vue config, créer une liste pour la durée des créneaux.
-Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
 Tache 6: Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
 	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants
@@ -97,3 +91,7 @@ Tâche : Quand on supprime une entreprise des comptes, il faut supprimer les cr�
 Tâche : Calendrier ics par étudiant
 
 Tâche : Sur le planning admin, quand on choisit une formation, ca actualise le planning
+
+Tâche : Dans la vue config, créer une liste pour la durée des créneaux. Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
+
+Tâche : Sur le planning admin, quand on choisi une formation ca actualise la liste étudiant qui sont dans cette formation.

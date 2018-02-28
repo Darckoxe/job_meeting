@@ -3074,6 +3074,16 @@ class Dao
 					return $str;
 				}
 
+				public function getEtudiantCreneauDeLaFormation($idFormation){
+					$this->connexion();
+					$statement = $this->connexion->prepare('SELECT idEtudiant, numeroCreneau from creneau where idFormation = ?');
+					$statement->bindParam(1, $idFormation);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetchAll();
+					return $str;
+				}
+
 
 
 
