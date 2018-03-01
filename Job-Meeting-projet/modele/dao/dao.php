@@ -100,7 +100,7 @@ class Dao
 		try
 		{
 			// $this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"info2-2015-jobda","jobdating");
-			$this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"root","");
+			$this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=info2-2015-jobdating',"root","root");
 			// $this->connexion = new PDO('mysql:host=localhost;charset=UTF8;dbname=E164651T',"E164651T","E164651T");
 
 

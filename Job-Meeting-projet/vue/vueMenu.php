@@ -896,9 +896,10 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
 					oOption = document.createElement("option");
 					oInner = document.createTextNode(item[2]);
+					oOption.value = item[0];
 					oOption.appendChild(oInner);
 					oSelect.appendChild(oOption);
-					//console.log(item[2]);
+					console.log(item[0]);
 				})
 			}
 
