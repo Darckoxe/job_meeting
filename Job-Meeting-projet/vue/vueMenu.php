@@ -784,19 +784,21 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 				</form>
 
 			<form id="formAjoutEtu" action="index.php" method="post" style="display:none">
-				<label>Heure :</label>
-					<select name='numero_creneau'>
-						<option value="null"> ----- </option>
+				<label>Formation :</label>
+				<select id="formation_entreprise" name="idFormationEntrepriseCre" onchange="maj_etudiant(this)">
 						<?php
-						$dao = new Dao();
-						for ($numCreneau=0; $numCreneau < 25 ; $numCreneau++) {
-							$heure = $dao->getHeure($numCreneau);
-								if ($heure != null) {
-								echo "<option value=".$numCreneau.">".$heure."</option>";
+							$i = 0;
+							$nomForm = $dao->getTousFormations();
+							foreach ($nomForm as $res) {
+								if($i == 0){
+									echo "<option id=".$i." value=\"\"> ----- </option>";
+								}
+									echo "<option id=".$i." value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
+									$i++;
 							}
-						}
-						?>
-					</select>
+						 ?>
+				</select>
+
 
 					<label>Etudiant :</label>
 					<select name="idEtudiantCre" id="nom_etu">
@@ -809,6 +811,20 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 						 ?>
 					</select>
 
+					<label>Heure :</label>
+						<select name='numero_creneau'>
+							<option value="null"> ----- </option>
+							<?php
+							$dao = new Dao();
+							for ($numCreneau=0; $numCreneau < 25 ; $numCreneau++) {
+								$heure = $dao->getHeure($numCreneau);
+									if ($heure != null) {
+									echo "<option value=".$numCreneau.">".$heure."</option>";
+								}
+							}
+							?>
+						</select>
+
 						 <label>Entreprise :</label>
 	 					<select name="idEntrepriseCre">
 	 						<option value="null"> ----- </option>
@@ -820,20 +836,6 @@ src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	 						 ?>
 	 					</select>
 
-	 				<label>Formation :</label>
-	 				<select id="formation_entreprise" name="idFormationEntrepriseCre" onchange="maj_etudiant(this)">
-	 						<?php
-								$i = 0;
-	 							$nomForm = $dao->getTousFormations();
-	 							foreach ($nomForm as $res) {
-									if($i == 0){
-										echo "<option id=".$i." value=\"\"> ----- </option>";
-									}
-	 									echo "<option id=".$i." value=".$res['typeFormation'].">".$res['typeFormation']."</option>";
-										$i++;
-	 							}
-	 						 ?>
-	 				</select>
 					<input type="submit" name="ajouterEtudiantCr" value="Ajouter l'étudiant">
 			</form>
 
@@ -2552,7 +2554,7 @@ function Changement3() {
 							</script>
 							<?php
 						 echo '<br> <input type="file" name="offre_'.$formation->getInitiales().'" style="display:none" id="boutonUpload'.$compteur.'"/> '."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t ";
-						 var_dump($compteur);
+						//  var_dump($compteur);
 						$compteur = $compteur + 1;
 						}
 

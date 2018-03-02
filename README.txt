@@ -14,21 +14,22 @@ BDD:
 info2-2015-jobda
 jobdating
 
+----- FICHIERS MODIFIES -----
+VueInscriptionEnt.php
+VueMenu.php
+dao2016.php
+
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche : Faire un .htacces pour sécuriser le dossier d'offre / cv 
+Tâche : Faire un .htacces pour sécuriser le dossier d'offre / cv
+
+Tâche : Quand on sélectionne une formation, la liste des étudiants s'affiche. Quand on sélectionne un étudiant les heures s'affichent etc...
 
 Tâche : Quand on choisi une heure pour ajouter l'étudiant la liste donne tous les étudiants qui ne sont pas sur ce créneau.
 
-Tâche : Changer l'ordre : Formation Heure Etudiant entreprise
-
 Tâche : Quand il y a une erreur de mail lors de l'inscription etu ou ent, garder les valeurs dans les champs
 
-Tâche : Limiter le nombre de caractère pour la description de l'offre (255)
-
 Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les ofres de l'entreprises déposées
-
-Tâche : Calendrier ics par formation
 
 Tâche : Ne pas sauter les créneaux quand on met les pauses.
 
@@ -101,3 +102,7 @@ Tâche : Sur le planning admin, quand on choisit une formation, ca actualise le 
 Tâche : Dans la vue config, créer une liste pour la durée des créneaux. Quand on indiquera la durée des créneaux via cette liste, la liste des heures de pause s'actualisera sans recharger la page (Ajax et Javascript)
 
 Tâche : Sur le planning admin, quand on choisi une formation ca actualise la liste étudiant qui sont dans cette formation.
+
+Tâche : Limiter le nombre de caractère pour la description de l'offre (255)
+
+Tâche : Changer l'ordre : Formation Heure Etudiant entreprise

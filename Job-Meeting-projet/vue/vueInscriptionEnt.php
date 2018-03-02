@@ -51,7 +51,7 @@ class VueInscriptionEnt{
 
 					<!-- Champ de dépot d'offre -->
 					<label for="offre_txt"> Description de votre offre emploi : (vous pouvez également déposez une offre .pdf plus bas) </label> <br />
-					<textarea name="offre_txt" rows="8" cols="80"></textarea>
+					<textarea maxlength="255" name="offre_txt" rows="8" cols="80"></textarea>
 
 					<br/>
 
