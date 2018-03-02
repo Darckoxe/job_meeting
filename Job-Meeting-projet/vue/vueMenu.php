@@ -141,7 +141,6 @@ class VueMenu{
 
 
 			foreach ($tabNumCreneau as $numeroCreno) { // Oui il y a une faute d'AURTOGRAPHE é alor ?
-
 					$heureDebut = $dao->getHeureNumCreneau($numeroCreno);
 					$heureFin = $heureDebut;
 					$heureDebut = explode(":",$heureDebut[0]);
@@ -2540,10 +2539,20 @@ function Changement3() {
 						echo '>'."\n\t\t\t\t".'<a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().'</a>';
 						if(file_exists("offre/".$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf'))
 						{
-							echo'<a href="offre/'.$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf"> [Voir l\'offre enregistrée] </a>';
+							echo'<a class="offreRecord" href="offre/'.$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf"> [Voir l\'offre enregistrée] </a>';
 						}
+							?>
+							<script type="text/javascript">
+							var lien = document.getElementsByClassName('offreRecord');
+							console.log(lien[1]);
+							// for (var i = 0; i < 99; i++) {
+							// 	if(document.getElementById(i).checked == true){
+							// 	}
+							// }
+							</script>
+							<?php
 						 echo '<br> <input type="file" name="offre_'.$formation->getInitiales().'" style="display:none" id="boutonUpload'.$compteur.'"/> '."\n\t\t\t\t\t\t".'<br/>'."\n\t\t\t\t\t\t ";
-
+						 var_dump($compteur);
 						$compteur = $compteur + 1;
 						}
 

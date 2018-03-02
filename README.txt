@@ -16,19 +16,28 @@ jobdating
 
 ----- TACHES A REALISER EN PRIORITE -----
 
-Tâche 1 : Calendrier ics par formation
+Tâche : Faire un .htacces pour sécuriser le dossier d'offre / cv 
+
+Tâche : Quand on choisi une heure pour ajouter l'étudiant la liste donne tous les étudiants qui ne sont pas sur ce créneau.
+
+Tâche : Changer l'ordre : Formation Heure Etudiant entreprise
+
+Tâche : Quand il y a une erreur de mail lors de l'inscription etu ou ent, garder les valeurs dans les champs
+
+Tâche : Limiter le nombre de caractère pour la description de l'offre (255)
+
+Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les ofres de l'entreprises déposées
+
+Tâche : Calendrier ics par formation
 
 Tâche : Ne pas sauter les créneaux quand on met les pauses.
 
-Tâche 2 : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
+Tâche : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
 le tableau des créneaux gris soit actualisé.
 
-Tache 3: Quand on choisi une heure pour ajouter l'étudiant, la liste des étudiants est actualisés ( ex 10h -> on a tous les étudiants qui ne sont pas à 10h)
-	- On fait un onChange sur le créneau. La fonction javavascript se déclenche et récupère les étudiants du créneau. Javascript rempli la liste des étudiants
+Tache : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
 
-Tache 4 : Quand on clique sur une case vide du planning on ajoute un certaine étudiant (javascript)
-
-Tâche 5 : Si l'entreprise a coché une formation mais sans avoir déposer d'offre alors afficher le input de dépôt
+Tâche : Si l'entreprise a coché une formation mais sans avoir déposer d'offre alors afficher le input de dépôt
 
 ----- TACHES A REALISER APRES AVOIR TERMINE LES TACHES PRIORITAIRES -----
 
