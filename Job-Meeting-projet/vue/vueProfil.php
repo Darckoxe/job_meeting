@@ -921,8 +921,12 @@ public function afficherProfil($type,$profil){
 												if (in_array($formation->getInitiales(), $formationsRecherchees)) {
 													echo 'checked ';
 												}
-												echo '><a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a></option>
-												<br/>';
+												echo '><a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a></option>';
+												if(file_exists("offre/".$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf'))
+												{
+													echo'<a class="offreRecord" href="offre/'.$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf"> [Voir l\'offre enregistrée] </a>';
+												}
+												echo "<br>";
 												$compteur = $compteur + 1;
 											}
 										}

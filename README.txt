@@ -18,6 +18,9 @@ jobdating
 VueInscriptionEnt.php
 VueMenu.php
 dao2016.php
+VueProfil.php
+controleurFormation.php
+routeur.php
 
 ----- TACHES A REALISER EN PRIORITE -----
 
@@ -29,7 +32,7 @@ Tâche : Quand on choisi une heure pour ajouter l'étudiant la liste donne tous 
 
 Tâche : Quand il y a une erreur de mail lors de l'inscription etu ou ent, garder les valeurs dans les champs
 
-Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les ofres de l'entreprises déposées
+Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les offres de l'entreprise déposées
 
 Tâche : Ne pas sauter les créneaux quand on met les pauses.
 
