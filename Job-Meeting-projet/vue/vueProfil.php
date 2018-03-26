@@ -483,14 +483,18 @@ public function afficherProfil($type,$profil){
     $id = $profil->getID();
 		$nomEnt = $profil->getNomEnt();
 		$listesFormationsRecherchees= $dao->getFormationsEntreprise($id);
-		foreach ($listesFormationsRecherchees as $formation) {
-			$forma = $formation['typeFormation'];
-			$chemin = "offre/$nomEnt"."_offre_"."$forma".".pdf";
-			if (file_exists($chemin)) {	?>
-				<a name="lien_offre" href="offre/<?php echo $nomEnt ?>_offre_<?php echo $formation['typeFormation']?>.pdf"> <i> Télécharger l'offre d'emploi <?php echo $formation['typeFormation'] ?> </i> </a> <br/>
-				<?php
+
+		$fichier = glob("offre/".$nomEnt."_offre_"."*");
+
+		// Il faut récupérer l'id de l'étudiant qui consulte l'entreprise
+		// Récupérer sa formation
+		// Afficher les offres de sa formations uniquement
+		if(count($fichier)>0){
+			foreach ($fichier as $lien) {
+					echo"<a class=\"offreRecord\" href=\"$lien\"> <i> Télécharger l'offre d'emploi <i> </a> <br>";
 			}
 		}
+
     if ($_SESSION['type_connexion'] == "admin") {
 			$_SESSION['idUser'] = $id;
 			$_SESSION['type_modification'] = "Ent";
@@ -922,9 +926,11 @@ public function afficherProfil($type,$profil){
 													echo 'checked ';
 												}
 												echo '><a id="lienFormation" href="'. $formation->getLien() .'" target="_blank">'.$formation->getDescription().' </a></option>';
-												if(file_exists("offre/".$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf'))
-												{
-													echo'<a class="offreRecord" href="offre/'.$profil->getNomEnt().'_offre_'.$formation->getInitiales().'.pdf"> [Voir l\'offre enregistrée] </a>';
+												$fichier = glob("offre/".$profil->getNomEnt().'_offre_'.$formation->getInitiales().'*'.'.pdf');
+												if(count($fichier)>0){
+													foreach ($fichier as $lien) {
+														echo'<a class="offreRecord" href="'.$lien.'"> <br> [Voir l\'offre enregistrée] </a>';
+													}
 												}
 												echo "<br>";
 												$compteur = $compteur + 1;

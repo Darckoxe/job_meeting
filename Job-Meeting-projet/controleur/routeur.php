@@ -53,6 +53,27 @@ class Routeur {
       return;
     }
 
+    // Nouveau
+    if(isset($_GET['formSelectionee2'])){
+      $this->ctrlFormation->liste_entreprise_formation($_GET['formSelectionee2']);
+      return;
+    }
+
+    if(isset($_GET['entreprise_selectionne']) && isset($_GET['formation_selectionne'])){
+      $this->ctrlFormation->liste_etudiant_entreprise($_GET['entreprise_selectionne'], $_GET['formation_selectionne']);
+      return;
+    }
+
+    if(isset($_GET['num_creneau'])){
+      $this->ctrlFormation->liste_etudiant_creneau($_GET['num_creneau']);
+      return;
+    }
+
+  	if (isset($_POST['numero_creneau']) and isset($_POST['idEtudiantCre'])){
+  		$this->ctrlFormation->supprimerEtu($_POST['numero_creneau'], $_POST['idEtudiantCre']);
+  	}
+    // Fin nouveau
+
     if (isset($_POST['submit_login'])) {
       $this->dao->connexion();
       // Si l'identifiant correspond à un compte activé (étudiant/entreprise/administrateur)
@@ -398,9 +419,11 @@ class Routeur {
         $nomEntre = $this->dao->getNomEntreprise($_SESSION['idUser']);
 
         foreach ($difference as $offreASupprimer) {
-        $path = $nomEntre."_offre_".$offreASupprimer.".pdf";
-        if(file_exists("offre/".$path)){
-          unlink("offre/".$path);
+        $path = glob("offre/".$nomEntre."_offre_".$offreASupprimer."*".".pdf");
+          if (count($path) > 0) {
+            foreach ($path as $offreToRemove) {
+              unlink($offreToRemove);
+            }
           }
         }
 
@@ -411,6 +434,7 @@ class Routeur {
         foreach ($listeFormations as $formation){
           $name="offre_";
           $name.=$formation->getInitiales();
+          $nomFichierUser = $_FILES[$name]['name'];
           if (isset($_FILES[$name]['error'])) {
             if(($_FILES[$name]['error'] == 0) || ($_FILES[$name]['error'] == 4)){
               if ($_FILES[$name]['size'] > 10485760) {
@@ -428,7 +452,7 @@ class Routeur {
               }
 
               if ((isset($_POST['nomSociete'])) && ($_FILES[$name]['error'] == 0)) {
-                  $nomFichier = $_POST['nomSociete'].'_'.$name;
+                  $nomFichier = $_POST['nomSociete'].'_'.$name.$nomFichierUser;
                   $chemin = "offre/{$nomFichier}.{$extension_upload}";
                   if (isset($_FILES[$name]['tmp_name'])) {
                     $resultat = move_uploaded_file($_FILES[$name]['tmp_name'], $chemin);
@@ -713,6 +737,7 @@ class Routeur {
           foreach ($listeFormations as $formation){
             $name="offre_";
             $name.=$formation->getInitiales();
+            $nomFichierUser = $_FILES[$name]['name'];
             if (isset($_FILES[$name]['error'])) {
               if(($_FILES[$name]['error'] == 0) || ($_FILES[$name]['error'] == 4)){
                 if ($_FILES[$name]['size'] > 10485760) {
@@ -731,7 +756,7 @@ class Routeur {
 
                 if ((isset($_POST['nomSociete'])) && ($_FILES[$name]['error'] == 0)) {
                     $_POST['nomSociete'] = strtoupper($_POST['nomSociete']);
-                    $nomFichier = $_POST['nomSociete'].'_'.$name;
+                    $nomFichier = $_POST['nomSociete'].'_'.$name.$nomFichierUser;
                     $chemin = "offre/{$nomFichier}.{$extension_upload}";
                     if (isset($_FILES[$name]['tmp_name'])) {
                       $resultat = move_uploaded_file($_FILES[$name]['tmp_name'], $chemin);

@@ -21,6 +21,8 @@ dao2016.php
 VueProfil.php
 controleurFormation.php
 routeur.php
+VueProfil.php
+AjoutEtudiant.js
 
 ----- TACHES A REALISER EN PRIORITE -----
 

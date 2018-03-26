@@ -3084,9 +3084,43 @@ class Dao
 					return $str;
 				}
 
+				/*renvoie les étudiants d'une formation qui n'ont pas rendez-vous avec l'entreprise*/
+				public function getEtudiantpourEntreprise($idformation, $idEntreprise){
+					$this->connexion();
+					$statement = $this->connexion->prepare('Select etudiant.nomEtu, etudiant.IDEtu
+					from etudiant
+					where
+						etudiant.IDEtu not in
+							( SELECT etudiant.IDEtu
+							from etudiant, formation, creneau
+							where
+								formation.typeFormation=? and
+								formation.entPropose=? and
+								formation.IDformation=creneau.idFormation and
+								creneau.idEtudiant=etudiant.IDEtu
+							GROUP BY etudiant.idEtu) and
+							etudiant.formationEtu=? ');
+					$statement->bindParam(1, $idformation);
+					$statement->bindParam(2, $idEntreprise);
+					$statement->bindParam(3, $idformation);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetchAll();
+					return $str;
+				}
 
-
-
+				/*renvoie les étudiant ayants rendez-vous à un créneau donné*/
+				public function getEtudiantCreneau($numcreneau){
+					$this->connexion();
+					$statement = $this->connexion->prepare('
+						SELECT etudiant.nomEtu, etudiant.IDEtu FROM `creneau`, etudiant WHERE etudiant.IDEtu=creneau.idEtudiant and creneau.numeroCreneau=?
+					');
+					$statement->bindParam(1, $numcreneau);
+					$statement->execute();
+					$this->deconnexion();
+					$str = $statement->fetchAll();
+					return $str;
+				}
 
 
 			}
