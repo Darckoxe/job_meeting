@@ -17,26 +17,19 @@ jobdating
 ----- FICHIERS MODIFIES -----
 VueInscriptionEnt.php
 VueMenu.php
-dao2016.php
 VueProfil.php
+dao2016.php
 controleurFormation.php
 routeur.php
-VueProfil.php
 AjoutEtudiant.js
 
 ----- TACHES A REALISER EN PRIORITE -----
 
 Tâche : Faire un .htacces pour sécuriser le dossier d'offre / cv
 
-Tâche : Quand on sélectionne une formation, la liste des étudiants s'affiche. Quand on sélectionne un étudiant les heures s'affichent etc...
-
 Tâche : Quand on choisi une heure pour ajouter l'étudiant la liste donne tous les étudiants qui ne sont pas sur ce créneau.
 
 Tâche : Quand il y a une erreur de mail lors de l'inscription etu ou ent, garder les valeurs dans les champs
-
-Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les offres de l'entreprise déposées
-
-Tâche : Ne pas sauter les créneaux quand on met les pauses.
 
 Tâche : Quand une entreprise coche une nouvelle formation sur son compte ou en retire une il faut que dans la vue Admin,
 le tableau des créneaux gris soit actualisé.
@@ -111,3 +104,9 @@ Tâche : Sur le planning admin, quand on choisi une formation ca actualise la li
 Tâche : Limiter le nombre de caractère pour la description de l'offre (255)
 
 Tâche : Changer l'ordre : Formation Heure Etudiant entreprise
+
+Tâche : Quand on sélectionne une formation, la liste des étudiants s'affiche. Quand on sélectionne un étudiant les heures s'affichent etc...
+
+Tâche : Ne pas sauter les créneaux quand on met les pauses.
+
+Tâche : Dans la vue admin, lorsqu'il va sur le profil de l'entreprise, il doit voir les offres de l'entreprise déposées
